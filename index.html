@@ -235,13 +235,19 @@ function calcFlows(d){
     var battChgW = (isChg && battA > 0) ? Math.abs(battA * battV) : 0;
 
     if(isChg && chgSrc === 'grid') {
+        // ★ GRID CHARGING: Load + Battery dono ka total grid se aayega
         invToBatt = battChgW;
-        gridToInv = (espGridW > 10) ? espGridW : (invToLoad + battChgW);
+        var totalGridNeed = invToLoad + battChgW;
+        // Agar ESP total de raha hai toh woh use karo, nahi toh khud calculate karo
+        gridToInv = (espGridW > totalGridNeed) ? espGridW : totalGridNeed;
     } else if(isChg && chgSrc === 'solar+grid') {
         invToBatt = battChgW;
         var totalNeed = invToLoad + battChgW;
         if(pvW >= totalNeed) { invToGrid = pvW - totalNeed; }
-        else { gridToInv = totalNeed - pvW; }
+        else { 
+            var gridDeficit = totalNeed - pvW;
+            gridToInv = (espGridW > gridDeficit) ? espGridW : gridDeficit;
+        }
     } else if(isChg && chgSrc === 'solar') {
         if(pvW > invToLoad+10) { invToBatt = pvW - invToLoad; }
         else { invToBatt = battChgW; }
@@ -510,8 +516,9 @@ function updUI(d) {
     else if ((d.battery_current || 0) < -1) { battText = '\u25BC ' + Math.round(Math.abs(d.battery_current) * (d.battery_voltage || 12)) + 'W'; }
     else { battText = '\u2014 idle'; }
 
-    var gridText = '', gridOk = false;
-    var gW = d.grid_watts || 0;
+       var gridText = '', gridOk = false;
+    // ★ Yahan r.gridToInv use ho ga jo Load+Battery ka total hai ★
+    var gW = r.gridToInv || d.grid_watts || 0;
     if (gW > 10) { gridText = '\u2193 ' + Math.round(gW) + 'W'; gridOk = true; }
     else if (d.grid_available) { gridText = Math.round(d.grid_voltage) + 'V available'; gridOk = true; }
     else { gridText = 'band'; }
