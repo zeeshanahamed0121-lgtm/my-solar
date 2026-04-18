@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#06080e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Smart Inverter">
-    <title>Smart Inverter</title>
+    <meta name="apple-mobile-web-app-title" content="Inverter Zone">
+    <title>Inverter Zone</title>
     <link rel="manifest" href="data:application/json;base64,eyogICJuYW1lIjogIkludmVydGVyIFpvbmUiLCAic2hvcnRfbmFtZSI6ICJKWiIsInN0YXJ0X3VybCI6ICIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDYwODBlIiwidGhlbWVfY29sb3I6ICIjMDYwODBlIn0=">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -79,6 +79,7 @@
         .raw-parsed b{color:var(--solar);font-weight:700}
         .raw-parsed .g{color:var(--grid)}.raw-parsed .gr{color:var(--battC)}.raw-parsed .rd{color:var(--red)}.raw-parsed .cy{color:var(--load)}.raw-parsed .yl{color:var(--yel)}
         ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
+        select.inp{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235c6580' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:12px;padding-right:30px}
     </style>
 </head>
 <body>
@@ -137,7 +138,7 @@
                 <div class="c" style="text-align:center"><i class="fas fa-exchange-alt" style="font-size:20px;color:var(--battC);margin-bottom:5px"></i><p style="font-size:9px;color:var(--txt2)">فریکوئنسی</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lF">--</p><p style="font-size:9px;color:var(--txt3)">Hz</p></div>
                 <div class="c" style="text-align:center"><i class="fas fa-calculator" style="font-size:20px;color:var(--solar);margin-bottom:5px"></i><p style="font-size:9px;color:var(--txt2)">آج سولر</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lK">--</p><p style="font-size:9px;color:var(--txt3)">kWh</p></div>
             </div>
-            <div class="c">
+            <div class="c" style="margin-bottom:14px">
                 <p style="font-size:10px;font-weight:700;color:var(--txt2);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">آؤٹ پٹ</p>
                 <div style="display:flex;flex-direction:column;gap:8px">
                     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-lightbulb" style="color:var(--yel);font-size:13px"></i><span style="font-size:12px;font-weight:600">لائٹس</span></div><div class="tg" id="t1" onclick="togOut('o1',this)"></div></div>
@@ -145,6 +146,47 @@
                     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-tv" style="color:var(--battC);font-size:13px"></i><span style="font-size:12px;font-weight:600">ایسی</span></div><div class="tg" id="t3" onclick="togOut('o3',this)"></div></div>
                 </div>
             </div>
+            
+            <!-- INVERTER CONTROL PANEL -->
+            <div class="c" style="border-color:var(--inv)">
+                <p style="font-size:10px;font-weight:700;color:var(--inv);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase"><i class="fas fa-sliders-h" style="margin-right:5px"></i>انورٹر کنٹرول (QPI)</p>
+                
+                <div style="display:flex;flex-direction:column;gap:10px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <div style="flex:1">
+                            <p style="font-size:9px;color:var(--txt3);margin-bottom:3px">چارج کرنٹ سیٹ کریں (A)</p>
+                            <input class="inp" id="inChgA" type="number" value="30" style="font-size:14px;font-weight:700">
+                        </div>
+                        <button class="bp" onclick="sendCmd('PCVV'+document.getElementById('inChgA').value+'.0')" style="height:38px;white-space:nowrap">سیٹ کریں</button>
+                    </div>
+
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <div style="flex:1">
+                            <p style="font-size:9px;color:var(--txt3);margin-bottom:3px">چارجنگ سورس پراپورٹی</p>
+                            <select class="inp" id="inChgSrc" style="font-size:12px;font-weight:700">
+                                <option value="MCHGV01">سولر فسٹ (Solar First)</option>
+                                <option value="MCHGV00">گریڈ فسٹ (Grid First)</option>
+                                <option value="MCHGV02">سولر + گریڈ (Both)</option>
+                                <option value="MCHGV03">صرف سولر (Solar Only)</option>
+                            </select>
+                        </div>
+                        <button class="bp" onclick="sendCmd(document.getElementById('inChgSrc').value)" style="height:38px;white-space:nowrap">سیٹ کریں</button>
+                    </div>
+                    
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <div style="flex:1">
+                            <p style="font-size:9px;color:var(--txt3);margin-bottom:3px">آؤٹ پٹ سورس پراپورٹی</p>
+                            <select class="inp" id="inOutSrc" style="font-size:12px;font-weight:700">
+                                <option value="POP02">SBU (Solar -> Battery -> Grid)</option>
+                                <option value="POP01">SOL (Solar First)</option>
+                                <option value="POP00">UTI (Grid First)</option>
+                            </select>
+                        </div>
+                        <button class="bp" onclick="sendCmd(document.getElementById('inOutSrc').value)" style="height:38px;white-space:nowrap">سیٹ کریں</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
     <section id="s4" class="sec">
@@ -235,10 +277,8 @@ function calcFlows(d){
     var battChgW = (isChg && battA > 0) ? Math.abs(battA * battV) : 0;
 
     if(isChg && chgSrc === 'grid') {
-        // ★ GRID CHARGING: Load + Battery dono ka total grid se aayega
         invToBatt = battChgW;
         var totalGridNeed = invToLoad + battChgW;
-        // Agar ESP total de raha hai toh woh use karo, nahi toh khud calculate karo
         gridToInv = (espGridW > totalGridNeed) ? espGridW : totalGridNeed;
     } else if(isChg && chgSrc === 'solar+grid') {
         invToBatt = battChgW;
@@ -324,9 +364,6 @@ function updNodes(d,r){
     else{document.getElementById('icoGrid').className='fn-ico'+(gAct?' active':'');document.getElementById('icoGrid').style.boxShadow=gAct?'0 0 22px rgba(59,130,246,.15)':'none';document.getElementById('icoGrid').querySelector('i').style.color='var(--grid)';document.getElementById('vGrid').style.color='var(--grid)';}
 }
 
-/* ============================================================
-   mapD — 0.1 Resolution ko 10 se MULTIPLY karne ka logic
-   ============================================================ */
 function mapD(raw){
     if(!raw)return null;
     var d=raw;
@@ -340,9 +377,8 @@ function mapD(raw){
     var sccV=parseFloat(d.sccPVV)||0, panA=parseFloat(d.panelA)||0;
     var bPct=parseFloat(d.batteryPercent)||0, kwh=parseFloat(d.pvkWh)||0;
     
-    /* ★ ESP FIELD KO PEHLE 0.1 MAAN KAR 10 SE MULTIPLY KARNA HAI ★ */
     var espBattA_raw = parseFloat(d.batteryA) || 0;
-    var espBattA = (espBattA_raw !== 0) ? (espBattA_raw * 10.0) : 0; // 0.9 ko 9.0 banayega
+    var espBattA = (espBattA_raw !== 0) ? (espBattA_raw * 10.0) : 0;
     
     var espGridW=parseFloat(d.gridW)||0;
 
@@ -366,23 +402,20 @@ function mapD(raw){
     var pvChg=((flInt>>2)&1)?true:false;
     var acChg=((flInt>>4)&1)?true:false;
 
-    /* ★ RAW STRING KO BHI 10 SE MULTIPLY KARNA HAI ★ */
     var rawChgA = 0;
-    if(rp) rawChgA = (rp.pos9 || 0) * 10.0; // 0.9 ko 9.0 banayega
+    if(rp) rawChgA = (rp.pos9 || 0) * 10.0;
 
     var espIsChg = (d.isCharging === true || d.isCharging === 1 || d.isCharging === 'true');
-    var isChg = espIsChg || (rawChgA > 0.5); // Thora sa margin barha diya
+    var isChg = espIsChg || (rawChgA > 0.5);
 
-    /* ★ اسمارٹ سورس ڈیٹیکشن ★ */
     var chgSrc = (d.chargingSrc || d.charging_source || 'none').toString().toLowerCase();
     if (chgSrc.includes('solar') && chgSrc.includes('grid')) chgSrc = 'solar+grid';
     else if (chgSrc.includes('solar') || chgSrc.includes('pv')) chgSrc = 'solar';
     else if (chgSrc.includes('grid') || chgSrc.includes('ac') || chgSrc.includes('utility')) chgSrc = 'grid';
     
-    /* اگر چارج ہو رہی ہے لیکن سورس معلوم نہیں، تو خود اندازہ لگائیں */
     if (isChg && chgSrc === 'none') {
         if (pvW > 20) chgSrc = 'solar';
-        else if (iV > 100) chgSrc = 'grid'; // گرڈ موجود ہے تو گرڈ مان لو
+        else if (iV > 100) chgSrc = 'grid';
         else chgSrc = 'solar';
     }
 
@@ -472,7 +505,7 @@ function updUI(d) {
     var bp = Math.max(0, Math.min(100, d.battery_percent || 0));
     document.getElementById('bV').textContent = (d.battery_voltage || 0).toFixed(2) + ' V';
     document.getElementById('bCA').textContent = (d.battery_current || 0).toFixed(1) + ' A';
-    document.getElementById('bGW').textContent = Math.round(d.grid_watts || 0) + ' W';
+    document.getElementById('bGW').textContent = Math.round(r.gridToInv || 0) + ' W';
     var bF = document.getElementById('bBF'); bF.style.height = bp + '%';
     if (bp < 20) bF.style.background = 'var(--red)';
     else if (bp < 50) bF.style.background = 'var(--yel)';
@@ -516,8 +549,7 @@ function updUI(d) {
     else if ((d.battery_current || 0) < -1) { battText = '\u25BC ' + Math.round(Math.abs(d.battery_current) * (d.battery_voltage || 12)) + 'W'; }
     else { battText = '\u2014 idle'; }
 
-       var gridText = '', gridOk = false;
-    // ★ Yahan r.gridToInv use ho ga jo Load+Battery ka total hai ★
+    var gridText = '', gridOk = false;
     var gW = r.gridToInv || d.grid_watts || 0;
     if (gW > 10) { gridText = '\u2193 ' + Math.round(gW) + 'W'; gridOk = true; }
     else if (d.grid_available) { gridText = Math.round(d.grid_voltage) + 'V available'; gridOk = true; }
@@ -584,6 +616,17 @@ function togOut(k, el) {
     else { toast('firebase se juren', 'ser'); el.classList.toggle('on'); }
 }
 
+/* Inverter Control Command */
+function sendCmd(cmd) {
+    if(!dRef) { toast('Firebase se pehle juren', 'ser'); return; }
+    dRef.child('cmd').set(cmd).then(function() {
+        toast('Command: ' + cmd + ' Bheji Gayi!', 'sok');
+        aLog('info', 'CMD Sent: ' + cmd);
+    }).catch(function(err) {
+        toast('Error: ' + err.message, 'ser');
+    });
+}
+
 function initCharts() {
     try {
         var o = { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#363d55', font: { family: 'Outfit', size: 9 } } } }, scales: { x: { ticks: { color: '#363d55', font: { family: 'JetBrains Mono', size: 8 } }, grid: { color: 'rgba(22,29,48,.5)' } }, y: { ticks: { color: '#363d55', font: { family: 'JetBrains Mono', size: 8 } }, grid: { color: 'rgba(22,29,48,.5)' } } } };
@@ -611,11 +654,11 @@ function refDemo() {
         m.grid_voltage = 221; m.grid_available = true; m.grid_watts = 0;
         m.load_watts = Math.round(300 + Math.random() * 1200);
         m.battery_voltage = 13.6; m.battery_percent = 95;
-        m.battery_current = 1.23; // Demo main 1.23 ko 12.3 banayega
+        m.battery_current = 1.23; 
         m.raw = '(221.0 49.8 221.0 49.8 0' + m.load_watts + ' ' + m.load_watts + ' 015 415 13.60 123 000 45 12.3 473.0 00.00 00000 00010101 00 00 00000 010w';
     } else if (demoScene === 2) {
         m.battery_charging = false; m.charging_source = 'none'; m.power_source = 'battery';
-        m.battery_current = -0.52; // -0.52 ko -5.2 banayega
+        m.battery_current = -0.52; 
         m.grid_voltage = 0; m.grid_available = false; m.grid_watts = 0;
         m.load_watts = Math.round(80 + Math.random() * 250);
         m.battery_voltage = 12.5; m.battery_percent = 60;
@@ -625,7 +668,7 @@ function refDemo() {
         m.grid_voltage = 225; m.grid_available = true; m.grid_watts = 200;
         m.load_watts = 80;
         m.battery_voltage = 14.1; m.battery_percent = 100;
-        m.battery_current = 0.9; // Yeh ab 9.0 amp show karega!
+        m.battery_current = 0.9; 
         m.raw = '(225.0 50.0 225.0 50.0 0080 0080 002 410 14.10 090 000 000 00.0 000.0 00.00 00000 00010001 00 00 00000 010w';
     }
     updUI(m); document.getElementById('rawD').textContent = JSON.stringify(m, null, 2);
