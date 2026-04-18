@@ -403,7 +403,7 @@ function mapD(raw){
     var acChg=((flInt>>4)&1)?true:false;
 
     var rawChgA = 0;
-    if(rp) rawChgA = (rp.pos9 || 0) * 10.0;
+    if(rp) rawChgA = (rp.pos9 || 0) / 10.0;
 
     var espIsChg = (d.isCharging === true || d.isCharging === 1 || d.isCharging === 'true');
     var isChg = espIsChg || (rawChgA > 0.5);
