@@ -480,6 +480,22 @@ function doConnect() {
                 else dbg('mapping fail');
             } else { dbg('NULL'); toast('data nahi mila', 'ser'); }
         });
+                // ★ INVERTER COMMAND RESPONSE LISTENER ★
+        dRef.child('cmdResp').on('value', function(s) {
+            var val = s.val();
+            if (val) {
+                if (val === "ACK") {
+                    toast('✅ Inverter ne accept kar liya!', 'sok');
+                } else if (val === "NAK") {
+                    toast('❌ Inverter ne reject kar diya', 'ser');
+                } else if (val === "NO_DATA") {
+                    toast('⚠️ Inverter se jawab nahi aaya', 'ser');
+                } else {
+                    toast('Response: ' + val, 'sin');
+                }
+            }
+        });
+
         lRef.orderByChild('timestamp').limitToLast(50).on('value', function (s) { var lg = []; s.forEach(function (c) { lg.push(c.val()); }); lg.reverse(); logs = lg; rLog('logBox', lg); });
         localStorage.setItem('iz_c', JSON.stringify({ ak: ak, du: du, pi: pi }));
         localStorage.setItem('iz_p', dp);
