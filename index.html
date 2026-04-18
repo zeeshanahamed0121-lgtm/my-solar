@@ -222,70 +222,46 @@ function mapD(raw){
     var lW=parseFloat(d.loadW)||0;
     var oV=parseFloat(d.acOutV)||0;
     var iV=parseFloat(d.acInV)||0;
-    var kwh=parseFloat(d.pvkWh)||0;
+    var iF=parseFloat(d.acInFreq)||0;
+    var oF=parseFloat(d.acOutFreq)||50;
+    var lVA=parseFloat(d.loadVA)||0;
+    var lPct=parseFloat(d.loadPercent)||0;
+    var busV=parseFloat(d.busV)||0;
+    var sccV=parseFloat(d.sccPVV)||0;
+    var panA=parseFloat(d.panelA)||0;
+    var gW=parseFloat(d.gridW)||0;
     var bPct=parseFloat(d.batteryPercent)||0;
+    var kwh=parseFloat(d.pvkWh)||0;
+    var iT=parseFloat(d.invTemp)||0;
+    var fan=parseInt(d.fanLevel)||0;
 
-    // بیٹری فیصد
     var bp=0;
     if(bPct>0 && bPct<=100) bp=Math.round(bPct);
     else { if(bV>=13.0) bp=100; else if(bV<=10.5) bp=0; else bp=Math.round(((bV-10.5)/2.5)*100); }
 
-    // فریکوئنسی
-    var freq=50;
-    if(d.raw){var p=d.raw.replace(/[()]/g,'').split(' ');if(p.length>=2) freq=parseFloat(p[1])||50;}
+    var netW=pvW-lW;
+    var bA=0, charging=false, chSrc='none', pSrc='battery', exP=0;
+    if(netW>2){charging=true;bA=netW/Math.max(1,bV);exP=Math.round(netW);chSrc='solar';pSrc='solar';}
+    else if(netW<=2&&pvW>5){charging=false;bA=(lW-pvW)/Math.max(1,bV);if(bA<0)bA=0;chSrc='none';pSrc='solar';}
+    else if(pvW<=5&&iV>100){charging=false;bA=lW/Math.max(1,bV);chSrc='none';pSrc='grid';}
+    else{charging=false;bA=lW/Math.max(1,bV);chSrc='none';pSrc='battery';}
 
-    // ========== بیٹری ایمپیر خود کیلکولیٹ ==========
-    var netW = pvW - lW;
-    var bA = 0;
-    var charging = false;
-    var chSrc = 'none';
-    var pSrc = 'battery';
-    var exP = 0;
-
-    if(netW > 2){
-        // سولر لوڈ سے زیادہ = چارجنگ
-        charging = true;
-        bA = netW / Math.max(1, bV);
-        exP = Math.round(netW);
-        chSrc = 'solar';
-        pSrc = 'solar';
-    } else if(netW <= 2 && pvW > 5){
-        // سولر ہے لیکن لوڈ زیادہ = ڈسچارج
-        charging = false;
-        bA = (lW - pvW) / Math.max(1, bV);
-        if(bA < 0) bA = 0;
-        chSrc = 'none';
-        pSrc = 'solar';
-    } else if(pvW <= 5 && iV > 100){
-        // گریڈ
-        charging = false;
-        bA = lW / Math.max(1, bV);
-        chSrc = 'none';
-        pSrc = 'grid';
-    } else {
-        // صرف بیٹری
-        charging = false;
-        bA = lW / Math.max(1, bV);
-        chSrc = 'none';
-        pSrc = 'battery';
-    }
-
-    // اگر ESP نے بھیجا تو ESP کو ترجیح دیں
-    if(d.powerSource) pSrc = d.powerSource;
-    if(d.isCharging === true || d.isCharging === 'true') charging = true;
-    if(d.chargingSrc) chSrc = d.chargingSrc;
-    if(d.excessPower) exP = parseFloat(d.excessPower)||0;
+    if(d.powerSource)pSrc=d.powerSource;
+    if(d.isCharging===true||d.isCharging==='true')charging=true;
+    if(d.chargingSrc)chSrc=d.chargingSrc;
+    if(d.excessPower)exP=parseFloat(d.excessPower)||0;
+    if(d.gridW!==undefined)gW=parseFloat(d.gridW)||0;
 
     return {
         pv_voltage:pvV, pv_current:pvA, pv_power:pvW,
+        scc_pv_voltage:sccV, panel_amperes:panA,
         battery_voltage:bV, battery_percent:bp, battery_current:parseFloat(bA.toFixed(1)),
-        battery_temp:parseFloat(d.batteryTemp)||0,
-        battery_charging:charging,
-        charging_source:chSrc,
-        excess_power:exP,
-        power_source:pSrc,
-        load_watts:lW, load_voltage:oV, load_frequency:freq,
-        grid_voltage:iV, grid_available:iV>100,
+        battery_temp:iT,
+        battery_charging:charging, charging_source:chSrc, excess_power:exP, power_source:pSrc,
+        load_watts:lW, load_va:lVA, load_percent:lPct,
+        load_voltage:oV, load_frequency:oF,
+        grid_voltage:iV, grid_frequency:iF, grid_watts:gW, grid_available:iV>100,
+        bus_voltage:busV,
         inverter_on:oV>100,
         today_energy:kwh, total_energy:parseFloat(d.totalKwh)||0,
         uptimeMs:parseInt(d.uptimeMs)||0,
@@ -369,12 +345,14 @@ function updUI(d){
     var ut=d.uptimeMs||0;var us='';if(ut>86400000)us=Math.floor(ut/86400000)+'دن ';if(ut>3600000)us+=Math.floor((ut%86400000)/3600000)+'گھ ';if(ut>60000)us+=Math.floor((ut%3600000)/60000)+'م';if(!us)us='<1م';
    var items=[
     {l:'پاور سورس',s:pSrc==='solar'?'☀️ سولر':pSrc==='grid'?'🔌 گریڈ':'🔋 بیٹری',ok:pSrc==='solar'},
-    {l:'بیٹری سٹیٹس',s:d.battery_charging?'⚡ چارجنگ '+d.excess_power+'W':'📉 ڈسچارج '+d.battery_current+'A',ok:d.battery_charging},
+    {l:'بیٹری',s:d.battery_charging?'⚡ چارجنگ '+d.excess_power+'W':'📉 ڈسچارج '+d.battery_current+'A',ok:d.battery_charging},
     {l:'چارج سورس',s:d.charging_source==='solar'?'☀️ سولر':d.charging_source==='grid'?'🔌 گریڈ':'—',ok:true},
-    {l:'انورٹر',s:d.inverter_on?'چالو':'بند',ok:d.inverter_on},
-    {l:'سولر PV',s:Math.round(d.pv_power)+'W',ok:d.pv_power>10},
-    {l:'گریڈ',s:d.grid_available?Math.round(d.grid_voltage)+'V':'بند',ok:d.grid_available},
-    {l:'لوڈ',s:Math.round(d.load_watts)+'W',ok:d.load_watts>0},
+    {l:'پینل',s:Math.round(d.scc_pv_voltage)+'V '+d.panel_amperes.toFixed(1)+'A',ok:d.scc_pv_voltage>10},
+    {l:'MPPT بعد',s:Math.round(d.pv_voltage)+'V '+d.pv_current.toFixed(1)+'A = '+Math.round(d.pv_power)+'W',ok:d.pv_power>10},
+    {l:'گریڈ',s:Math.round(d.grid_voltage)+'V '+d.grid_frequency.toFixed(1)+'Hz',ok:d.grid_available},
+    {l:'گریڈ لوڈ',s:Math.round(d.grid_watts)+'W',ok:d.grid_watts===0},
+    {l:'لوڈ',s:Math.round(d.load_watts)+'W / '+d.load_percent+'%',ok:d.load_watts>0},
+    {l:'انورٹر',s:d.inverter_on?'چالو '+d.battery_temp.toFixed(1)+'°C':'بند',ok:d.inverter_on},
     {l:'آپ ٹائم',s:us,ok:true}
 ];
     document.getElementById('sList').innerHTML=items.map(function(i){return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 9px;background:var(--bg2);border-radius:7px"><span style="font-size:11px;color:var(--txt2)">'+i.l+'</span><span style="font-size:11px;font-weight:600;color:'+(i.ok?'var(--ok)':'var(--err)')+';display:flex;align-items:center;gap:3px"><span class="sd '+(i.ok?'on':'off')+'" style="width:5px;height:5px"></span>'+i.s+'</span></div>';}).join('');
