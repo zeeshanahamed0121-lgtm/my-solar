@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#050507">
+    <meta name="theme-color" content="#06080e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Inverter Zone">
-    <title>Inverter Zone</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkludmVydGVyIFpvbmUiLAogICJzaG9ydF9uYW1lIjogIkludmVydGVyIFpvbmUiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA1MDUwNyIsCiAgInRoZW1lX2NvbG9yIjogIiMwNTA1MDciLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIKfQ==">
+    <title>Smart Inverter</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkludmVydGVyIFpvbmUiLAogICJzaG9ydF9uYW1lIjogIkludmVydGVyIFpvbmUiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA2MDgwZSIsCiAgInRoZW1lX2NvbG9yIjogIiMwNjA4MGUiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIKfQ==">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -16,107 +16,71 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <style>
-        :root{
-            --bg:#050507;--bg2:#0a0a0f;--bg3:#101018;
-            --card:#0c0c14;--brd:#1a1a2a;--brd2:#252538;
-            --txt:#e4e4ef;--txt2:#6b6b85;--txt3:#3e3e55;
-            --gold:#c8956c;--gold2:#d4a574;--gold3:#b07a52;
-            --cyan:#4ecdc4;--red:#e63946;--green:#2ec4b6;
-            --blue:#457b9d;--purple:#7b68ee;--yellow:#f4d35e;--orange:#ee6c4d
-        }
+        :root{--bg:#06080e;--bg2:#0b0d16;--bg3:#10131e;--card:#0c0f1a;--brd:#161d30;--brd2:#1e2740;--txt:#dfe3ef;--txt2:#5c6580;--txt3:#363d55;--solar:#f59e0b;--grid:#3b82f6;--battC:#22c55e;--battD:#ef4444;--load:#06b6d4;--inv:#a78bfa;--red:#ef4444;--yel:#eab308}
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
         body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--txt);min-height:100dvh;overflow-x:hidden;-webkit-user-select:none;user-select:none}
-        .bg-noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-        .bg-vignette{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,transparent 50%,var(--bg) 100%)}
+        .top-bar{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;padding-top:calc(env(safe-area-inset-top)+12px);background:linear-gradient(180deg,var(--bg) 60%,transparent)}
+        .logo-a{display:flex;align-items:center;gap:9px}
+        .logo-d{width:8px;height:8px;border-radius:50%;background:var(--solar);box-shadow:0 0 10px rgba(245,158,11,.4)}
+        .logo-n{font-size:14px;font-weight:200;letter-spacing:2.5px;text-transform:uppercase}
+        .logo-n b{font-weight:800;color:var(--solar)}
+        .cbadge{display:flex;align-items:center;gap:4px;padding:3px 9px;border-radius:16px;border:1px solid var(--brd);font-size:9px;font-weight:600;color:var(--txt2);font-family:'JetBrains Mono'}
+        .cbadge .cd{width:5px;height:5px;border-radius:50%}
+        .cbadge .cd.on{background:var(--battC);box-shadow:0 0 6px rgba(34,197,94,.5)}
+        .cbadge .cd.off{background:var(--red);box-shadow:0 0 6px rgba(239,68,68,.4)}
+        .mc{padding-bottom:calc(58px+env(safe-area-inset-bottom)+12px);position:relative;z-index:1}
+        .pp{padding:0 14px 14px;max-width:600px;margin:0 auto}
 
-        .top-bar{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;padding-top:calc(env(safe-area-inset-top) + 14px);background:linear-gradient(180deg,var(--bg) 60%,transparent)}
-        .logo-area{display:flex;align-items:center;gap:10px}
-        .logo-mark{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px rgba(200,149,108,.4)}
-        .logo-name{font-size:15px;font-weight:200;letter-spacing:3px;text-transform:uppercase}
-        .logo-name b{font-weight:800;color:var(--gold)}
-        .conn-badge{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:1px solid var(--brd);font-size:9px;font-weight:600;color:var(--txt2);font-family:'JetBrains Mono'}
-        .conn-badge .dot{width:5px;height:5px;border-radius:50%}
-        .conn-badge .dot.on{background:var(--green);box-shadow:0 0 6px rgba(46,196,182,.5)}
-        .conn-badge .dot.off{background:var(--red);box-shadow:0 0 6px rgba(230,57,70,.4)}
+        /* === فلو ڈایاگرام === */
+        .flow-wrap{position:relative;width:100%;height:310px;background:var(--card);border:1px solid var(--brd);border-radius:16px;overflow:hidden;margin-bottom:10px}
+        .flow-wrap canvas{position:absolute;inset:0;width:100%;height:100%}
+        .fnode{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:2;pointer-events:none}
+        .fn-ico{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:3px;border:1px solid var(--brd);transition:box-shadow .8s}
+        .fn-ico.active{border-color:rgba(255,255,255,.15)}
+        .fn-val{font-family:'JetBrains Mono';font-size:12px;font-weight:700;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+        .fn-lbl{font-size:8px;color:var(--txt2);font-weight:600;margin-top:1px;letter-spacing:.5px}
+        .flbl{position:absolute;z-index:3;font-family:'JetBrains Mono';font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;pointer-events:none;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.06);transition:opacity .4s}
 
-        .mc{padding-bottom:calc(60px + env(safe-area-inset-bottom) + 14px);position:relative;z-index:1}
-        .pp{padding:0 16px 16px;max-width:600px;margin:0 auto}
+        /* === سٹیٹس ٹیبل === */
+        .stbl{background:var(--card);border:1px solid var(--brd);border-radius:12px;overflow:hidden}
+        .stbl-r{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--brd)}
+        .stbl-r:last-child{border-bottom:none}
+        .stbl-l{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt2)}
+        .stbl-l i{font-size:9px;width:14px;text-align:center}
+        .stbl-r2{font-family:'JetBrains Mono';font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px}
+        .std{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+        .std.on{background:var(--battC)}.std.off{background:var(--red)}.std.w{background:var(--yel)}
 
-        /* مین پروڈکشن کارڈ */
-        .prod-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:24px 20px;margin-bottom:12px;position:relative;overflow:hidden}
-        .prod-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5}
-        .prod-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--txt2);margin-bottom:6px}
-        .prod-row{display:flex;align-items:flex-end;gap:8px;margin-bottom:4px}
-        .prod-num{font-family:'JetBrains Mono';font-size:52px;font-weight:700;line-height:1;color:#fff}
-        .prod-unit{font-size:14px;color:var(--txt2);margin-bottom:8px;font-weight:400}
-        .prod-meta{display:flex;align-items:center;gap:12px;margin-top:12px}
-        .prod-meta-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--txt2)}
-        .prod-meta-item i{font-size:10px}
-        .mode-tag{padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.5px;font-family:'JetBrains Mono'}
+        .stitle{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin:14px 0 8px;padding-left:2px}
 
-        /* سلیم بار */
-        .sbar{width:100%;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin:12px 0 0}
-        .sbar-fill{height:100%;border-radius:2px;transition:width 1s ease}
+        /* === بوٹم نیو === */
+        .bnav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(6,8,14,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--brd);display:flex;justify-content:space-around;align-items:center;height:56px;padding-bottom:env(safe-area-inset-bottom)}
+        .nb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 8px;border:none;background:none;color:var(--txt3);font-family:'Outfit';font-size:8px;font-weight:600;cursor:pointer;transition:.3s;letter-spacing:.3px}
+        .nb i{font-size:15px;transition:.3s}
+        .nb.on{color:var(--solar)}.nb.on i{transform:scale(1.1)}
 
-        /* ہوریزنٹل میٹرکس */
-        .hmat{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
-        .hmat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-        .hmat-body{flex:1;min-width:0}
-        .hmat-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
-        .hmat-label{font-size:10px;color:var(--txt2);font-weight:600}
-        .hmat-val{font-family:'JetBrains Mono';font-size:16px;font-weight:700}
-        .hmat-bar{width:100%;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
-        .hmat-bar-fill{height:100%;border-radius:2px;transition:width 1s ease}
-
-        /* سیکشن ٹائٹل */
-        .stitle{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin:18px 0 10px;padding-left:2px}
-
-        /* اسٹیٹس ٹیبل */
-        .stab{background:var(--card);border:1px solid var(--brd);border-radius:12px;overflow:hidden}
-        .stab-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--brd)}
-        .stab-row:last-child{border-bottom:none}
-        .stab-left{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt2)}
-        .stab-left i{font-size:10px;width:14px;text-align:center;color:var(--txt3)}
-        .stab-right{font-family:'JetBrains Mono';font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px}
-        .stab-dot{width:5px;height:5px;border-radius:50%}
-        .stab-dot.on{background:var(--green)}
-        .stab-dot.off{background:var(--red)}
-        .stab-dot.warn{background:var(--yellow)}
-
-        /* بوٹم نیو */
-        .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(5,5,7,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--brd);display:flex;justify-content:space-around;align-items:center;height:58px;padding-bottom:env(safe-area-inset-bottom)}
-        .nb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border:none;background:none;color:var(--txt3);font-family:'Outfit';font-size:8px;font-weight:600;cursor:pointer;transition:.3s;letter-spacing:.5px}
-        .nb i{font-size:16px;transition:.3s}
-        .nb.on{color:var(--gold)}
-        .nb.on i{transform:scale(1.1)}
-
-        /* سیکشنز */
-        .sec{display:none;animation:sIn .3s ease}.sec.on{display:block}
-        @keyframes sIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-        /* کامن */
-        .toast{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:50%;transform:translateX(-50%) translateY(-100px);padding:10px 18px;border-radius:10px;color:#fff;font-size:12px;font-weight:600;z-index:10000;transition:transform .4s cubic-bezier(.68,-.55,.27,1.55);display:flex;align-items:center;gap:6px;box-shadow:0 8px 30px rgba(0,0,0,.5);white-space:nowrap;max-width:90vw}
+        .sec{display:none;animation:sI .3s ease}.sec.on{display:block}
+        @keyframes sI{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .toast{position:fixed;top:calc(env(safe-area-inset-top)+10px);left:50%;transform:translateX(-50%) translateY(-100px);padding:9px 16px;border-radius:10px;color:#fff;font-size:12px;font-weight:600;z-index:10000;transition:transform .4s cubic-bezier(.68,-.55,.27,1.55);display:flex;align-items:center;gap:6px;box-shadow:0 8px 25px rgba(0,0,0,.5);white-space:nowrap;max-width:90vw}
         .toast.sh{transform:translateX(-50%) translateY(0)}
-        .toast.sok{background:var(--green)}
-        .toast.ser{background:var(--red)}
-        .toast.sin{background:var(--blue)}
-        .c{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;transition:.3s}
+        .toast.sok{background:var(--battC)}.toast.ser{background:var(--red)}.toast.sin{background:var(--grid)}
+        .c{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px}
         .tg{width:44px;height:22px;background:var(--brd2);border-radius:11px;position:relative;cursor:pointer;transition:.3s;flex-shrink:0}
-        .tg.on{background:var(--gold3)}
+        .tg.on{background:var(--battC)}
         .tg::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
         .tg.on::after{transform:translateX(22px)}
         .inp{width:100%;padding:9px 11px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-family:'JetBrains Mono';font-size:12px;outline:none;transition:.3s}
-        .inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,149,108,.12)}
-        .bp{padding:9px 18px;background:var(--gold);color:var(--bg);font-weight:700;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-family:'Outfit';transition:.2s}
+        .inp:focus{border-color:var(--solar);box-shadow:0 0 0 3px rgba(245,158,11,.1)}
+        .bp{padding:9px 18px;background:var(--solar);color:var(--bg);font-weight:700;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-family:'Outfit';transition:.2s}
         .bp:active{transform:scale(.96)}
         .bs{padding:9px 18px;background:transparent;color:var(--txt);font-weight:600;border-radius:8px;border:1px solid var(--brd);cursor:pointer;font-size:12px;font-family:'Outfit'}
-        .li{padding:8px 12px;border-left:2px solid var(--brd);margin-bottom:4px;background:var(--bg2);border-radius:0 8px 8px 0;font-size:11px}
-        .li.info{border-left-color:var(--cyan)}.li.warning{border-left-color:var(--yellow)}.li.success{border-left-color:var(--green)}.li.error{border-left-color:var(--red)}
+        .li{padding:7px 11px;border-left:2px solid var(--brd);margin-bottom:4px;background:var(--bg2);border-radius:0 8px 8px 0;font-size:11px}
+        .li.info{border-left-color:var(--load)}.li.warning{border-left-color:var(--yel)}.li.success{border-left-color:var(--battC)}.li.error{border-left-color:var(--red)}
         .jd{font-family:'JetBrains Mono';font-size:10px;line-height:1.5;background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:10px;max-height:180px;overflow:auto;white-space:pre-wrap;word-break:break-all}
-        .bbb{width:56px;height:100px;border:2px solid var(--brd);border-radius:6px;position:relative;overflow:hidden;flex-shrink:0}
+        .bbb{width:52px;height:96px;border:2px solid var(--brd);border-radius:6px;position:relative;overflow:hidden;flex-shrink:0}
         .bbf{position:absolute;bottom:0;left:0;right:0;height:0%;transition:height 1s;border-radius:0 0 4px 4px}
         .bbc{width:16px;height:5px;background:var(--brd);border-radius:2px 2px 0 0;margin:0 auto}
-        .dbg{font-family:'JetBrains Mono';font-size:9px;color:var(--red);background:rgba(230,57,70,.06);border:1px solid rgba(230,57,70,.15);border-radius:8px;padding:8px;margin-top:8px;word-break:break-all;max-height:80px;overflow:auto;display:none}
+        .dbg{font-family:'JetBrains Mono';font-size:9px;color:var(--red);background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:8px;margin-top:8px;word-break:break-all;max-height:80px;overflow:auto;display:none}
         .dbg.show{display:block}
         .pt{font-size:18px;font-weight:900;margin-bottom:14px;letter-spacing:-.3px}
         ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
@@ -124,17 +88,15 @@
     </style>
 </head>
 <body>
-<div class="bg-noise"></div>
-<div class="bg-vignette"></div>
 <div id="toast" class="toast"></div>
 
 <div class="top-bar">
-    <div class="logo-area">
-        <div class="logo-mark"></div>
-        <div class="logo-name">Inverter <b>Zone</b></div>
+    <div class="logo-a">
+        <div class="logo-d"></div>
+        <div class="logo-n">Inverter <b>Zone</b></div>
     </div>
-    <div class="conn-badge">
-        <span class="dot" id="cDot"></span>
+    <div class="cbadge">
+        <span class="cd" id="cDot"></span>
         <span id="cTxt">OFFLINE</span>
     </div>
 </div>
@@ -144,75 +106,64 @@
     <!-- ===== ڈیش بورڈ ===== -->
     <section id="s1" class="sec on">
         <div class="pp">
-            <div class="prod-card">
-                <div class="prod-label">Solar Production</div>
-                <div class="prod-row">
-                    <div class="prod-num" id="pNum">0</div>
-                    <div class="prod-unit">Watts</div>
+
+            <!-- فلو ڈایاگرام -->
+            <div class="flow-wrap" id="flowWrap">
+                <canvas id="flowC"></canvas>
+
+                <!-- سولر نود -->
+                <div class="fnode" style="top:2%;left:50%;transform:translateX(-50%)">
+                    <div class="fn-ico" id="icoSolar" style="background:rgba(245,158,11,.1)"><i class="fas fa-sun" style="color:var(--solar);font-size:15px"></i></div>
+                    <div class="fn-val" id="vSolar" style="color:var(--solar)">0 W</div>
+                    <div class="fn-lbl">سولر پینل</div>
                 </div>
-                <div class="sbar"><div class="sbar-fill" id="pBar" style="width:0%;background:var(--gold)"></div></div>
-                <div class="prod-meta">
-                    <div class="prod-meta-item"><i class="fas fa-battery-three-quarters" style="color:var(--green)"></i> <span id="pBatt">0%</span></div>
-                    <div class="prod-meta-item"><i class="fas fa-plug" style="color:var(--cyan)"></i> <span id="pLoad">0W</span></div>
-                    <div class="prod-meta-item"><i class="fas fa-bolt" style="color:var(--yellow)"></i> <span id="pKwh">0 kWh</span></div>
-                    <div style="flex:1"></div>
-                    <div class="mode-tag" id="pMode" style="background:rgba(200,149,108,.1);color:var(--gold);border:1px solid rgba(200,149,108,.2)">HYBRID</div>
+
+                <!-- انورٹر نود -->
+                <div class="fnode" style="top:38%;left:50%;transform:translate(-50%,-50%)">
+                    <div class="fn-ico" id="icoInv" style="background:rgba(167,139,250,.1)"><i class="fas fa-microchip" style="color:var(--inv);font-size:14px"></i></div>
+                    <div class="fn-val" id="vInv" style="color:var(--inv)">ON</div>
+                    <div class="fn-lbl">انورٹر</div>
                 </div>
+
+                <!-- گریڈ نود -->
+                <div class="fnode" style="bottom:4%;left:12%">
+                    <div class="fn-ico" id="icoGrid" style="background:rgba(59,130,246,.1)"><i class="fas fa-plug" style="color:var(--grid);font-size:14px"></i></div>
+                    <div class="fn-val" id="vGrid" style="color:var(--grid)">0 W</div>
+                    <div class="fn-lbl">گریڈ</div>
+                </div>
+
+                <!-- لوڈ نود -->
+                <div class="fnode" style="bottom:4%;left:50%;transform:translateX(-50%)">
+                    <div class="fn-ico" id="icoLoad" style="background:rgba(6,182,212,.1)"><i class="fas fa-home" style="color:var(--load);font-size:14px"></i></div>
+                    <div class="fn-val" id="vLoad" style="color:var(--load)">0 W</div>
+                    <div class="fn-lbl">لوڈ</div>
+                </div>
+
+                <!-- بیٹری نود -->
+                <div class="fnode" style="bottom:4%;right:12%">
+                    <div class="fn-ico" id="icoBatt" style="background:rgba(34,197,94,.1)"><i class="fas fa-car-battery" style="color:var(--battC);font-size:14px"></i></div>
+                    <div class="fn-val" id="vBatt" style="color:var(--battC)">0%</div>
+                    <div class="fn-lbl">بیٹری</div>
+                </div>
+
+                <!-- فلو لیبلز -->
+                <div class="flbl" id="lblPV" style="top:20%;left:55%;color:var(--solar);background:rgba(245,158,11,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblLoad" style="top:60%;left:40%;color:var(--load);background:rgba(6,182,212,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblGrid" style="top:58%;left:8%;color:var(--grid);background:rgba(59,130,246,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblBatt" style="top:58%;right:8%;color:var(--battC);background:rgba(34,197,94,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblGB" style="bottom:0%;left:50%;transform:translateX(-50%);color:var(--battC);background:rgba(34,197,94,.08);opacity:0">0W</div>
             </div>
 
-            <div class="stitle">System Metrics</div>
-
-            <div class="hmat">
-                <div class="hmat-icon" style="background:rgba(238,108,77,.08)"><i class="fas fa-sun" style="color:var(--orange)"></i></div>
-                <div class="hmat-body">
-                    <div class="hmat-top"><span class="hmat-label">PV وولٹیج</span><span class="hmat-val" id="mPV" style="color:var(--orange)">0.0 V</span></div>
-                    <div class="hmat-bar"><div class="hmat-bar-fill" id="mPVb" style="width:0%;background:var(--orange)"></div></div>
-                </div>
-            </div>
-            <div class="hmat">
-                <div class="hmat-icon" style="background:rgba(78,205,196,.08)"><i class="fas fa-bolt" style="color:var(--cyan)"></i></div>
-                <div class="hmat-body">
-                    <div class="hmat-top"><span class="hmat-label">PV کرنٹ</span><span class="hmat-val" id="mPA" style="color:var(--cyan)">0.0 A</span></div>
-                    <div class="hmat-bar"><div class="hmat-bar-fill" id="mPAb" style="width:0%;background:var(--cyan)"></div></div>
-                </div>
-            </div>
-            <div class="hmat">
-                <div class="hmat-icon" style="background:rgba(46,196,182,.08)"><i class="fas fa-car-battery" style="color:var(--green)"></i></div>
-                <div class="hmat-body">
-                    <div class="hmat-top"><span class="hmat-label">بیٹری وولٹیج</span><span class="hmat-val" id="mBV" style="color:var(--green)">0.0 V</span></div>
-                    <div class="hmat-bar"><div class="hmat-bar-fill" id="mBVb" style="width:0%;background:var(--green)"></div></div>
-                </div>
-            </div>
-            <div class="hmat">
-                <div class="hmat-icon" style="background:rgba(123,104,238,.08)"><i class="fas fa-battery-half" style="color:var(--purple)"></i></div>
-                <div class="hmat-body">
-                    <div class="hmat-top"><span class="hmat-label">بیٹری ایمپیر</span><span class="hmat-val" id="mBA" style="color:var(--purple)">0.0 A</span></div>
-                    <div class="hmat-bar"><div class="hmat-bar-fill" id="mBAb" style="width:0%;background:var(--purple)"></div></div>
-                </div>
-            </div>
-            <div class="hmat">
-                <div class="hmat-icon" style="background:rgba(69,123,157,.08)"><i class="fas fa-plug" style="color:var(--blue)"></i></div>
-                <div class="hmat-body">
-                    <div class="hmat-top"><span class="hmat-label">گریڈ وولٹیج</span><span class="hmat-val" id="mGV" style="color:var(--blue)">0.0 V</span></div>
-                    <div class="hmat-bar"><div class="hmat-bar-fill" id="mGVb" style="width:0%;background:var(--blue)"></div></div>
-                </div>
-            </div>
-            <div class="hmat">
-                <div class="hmat-icon" style="background:rgba(244,211,94,.08)"><i class="fas fa-solar-panel" style="color:var(--yellow)"></i></div>
-                <div class="hmat-body">
-                    <div class="hmat-top"><span class="hmat-label">پینل وولٹیج</span><span class="hmat-val" id="mSV" style="color:var(--yellow)">0.0 V</span></div>
-                    <div class="hmat-bar"><div class="hmat-bar-fill" id="mSVb" style="width:0%;background:var(--yellow)"></div></div>
-                </div>
-            </div>
-
-            <div class="stitle">Production Chart</div>
-            <div class="c" style="margin-bottom:12px;padding:12px">
-                <div style="height:160px"><canvas id="cE"></canvas></div>
-            </div>
-
+            <!-- اسٹیٹس -->
             <div class="stitle">System Status</div>
-            <div class="stab" id="sList">
-                <div class="stab-row"><span class="stab-left"><i class="fas fa-circle"></i>لوڈنگ...</span></div>
+            <div class="stbl" id="sList">
+                <div class="stbl-r"><span class="stbl-l"><i class="fas fa-circle" style="color:var(--txt3)"></i>لوڈنگ...</span></div>
+            </div>
+
+            <!-- چارٹ -->
+            <div class="stitle">Production</div>
+            <div class="c" style="padding:10px;margin-top:4px">
+                <div style="height:150px"><canvas id="cE"></canvas></div>
             </div>
         </div>
     </section>
@@ -220,42 +171,38 @@
     <!-- ===== بیٹری ===== -->
     <section id="s2" class="sec">
         <div class="pp">
-            <div class="pt"><i class="fas fa-car-battery" style="color:var(--green);margin-right:6px;font-size:16px"></i>بیٹری</div>
+            <div class="pt"><i class="fas fa-car-battery" style="color:var(--battC);margin-right:6px;font-size:16px"></i>بیٹری</div>
             <div class="c" style="margin-bottom:14px">
                 <div style="display:flex;align-items:center;gap:16px">
-                    <div style="text-align:center;flex-shrink:0">
-                        <div class="bbb"><div class="bbf" id="bBF" style="background:var(--green)"></div></div>
-                        <div class="bbc"></div>
-                        <p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700;margin-top:6px" id="bBP">0%</p>
-                    </div>
-                    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">وولٹیج</p><p style="font-family:'JetBrains Mono';font-size:17px;font-weight:700" id="bV">--</p></div>
-                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">کرنٹ</p><p style="font-family:'JetBrains Mono';font-size:17px;font-weight:700" id="bA">--</p></div>
-                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">ٹمپریچر</p><p style="font-family:'JetBrains Mono';font-size:17px;font-weight:700" id="bT">--</p></div>
-                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">اسٹیٹس</p><p style="font-size:14px;font-weight:700" id="bS">--</p></div>
+                    <div style="text-align:center;flex-shrink:0"><div class="bbb"><div class="bbf" id="bBF" style="background:var(--battC)"></div></div><div class="bbc"></div><p style="font-family:'JetBrains Mono';font-size:20px;font-weight:700;margin-top:5px" id="bBP">0%</p></div>
+                    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">وولٹیج</p><p style="font-family:'JetBrains Mono';font-size:16px;font-weight:700" id="bV">--</p></div>
+                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">کرنٹ</p><p style="font-family:'JetBrains Mono';font-size:16px;font-weight:700" id="bA">--</p></div>
+                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">ٹمپریچر</p><p style="font-family:'JetBrains Mono';font-size:16px;font-weight:700" id="bT">--</p></div>
+                        <div><p style="font-size:9px;color:var(--txt2);margin-bottom:2px">اسٹیٹس</p><p style="font-size:13px;font-weight:700" id="bS">--</p></div>
                     </div>
                 </div>
             </div>
-            <div class="c"><p style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase">بیٹری ہسٹری</p><div style="height:200px"><canvas id="cB"></canvas></div></div>
+            <div class="c"><p style="font-size:10px;font-weight:700;color:var(--txt2);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase">بیٹری ہسٹری</p><div style="height:200px"><canvas id="cB"></canvas></div></div>
         </div>
     </section>
 
     <!-- ===== لوڈ ===== -->
     <section id="s3" class="sec">
         <div class="pp">
-            <div class="pt"><i class="fas fa-home" style="color:var(--cyan);margin-right:6px;font-size:16px"></i>لوڈ</div>
+            <div class="pt"><i class="fas fa-home" style="color:var(--load);margin-right:6px;font-size:16px"></i>لوڈ</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-                <div class="c" style="text-align:center"><i class="fas fa-bolt" style="font-size:20px;color:var(--cyan);margin-bottom:6px"></i><p style="font-size:9px;color:var(--txt2)">لوڈ</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lW">--</p><p style="font-size:9px;color:var(--txt3)">W</p></div>
-                <div class="c" style="text-align:center"><i class="fas fa-wave-square" style="font-size:20px;color:var(--yellow);margin-bottom:6px"></i><p style="font-size:9px;color:var(--txt2)">وولٹیج</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lV">--</p><p style="font-size:9px;color:var(--txt3)">V</p></div>
-                <div class="c" style="text-align:center"><i class="fas fa-exchange-alt" style="font-size:20px;color:var(--green);margin-bottom:6px"></i><p style="font-size:9px;color:var(--txt2)">فریکوئنسی</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lF">--</p><p style="font-size:9px;color:var(--txt3)">Hz</p></div>
-                <div class="c" style="text-align:center"><i class="fas fa-calculator" style="font-size:20px;color:var(--gold);margin-bottom:6px"></i><p style="font-size:9px;color:var(--txt2)">آج کھپت</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lK">--</p><p style="font-size:9px;color:var(--txt3)">kWh</p></div>
+                <div class="c" style="text-align:center"><i class="fas fa-bolt" style="font-size:20px;color:var(--load);margin-bottom:5px"></i><p style="font-size:9px;color:var(--txt2)">لوڈ</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lW">--</p><p style="font-size:9px;color:var(--txt3)">W</p></div>
+                <div class="c" style="text-align:center"><i class="fas fa-wave-square" style="font-size:20px;color:var(--yel);margin-bottom:5px"></i><p style="font-size:9px;color:var(--txt2)">وولٹیج</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lV">--</p><p style="font-size:9px;color:var(--txt3)">V</p></div>
+                <div class="c" style="text-align:center"><i class="fas fa-exchange-alt" style="font-size:20px;color:var(--battC);margin-bottom:5px"></i><p style="font-size:9px;color:var(--txt2)">فریکوئنسی</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lF">--</p><p style="font-size:9px;color:var(--txt3)">Hz</p></div>
+                <div class="c" style="text-align:center"><i class="fas fa-calculator" style="font-size:20px;color:var(--solar);margin-bottom:5px"></i><p style="font-size:9px;color:var(--txt2)">آج کھپت</p><p style="font-family:'JetBrains Mono';font-size:22px;font-weight:700" id="lK">--</p><p style="font-size:9px;color:var(--txt3)">kWh</p></div>
             </div>
             <div class="c">
-                <p style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">آؤٹ پٹ کنٹرول</p>
+                <p style="font-size:10px;font-weight:700;color:var(--txt2);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">آؤٹ پٹ</p>
                 <div style="display:flex;flex-direction:column;gap:8px">
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-lightbulb" style="color:var(--yellow);font-size:13px"></i><span style="font-size:12px;font-weight:600">لائٹس</span></div><div class="tg" id="t1" onclick="togOut('o1',this)"></div></div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-fan" style="color:var(--cyan);font-size:13px"></i><span style="font-size:12px;font-weight:600">پنکھے</span></div><div class="tg" id="t2" onclick="togOut('o2',this)"></div></div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-tv" style="color:var(--green);font-size:13px"></i><span style="font-size:12px;font-weight:600">ایسی</span></div><div class="tg" id="t3" onclick="togOut('o3',this)"></div></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-lightbulb" style="color:var(--yel);font-size:13px"></i><span style="font-size:12px;font-weight:600">لائٹس</span></div><div class="tg" id="t1" onclick="togOut('o1',this)"></div></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-fan" style="color:var(--load);font-size:13px"></i><span style="font-size:12px;font-weight:600">پنکھے</span></div><div class="tg" id="t2" onclick="togOut('o2',this)"></div></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)"><div style="display:flex;align-items:center;gap:8px"><i class="fas fa-tv" style="color:var(--battC);font-size:13px"></i><span style="font-size:12px;font-weight:600">ایسی</span></div><div class="tg" id="t3" onclick="togOut('o3',this)"></div></div>
                 </div>
             </div>
         </div>
@@ -265,11 +212,11 @@
     <section id="s4" class="sec">
         <div class="pp">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                <div class="pt" style="margin-bottom:0"><i class="fas fa-terminal" style="color:var(--gold);margin-right:6px;font-size:14px"></i>لاگز</div>
+                <div class="pt" style="margin-bottom:0"><i class="fas fa-terminal" style="color:var(--solar);margin-right:6px;font-size:14px"></i>لاگز</div>
                 <button class="bs" onclick="clrLog()" style="font-size:10px;padding:5px 10px"><i class="fas fa-trash" style="margin-right:3px"></i>صاف</button>
             </div>
             <div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap">
-                <button class="bs lf" onclick="fLog('all',this)" style="font-size:10px;padding:4px 8px;border-color:var(--gold);color:var(--gold)">تمام</button>
+                <button class="bs lf" onclick="fLog('all',this)" style="font-size:10px;padding:4px 8px;border-color:var(--solar);color:var(--solar)">تمام</button>
                 <button class="bs lf" onclick="fLog('info',this)" style="font-size:10px;padding:4px 8px">INFO</button>
                 <button class="bs lf" onclick="fLog('warning',this)" style="font-size:10px;padding:4px 8px">WARN</button>
                 <button class="bs lf" onclick="fLog('error',this)" style="font-size:10px;padding:4px 8px">ERR</button>
@@ -281,9 +228,9 @@
     <!-- ===== سیٹنگز ===== -->
     <section id="s5" class="sec">
         <div class="pp">
-            <div class="pt"><i class="fas fa-cog" style="color:var(--gold);margin-right:6px;font-size:16px"></i>سیٹنگز</div>
+            <div class="pt"><i class="fas fa-cog" style="color:var(--solar);margin-right:6px;font-size:16px"></i>سیٹنگز</div>
             <div class="c" style="margin-bottom:12px">
-                <p style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase">Firebase Config</p>
+                <p style="font-size:10px;font-weight:700;color:var(--txt2);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase">Firebase</p>
                 <div style="display:flex;flex-direction:column;gap:8px">
                     <div><label style="font-size:9px;color:var(--txt3)">API Key *</label><input class="inp" id="fAK" placeholder="AIzaSy..."></div>
                     <div><label style="font-size:9px;color:var(--txt3)">Database URL *</label><input class="inp" id="fDU" placeholder="https://xxx.firebaseio.com"></div>
@@ -293,16 +240,13 @@
                 </div>
                 <div class="dbg" id="dbgBox"></div>
             </div>
-            <div class="c">
-                <p style="font-size:11px;font-weight:700;color:var(--txt2);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase">Raw Data</p>
-                <div class="jd" id="rawD">{ }</div>
-            </div>
+            <div class="c"><p style="font-size:10px;font-weight:700;color:var(--txt2);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase">Raw Data</p><div class="jd" id="rawD">{ }</div></div>
         </div>
     </section>
 </div>
 
-<div class="bottom-nav">
-    <button class="nb on" onclick="go('s1',this)"><i class="fas fa-th-large"></i><span>HOME</span></button>
+<div class="bnav">
+    <button class="nb on" onclick="go('s1',this)"><i class="fas fa-project-diagram"></i><span>FLOW</span></button>
     <button class="nb" onclick="go('s2',this)"><i class="fas fa-car-battery"></i><span>BATT</span></button>
     <button class="nb" onclick="go('s3',this)"><i class="fas fa-home"></i><span>LOAD</span></button>
     <button class="nb" onclick="go('s4',this)"><i class="fas fa-terminal"></i><span>LOGS</span></button>
@@ -310,15 +254,197 @@
 </div>
 
 <script>
+/* === متغیرات === */
 var db=null,dRef=null,lRef=null,conn=false,eC=null,bC=null,logs=[],lf='all',prev={};
-var DM={pv_voltage:38.5,pv_current:9.2,pv_power:354,battery_voltage:13.9,battery_percent:85,battery_current:5.8,battery_temp:21.5,battery_charging:true,load_watts:1200,load_voltage:220.5,load_frequency:50.1,grid_voltage:225.3,grid_available:true,inverter_on:true,output1:true,output2:true,output3:false,today_energy:3.8,total_energy:1250.5,scc_pv_voltage:45,panel_amperes:9.5,grid_watts:0,flag_pv_chg:true,flag_ac_chg:false,timestamp:Date.now()};
+var flowC,flowCtx,flowW=0,flowH=0;
+var activeFlows=[],particles=[];
 
+/* نود پوزیشنز (فیصد) */
+var NP={
+    solar:{x:.5,y:.08},
+    inverter:{x:.5,y:.44},
+    grid:{x:.14,y:.88},
+    load:{x:.5,y:.88},
+    battery:{x:.86,y:.88}
+};
+
+/* ڈیمو ڈیٹا */
+var DM={pv_voltage:38.5,pv_current:9.2,pv_power:5960,battery_voltage:13.9,battery_percent:85,battery_current:5.8,battery_temp:50,battery_charging:true,load_watts:432,load_voltage:220.5,load_frequency:50.1,grid_voltage:225.3,grid_available:true,inverter_on:true,scc_pv_voltage:45,panel_amperes:9.5,grid_watts:0,flag_pv_chg:true,flag_ac_chg:false,today_energy:3.8,total_energy:1250.5,timestamp:Date.now()};
+
+/* === یوٹیلیٹیز === */
 function toast(m,t){var e=document.getElementById('toast');var ic={sok:'fa-check-circle',ser:'fa-times-circle',sin:'fa-info-circle'};e.className='toast '+(t||'sin');e.innerHTML='<i class="fas '+(ic[t]||ic.sin)+'"></i>'+m;setTimeout(function(){e.classList.add('sh');},10);setTimeout(function(){e.classList.remove('sh');},3000);}
-function go(id,el){var secs=document.querySelectorAll('.sec');for(var i=0;i<secs.length;i++)secs[i].classList.remove('on');var nbs=document.querySelectorAll('.nb');for(var j=0;j<nbs.length;j++)nbs[j].classList.remove('on');document.getElementById(id).classList.add('on');if(el)el.classList.add('on');}
+function go(id,el){var s=document.querySelectorAll('.sec');for(var i=0;i<s.length;i++)s[i].classList.remove('on');var n=document.querySelectorAll('.nb');for(var j=0;j<n.length;j++)n[j].classList.remove('on');document.getElementById(id).classList.add('on');if(el)el.classList.add('on');}
 function dbg(m){var b=document.getElementById('dbgBox');b.textContent=m;b.classList.add('show');}
-function updConn(){var dot=document.getElementById('cDot'),txt=document.getElementById('cTxt');if(conn){dot.className='dot on';txt.textContent='ONLINE';txt.style.color='var(--green)';}else{dot.className='dot off';txt.textContent='OFFLINE';txt.style.color='var(--red)';}}
-function sBar(id,v,mx){document.getElementById(id).style.width=Math.min(100,(v/mx)*100)+'%';}
+function updConn(){var d=document.getElementById('cDot'),t=document.getElementById('cTxt');if(conn){d.className='cd on';t.textContent='ONLINE';t.style.color='var(--battC)';}else{d.className='cd off';t.textContent='OFFLINE';t.style.color='var(--red)';}}
 
+/* === فلو اینیمیشن سسٹم === */
+function px(key){return{x:NP[key].x*flowW,y:NP[key].y*flowH};}
+
+function initFlow(){
+    flowC=document.getElementById('flowC');
+    flowCtx=flowC.getContext('2d');
+    rsFlow();
+    window.addEventListener('resize',rsFlow);
+    animLoop();
+}
+
+function rsFlow(){
+    var r=document.getElementById('flowWrap').getBoundingClientRect();
+    flowW=r.width;flowH=r.height;
+    var dpr=window.devicePixelRatio||1;
+    flowC.width=flowW*dpr;flowC.height=flowH*dpr;
+    flowC.style.width=flowW+'px';flowC.style.height=flowH+'px';
+    flowCtx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+function calcFlows(d){
+    activeFlows=[];particles=[];
+    var pvW=d.pv_power||0,lW=d.load_watts||0;
+    var bW=Math.abs((d.battery_current||0)*(d.battery_voltage||0));
+    var chgSrc=d.charging_source||'';
+
+    /* سولر → انورٹر */
+    if(pvW>10)activeFlows.push({f:'solar',t:'inverter',p:pvW,c:'#f59e0b',id:'pv'});
+    /* انورٹر → لوڈ */
+    if(lW>10)activeFlows.push({f:'inverter',t:'load',p:lW,c:'#06b6d4',id:'ld'});
+    /* بیٹری چارجنگ */
+    if(d.battery_charging&&bW>10){
+        if(chgSrc!=='grid')activeFlows.push({f:'inverter',t:'battery',p:bW,c:'#22c55e',id:'bc'});
+        if(chgSrc==='grid'||chgSrc==='solar+grid'){
+            var gw=chgSrc==='grid'?bW:Math.round(bW*0.4);
+            if(gw>10)activeFlows.push({f:'grid',t:'battery',p:gw,c:'#22c55e',id:'gc'});
+        }
+    }
+    /* بیٹری ڈسچارج */
+    else if(bW>10)activeFlows.push({f:'battery',t:'inverter',p:bW,c:'#ef4444',id:'bd'});
+
+    /* گریڈ ایکسپورٹ/امپورٹ */
+    var net=pvW-lW-(d.battery_charging?bW:-bW);
+    if(net>50)activeFlows.push({f:'inverter',t:'grid',p:net,c:'#3b82f6',id:'ge'});
+    else if(net<-50)activeFlows.push({f:'grid',t:'inverter',p:-net,c:'#3b82f6',id:'gi'});
+
+    /* پارٹیکلز بنائیں */
+    for(var i=0;i<activeFlows.length;i++){
+        var fl=activeFlows[i];
+        var cnt=Math.min(12,Math.max(3,Math.round(fl.p/300)));
+        for(var j=0;j<cnt;j++){
+            particles.push({
+                f:fl.f,t:fl.t,c:fl.c,id:fl.id,
+                prog:j/cnt,
+                spd:0.004+Math.min(0.014,fl.p/6000*0.014),
+                sz:2+Math.random()*1.5
+            });
+        }
+    }
+}
+
+function animLoop(){
+    flowCtx.clearRect(0,0,flowW,flowH);
+
+    /* تمام ممکنہ لائنیں (دیمی) */
+    var allLines=[
+        ['solar','inverter'],['inverter','grid'],['inverter','load'],
+        ['inverter','battery'],['grid','battery']
+    ];
+    flowCtx.lineWidth=1.5;
+    for(var i=0;i<allLines.length;i++){
+        var a=px(allLines[i][0]),b=px(allLines[i][1]);
+        flowCtx.beginPath();flowCtx.moveTo(a.x,a.y);flowCtx.lineTo(b.x,b.y);
+        flowCtx.strokeStyle='rgba(255,255,255,0.04)';flowCtx.stroke();
+    }
+
+    /* ایکٹیو لائنیں (روشن) */
+    for(var i=0;i<activeFlows.length;i++){
+        var fl=activeFlows[i];
+        var a=px(fl.f),b=px(fl.t);
+        flowCtx.beginPath();flowCtx.moveTo(a.x,a.y);flowCtx.lineTo(b.x,b.y);
+        flowCtx.strokeStyle=fl.c;flowCtx.globalAlpha=0.12;flowCtx.lineWidth=2;flowCtx.stroke();
+        flowCtx.globalAlpha=1;
+
+        /* تیر کی نشانی */
+        var mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+        var ang=Math.atan2(b.y-a.y,b.x-a.x);
+        flowCtx.save();flowCtx.translate(mx,my);flowCtx.rotate(ang);
+        flowCtx.beginPath();flowCtx.moveTo(5,0);flowCtx.lineTo(-4,-3.5);flowCtx.lineTo(-4,3.5);flowCtx.closePath();
+        flowCtx.fillStyle=fl.c;flowCtx.globalAlpha=0.5;flowCtx.fill();
+        flowCtx.restore();flowCtx.globalAlpha=1;
+    }
+
+    /* پارٹیکلز */
+    for(var i=0;i<particles.length;i++){
+        var p=particles[i];
+        p.prog+=p.spd;
+        if(p.prog>1)p.prog-=1;
+        var a=px(p.f),b=px(p.t);
+        var x=a.x+(b.x-a.x)*p.prog;
+        var y=a.y+(b.y-a.y)*p.prog;
+
+        /* گلو */
+        flowCtx.beginPath();flowCtx.arc(x,y,p.sz+4,0,Math.PI*2);
+        flowCtx.fillStyle=p.c;flowCtx.globalAlpha=0.15;flowCtx.fill();
+        flowCtx.globalAlpha=1;
+        /* کور */
+        flowCtx.beginPath();flowCtx.arc(x,y,p.sz,0,Math.PI*2);
+        flowCtx.fillStyle=p.c;flowCtx.fill();
+    }
+
+    requestAnimationFrame(animLoop);
+}
+
+/* فلو لیبلز اپڈیٹ */
+function updFlowLabels(d){
+    var pvW=d.pv_power||0,lW=d.load_watts||0;
+    var bW=Math.abs((d.battery_current||0)*(d.battery_voltage||0));
+    var chgSrc=d.charging_source||'';
+    var net=pvW-lW-(d.battery_charging?bW:-bW);
+
+    setLbl('lblPV',pvW>10,Math.round(pvW)+'W');
+    setLbl('lblLoad',lW>10,Math.round(lW)+'W');
+
+    var gv=null;
+    if(net>50){gv='↑ '+Math.round(net)+'W';setLbl('lblGrid',true,gv);}
+    else if(net<-50){gv='↓ '+Math.round(-net)+'W';setLbl('lblGrid',true,gv);}
+    else setLbl('lblGrid',false,'');
+
+    if(d.battery_charging&&bW>10){
+        setLbl('lblBatt',chgSrc!=='grid','↓ '+Math.round(bW)+'W');
+        setLbl('lblGB',(chgSrc==='grid'||chgSrc==='solar+grid'),'↓ '+Math.round(chgSrc==='grid'?bW:bW*0.4)+'W');
+    }else if(!d.battery_charging&&bW>10){
+        setLbl('lblBatt',true,'↑ '+Math.round(bW)+'W');
+        setLbl('lblGB',false,'');
+    }else{setLbl('lblBatt',false,'');setLbl('lblGB',false,'');}
+}
+
+function setLbl(id,show,txt){
+    var el=document.getElementById(id);
+    el.textContent=txt;el.style.opacity=show?'1':'0';
+}
+
+/* نود ویلیوز اپڈیٹ */
+function updNodes(d){
+    document.getElementById('vSolar').textContent=Math.round(d.pv_power||0)+' W';
+    document.getElementById('vInv').textContent=d.inverter_on?'ON':'OFF';
+    document.getElementById('vGrid').textContent=Math.round(d.grid_voltage||0)+' V';
+    document.getElementById('vLoad').textContent=Math.round(d.load_watts||0)+' W';
+    document.getElementById('vBatt').textContent=Math.round(d.battery_percent||0)+'%';
+
+    /* بیٹری کلر */
+    var bc=d.battery_charging?'var(--battC)':'var(--battD)';
+    document.getElementById('vBatt').style.color=bc;
+    document.getElementById('icoBatt').querySelector('i').style.color=bc;
+
+    /* ایکٹیو گلو */
+    document.getElementById('icoSolar').className='fn-ico'+((d.pv_power||0)>10?' active':'');
+    document.getElementById('icoSolar').style.boxShadow=(d.pv_power||0)>10?'0 0 20px rgba(245,158,11,.2)':'none';
+    document.getElementById('icoLoad').className='fn-ico'+((d.load_watts||0)>10?' active':'');
+    document.getElementById('icoLoad').style.boxShadow=(d.load_watts||0)>10?'0 0 20px rgba(6,182,212,.2)':'none';
+    document.getElementById('icoBatt').className='fn-ico'+(Math.abs(d.battery_current||0)>0.5?' active':'');
+    document.getElementById('icoBatt').style.boxShadow=Math.abs(d.battery_current||0)>0.5?'0 0 20px rgba('+(d.battery_charging?'34,197,94':'239,68,68')+',.2)':'none';
+    document.getElementById('icoGrid').className='fn-ico'+(d.grid_available?' active':'');
+    document.getElementById('icoGrid').style.boxShadow=d.grid_available?'0 0 20px rgba(59,130,246,.15)':'none';
+}
+
+/* === ڈیٹا میپنگ === */
 function mapD(raw){
     if(!raw)return null;var d=raw;
     if(raw.devices&&raw.devices.inverter01)d=raw.devices.inverter01;
@@ -342,6 +468,7 @@ function mapD(raw){
     return{pv_voltage:pvV,pv_current:pvA,pv_power:pvW,scc_pv_voltage:sccV,panel_amperes:panA,battery_voltage:bV,battery_percent:bp,battery_current:parseFloat(bA.toFixed(1)),battery_temp:iT,battery_charging:charging,charging_source:chSrc,excess_power:exP,power_source:pSrc,load_watts:lW,load_va:lVA,load_percent:lPct,load_voltage:oV,load_frequency:oF,grid_voltage:iV,grid_frequency:iF,grid_watts:gW,grid_available:iV>100,flag_pv_chg:pvChg,flag_ac_chg:acChg,inverter_on:oV>100,today_energy:kwh,total_energy:parseFloat(d.totalKwh)||0,uptimeMs:parseInt(d.uptimeMs)||0,raw:d.raw||'',output1:true,output2:true,output3:false,timestamp:parseInt(d.ts)||Date.now()};
 }
 
+/* === Firebase === */
 function doConnect(){
     var ak=document.getElementById('fAK').value.trim(),du=document.getElementById('fDU').value.trim(),pi=document.getElementById('fPI').value.trim();
     var dp=document.getElementById('fDP').value.trim()||'devices/inverter01';
@@ -352,7 +479,7 @@ function doConnect(){
         db=firebase.database();dRef=db.ref(dp);lRef=db.ref(dp+'_logs');
         dbg('کنکشن... '+dp);
         db.ref('.info/connected').on('value',function(s){conn=s.val();updConn();});
-        dRef.on('value',function(s){var raw=s.val();dbg('خام: '+JSON.stringify(raw).substring(0,120));if(raw){var d=mapD(raw);if(d&&d.pv_voltage!==undefined){updUI(d);document.getElementById('rawD').textContent=JSON.stringify(d,null,2);chkAlert(d);prev=Object.assign({},d);}else dbg('میپنگ فیل');}else{dbg('NULL');toast('ڈیٹا نہیں ملا','ser');}});
+        dRef.on('value',function(s){var raw=s.val();if(raw){var d=mapD(raw);if(d&&d.pv_voltage!==undefined){updUI(d);document.getElementById('rawD').textContent=JSON.stringify(d,null,2);chkAlert(d);}else dbg('میپنگ فیل');}else{dbg('NULL');toast('ڈیٹا نہیں ملا','ser');}});
         lRef.orderByChild('timestamp').limitToLast(50).on('value',function(s){var lg=[];s.forEach(function(c){lg.push(c.val());});lg.reverse();logs=lg;rLog('logBox',lg);});
         localStorage.setItem('iz_c',JSON.stringify({ak:ak,du:du,pi:pi}));localStorage.setItem('iz_p',dp);
         toast('جڑا گیا!','sok');aLog('info','کنکشن: '+dp);
@@ -361,101 +488,93 @@ function doConnect(){
 
 function ldCfg(){var s=localStorage.getItem('iz_c');if(s){var c=JSON.parse(s);document.getElementById('fAK').value=c.ak||'';document.getElementById('fDU').value=c.du||'';document.getElementById('fPI').value=c.pi||'';document.getElementById('fDP').value=localStorage.getItem('iz_p')||'devices/inverter01';toast('لوڈ ہو گیا','sin');}else toast('کوئی سیٹنگ نہیں','ser');}
 
+/* === UI اپڈیٹ === */
 function updUI(d){
-    document.getElementById('pNum').textContent=Math.round(d.pv_power||0);
-    sBar('pBar',d.pv_power||0,9800);
-    document.getElementById('pBatt').textContent=Math.round(d.battery_percent||0)+'%';
-    document.getElementById('pLoad').textContent=Math.round(d.load_watts||0)+'W';
-    document.getElementById('pKwh').textContent=(d.today_energy||0).toFixed(1)+' kWh';
+    calcFlows(d);updNodes(d);updFlowLabels(d);
 
-    var pSrc=d.power_source||'battery';
-    var mt=document.getElementById('pMode');
-    if(pSrc==='solar'){mt.textContent='SOLAR';mt.style.background='rgba(238,108,77,.1)';mt.style.color='var(--orange)';mt.style.borderColor='rgba(238,108,77,.2)';}
-    else if(pSrc==='grid'){mt.textContent='GRID';mt.style.background='rgba(69,123,157,.1)';mt.style.color='var(--blue)';mt.style.borderColor='rgba(69,123,157,.2)';}
-    else{mt.textContent='BATTERY';mt.style.background='rgba(123,104,238,.1)';mt.style.color='var(--purple)';mt.style.borderColor='rgba(123,104,238,.2)';}
-
-    document.getElementById('mPV').textContent=(d.pv_voltage||0).toFixed(1)+' V';sBar('mPVb',d.pv_voltage||0,60);
-    document.getElementById('mPA').textContent=(d.pv_current||0).toFixed(1)+' A';sBar('mPAb',d.pv_current||0,20);
-    document.getElementById('mBV').textContent=(d.battery_voltage||0).toFixed(1)+' V';sBar('mBVb',d.battery_voltage||0,16);
-    document.getElementById('mBA').textContent=(d.battery_current||0).toFixed(1)+' A';sBar('mBAb',d.battery_current||0,30);
-    document.getElementById('mGV').textContent=(d.grid_voltage||0).toFixed(1)+' V';sBar('mGVb',d.grid_voltage||0,260);
-    document.getElementById('mSV').textContent=(d.scc_pv_voltage||0).toFixed(1)+' V';sBar('mSVb',d.scc_pv_voltage||0,80);
-
+    /* بیٹری پیج */
     var bp=Math.max(0,Math.min(100,d.battery_percent||0));
     document.getElementById('bV').textContent=(d.battery_voltage||0).toFixed(1)+' V';
     document.getElementById('bA').textContent=(d.battery_current||0).toFixed(1)+' A';
     document.getElementById('bT').textContent=(d.battery_temp||0).toFixed(1)+'\u00B0C';
     document.getElementById('bBP').textContent=Math.round(bp)+'%';
     var bF=document.getElementById('bBF');bF.style.height=bp+'%';
-    if(bp<20)bF.style.background='var(--red)';else if(bp<50)bF.style.background='var(--yellow)';else bF.style.background='var(--green)';
+    if(bp<20)bF.style.background='var(--red)';else if(bp<50)bF.style.background='var(--yel)';else bF.style.background='var(--battC)';
     var cs=document.getElementById('bS');
-    if(d.battery_charging){cs.textContent='\u26A1 چارجنگ';cs.style.color='var(--green)';}else{cs.textContent='\u25BC ڈسچارج';cs.style.color='var(--yellow)';}
+    if(d.battery_charging){cs.textContent='\u26A1 چارجنگ';cs.style.color='var(--battC)';}
+    else{cs.textContent='\u25BC ڈسچارج';cs.style.color='var(--red)';}
 
+    /* لوڈ پیج */
     document.getElementById('lW').textContent=Math.round(d.load_watts||0);
     document.getElementById('lV').textContent=(d.load_voltage||0).toFixed(1);
     document.getElementById('lF').textContent=(d.load_frequency||0).toFixed(1);
     document.getElementById('lK').textContent=(d.today_energy||0).toFixed(2);
 
+    /* اسٹیٹس ٹیبل */
+    var pSrc=d.power_source||'battery';
     var ut=d.uptimeMs||0;var us='';if(ut>86400000)us=Math.floor(ut/86400000)+'دن ';if(ut>3600000)us+=Math.floor((ut%86400000)/3600000)+'گھ ';if(ut>60000)us+=Math.floor((ut%3600000)/60000)+'م';if(!us)us='<1م';
-
     var items=[
-        {i:'fa-circle',l:'پاور سورس',v:pSrc==='solar'?'سولر':pSrc==='grid'?'گریڈ':'بیٹری',ok:pSrc==='solar'},
-        {i:'fa-circle',l:'بیٹری',v:d.battery_charging?'چارجنگ '+d.excess_power+'W':'ڈسچارج '+d.battery_current+'A',ok:d.battery_charging},
-        {i:'fa-circle',l:'چارج سورس',v:d.charging_source==='solar'?'سولر':d.charging_source==='grid'?'گریڈ':d.charging_source==='solar+grid'?'دونوں':'—',ok:true},
-        {i:'fa-circle',l:'پینل',v:Math.round(d.scc_pv_voltage||0)+'V '+(d.panel_amperes||0).toFixed(1)+'A',ok:(d.scc_pv_voltage||0)>10},
-        {i:'fa-circle',l:'MPPT بعد',v:Math.round(d.pv_voltage)+'V '+d.pv_current.toFixed(1)+'A = '+Math.round(d.pv_power)+'W',ok:d.pv_power>10},
-        {i:'fa-circle',l:'گریڈ',v:Math.round(d.grid_voltage)+'V '+(d.grid_frequency||0).toFixed(1)+'Hz',ok:d.grid_available},
-        {i:'fa-circle',l:'گریڈ لوڈ',v:Math.round(d.grid_watts||0)+'W',ok:(d.grid_watts||0)===0},
-        {i:'fa-circle',l:'لوڈ',v:Math.round(d.load_watts)+'W'+(d.load_percent?' / '+d.load_percent+'%':''),ok:d.load_watts>0},
-        {i:'fa-circle',l:'انورٹر',v:d.inverter_on?'چالو '+(d.battery_temp||0).toFixed(1)+'\u00B0C':'بند',ok:d.inverter_on},
-        {i:'fa-circle',l:'آپ ٹائم',v:us,ok:true}
+        {l:'پاور سورس',v:pSrc==='solar'?'سولر':pSrc==='grid'?'گریڈ':'بیٹری',ok:pSrc==='solar'},
+        {l:'بیٹری',v:d.battery_charging?'چارجنگ '+Math.round(Math.abs(d.battery_current*d.battery_voltage))+'W':'ڈسچارج '+Math.round(Math.abs(d.battery_current*d.battery_voltage))+'W',ok:d.battery_charging},
+        {l:'چارج سورس',v:d.charging_source==='solar'?'سولر':d.charging_source==='grid'?'گریڈ':d.charging_source==='solar+grid'?'دونوں':'—',ok:true},
+        {l:'پینل',v:Math.round(d.scc_pv_voltage||0)+'V '+(d.panel_amperes||0).toFixed(1)+'A',ok:(d.scc_pv_voltage||0)>10},
+        {l:'MPPT بعد',v:Math.round(d.pv_voltage)+'V '+d.pv_current.toFixed(1)+'A = '+Math.round(d.pv_power)+'W',ok:d.pv_power>10},
+        {l:'گریڈ',v:Math.round(d.grid_voltage)+'V '+(d.grid_frequency||0).toFixed(1)+'Hz',ok:d.grid_available},
+        {l:'گریڈ لوڈ',v:Math.round(d.grid_watts||0)+'W',ok:(d.grid_watts||0)===0},
+        {l:'لوڈ',v:Math.round(d.load_watts)+'W'+(d.load_percent?' / '+d.load_percent+'%':''),ok:d.load_watts>0},
+        {l:'انورٹر',v:d.inverter_on?'چالو '+(d.battery_temp||0).toFixed(1)+'\u00B0C':'بند',ok:d.inverter_on},
+        {l:'آپ ٹائم',v:us,ok:true}
     ];
     var html='';
     for(var i=0;i<items.length;i++){
-        var it=items[i];var dc=it.ok?'on':'off';
-        html+='<div class="stab-row"><span class="stab-left"><i class="fas '+it.i+'" style="color:var(--'+(it.ok?'green':'red')+')"></i>'+it.l+'</span><span class="stab-right" style="color:var(--'+(it.ok?'green':'red')+')"><span class="stab-dot '+dc+'"></span>'+it.v+'</span></div>';
+        var it=items[i];
+        html+='<div class="stbl-r"><span class="stbl-l"><i class="fas fa-circle" style="color:var('+(it.ok?'battC':'red')+')"></i>'+it.l+'</span><span class="stbl-r2" style="color:var('+(it.ok?'battC':'red')+')"><span class="std '+(it.ok?'on':'off')+'"></span>'+it.v+'</span></div>';
     }
     document.getElementById('sList').innerHTML=html;
 }
 
+/* === لاگز === */
 function chkAlert(d){if(d.battery_percent<=20)aLog('warning','بیٹری کم: '+d.battery_percent+'%');if(d.load_watts>=3000)aLog('error','اوور لوڈ: '+d.load_watts+'W');if(!d.grid_available)aLog('info','گریڈ بند');}
 function aLog(t,m){var e={type:t,message:m,timestamp:Date.now(),time:new Date().toLocaleTimeString('ur-PK')};if(lRef)lRef.push(e).catch(function(){});logs.unshift(e);if(logs.length>100)logs.pop();rLog('logBox',logs);}
-function rLog(id,lg){var c=document.getElementById(id);if(!lg||!lg.length){c.innerHTML='<p style="color:var(--txt3);font-size:11px;text-align:center;padding:30px 0">کوئی لاگ نہیں</p>';return;}var f=lf==='all'?lg:lg.filter(function(l){return l.type===lf;});if(!f.length){c.innerHTML='<p style="color:var(--txt3);font-size:11px;text-align:center;padding:30px 0">کوئی لاگ نہیں</p>';return;}var html='';for(var i=0;i<f.length;i++){var l=f[i];var clr='cyan';if(l.type==='warning')clr='yellow';else if(l.type==='error')clr='red';else if(l.type==='success')clr='green';html+='<div class="li '+l.type+'"><div style="display:flex;justify-content:space-between"><span style="font-weight:700;text-transform:uppercase;font-size:8px;letter-spacing:1px;color:var(--'+clr+');">'+l.type+'</span><span style="font-size:9px;color:var(--txt3);font-family:JetBrains Mono">'+(l.time||'')+'</span></div><p style="margin-top:3px;color:var(--txt2)">'+l.message+'</p></div>';}c.innerHTML=html;}
-function fLog(t,el){lf=t;var btns=document.querySelectorAll('.lf');for(var i=0;i<btns.length;i++){btns[i].style.borderColor='var(--brd)';btns[i].style.color='var(--txt2)';}el.style.borderColor='var(--gold)';el.style.color='var(--gold)';rLog('logBox',logs);}
+function rLog(id,lg){var c=document.getElementById(id);if(!lg||!lg.length){c.innerHTML='<p style="color:var(--txt3);font-size:11px;text-align:center;padding:30px 0">کوئی لاگ نہیں</p>';return;}var f=lf==='all'?lg:lg.filter(function(l){return l.type===lf;});if(!f.length){c.innerHTML='<p style="color:var(--txt3);font-size:11px;text-align:center;padding:30px 0">کوئی لاگ نہیں</p>';return;}var html='';for(var i=0;i<f.length;i++){var l=f[i];var clr='load';if(l.type==='warning')clr='yel';else if(l.type==='error')clr='red';else if(l.type==='success')clr='battC';html+='<div class="li '+l.type+'"><div style="display:flex;justify-content:space-between"><span style="font-weight:700;text-transform:uppercase;font-size:8px;letter-spacing:1px;color:var(--'+clr+');">'+l.type+'</span><span style="font-size:9px;color:var(--txt3);font-family:JetBrains Mono">'+(l.time||'')+'</span></div><p style="margin-top:2px;color:var(--txt2)">'+l.message+'</p></div>';}c.innerHTML=html;}
+function fLog(t,el){lf=t;var btns=document.querySelectorAll('.lf');for(var i=0;i<btns.length;i++){btns[i].style.borderColor='var(--brd)';btns[i].style.color='var(--txt2)';}el.style.borderColor='var(--solar)';el.style.color='var(--solar)';rLog('logBox',logs);}
 function clrLog(){if(lRef)lRef.remove().catch(function(){});logs=[];rLog('logBox',[]);toast('صاف','sok');}
 function togOut(k,el){el.classList.toggle('on');var s=el.classList.contains('on');if(dRef){dRef.child(k).set(s).then(function(){aLog('info',k+' '+(s?'آن':'آف'));toast(k+' '+(s?'آن':'آف'),s?'sok':'sin');}).catch(function(){toast('فیل','ser');el.classList.toggle('on');});}else{toast('Firebase سے جڑیں','ser');el.classList.toggle('on');}}
-function sendTest(){if(!dRef){toast('پہلے جڑیں','ser');return;}var t={pvV:+(30+Math.random()*15).toFixed(1),pvA:+(5+Math.random()*10).toFixed(1),pvW:Math.round(200+Math.random()*2800),batteryV:+(12+Math.random()*2).toFixed(1),batteryA:0,batteryPercent:Math.round(20+Math.random()*80),loadW:Math.round(100+Math.random()*1500),acOutV:+(210+Math.random()*20).toFixed(1),acInV:+(215+Math.random()*20).toFixed(1),acInFreq:+(49.5+Math.random()*1).toFixed(1),acOutFreq:+(49.5+Math.random()*1).toFixed(1),loadVA:Math.round(200+Math.random()*2000),loadPercent:Math.round(10+Math.random()*60),busV:+(380+Math.random()*40).toFixed(0),sccPVV:+(40+Math.random()*20).toFixed(0),panelA:+(5+Math.random()*10).toFixed(1),gridW:0,pvkWh:+(Math.random()*8).toFixed(2),powerSource:'solar',isCharging:true,chargingSrc:'solar',excessPower:Math.round(Math.random()*300),statusFlags:'00010010',invTemp:+(20+Math.random()*15).toFixed(1),fanLevel:0,raw:'test',ts:Math.round(Date.now()/1000),uptimeMs:Math.round(Math.random()*86400000)};dRef.set(t).then(function(){toast('ٹیسٹ بھیجا','sok');}).catch(function(e){toast('فیل','ser');});}
 
+/* === چارٹس === */
 function initCharts(){
     try{
-        var o={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#3e3e55',font:{family:'Outfit',size:9}}}},scales:{x:{ticks:{color:'#3e3e55',font:{family:'JetBrains Mono',size:8}},grid:{color:'rgba(26,26,42,.5)'}},y:{ticks:{color:'#3e3e55',font:{family:'JetBrains Mono',size:8}},grid:{color:'rgba(26,26,42,.5)'}}}};
+        var o={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#363d55',font:{family:'Outfit',size:9}}}},scales:{x:{ticks:{color:'#363d55',font:{family:'JetBrains Mono',size:8}},grid:{color:'rgba(22,29,48,.5)'}},y:{ticks:{color:'#363d55',font:{family:'JetBrains Mono',size:8}},grid:{color:'rgba(22,29,48,.5)'}}}};
         var h=[];for(var i=0;i<24;i++)h.push(i.toString().padStart(2,'0'));
-        eC=new Chart(document.getElementById('cE'),{type:'line',data:{labels:h,datasets:[{label:'PV W',data:Array(24).fill(0),borderColor:'#c8956c',backgroundColor:'rgba(200,149,108,.06)',fill:true,tension:.4,pointRadius:0,borderWidth:1.5},{label:'لوڈ W',data:Array(24).fill(0),borderColor:'#4ecdc4',backgroundColor:'rgba(78,205,196,.03)',fill:true,tension:.4,pointRadius:0,borderWidth:1.5}]},options:o});
-        bC=new Chart(document.getElementById('cB'),{type:'line',data:{labels:h,datasets:[{label:'بیٹری V',data:Array(24).fill(0),borderColor:'#2ec4b6',backgroundColor:'rgba(46,196,182,.06)',fill:true,tension:.4,pointRadius:0,borderWidth:1.5}]},options:o});
+        eC=new Chart(document.getElementById('cE'),{type:'line',data:{labels:h,datasets:[{label:'PV W',data:Array(24).fill(0),borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.05)',fill:true,tension:.4,pointRadius:0,borderWidth:1.5},{label:'لوڈ W',data:Array(24).fill(0),borderColor:'#06b6d4',backgroundColor:'rgba(6,182,212,.03)',fill:true,tension:.4,pointRadius:0,borderWidth:1.5}]},options:o});
+        bC=new Chart(document.getElementById('cB'),{type:'line',data:{labels:h,datasets:[{label:'بیٹری V',data:Array(24).fill(0),borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.05)',fill:true,tension:.4,pointRadius:0,borderWidth:1.5}]},options:o});
         var ed=[],cd=[],bd=[];
         for(var j=0;j<24;j++){if(j>=6&&j<=18){var f=Math.sin((j-6)/12*Math.PI);ed.push(Math.round(f*400));cd.push(Math.round(100+Math.random()*300));}else{ed.push(0);cd.push(Math.round(20+Math.random()*50));}var v=12+j*.05;if(j>=6&&j<=18)v+=Math.sin((j-6)/12*Math.PI)*1.5;bd.push(+v.toFixed(1));}
         eC.data.datasets[0].data=ed;eC.data.datasets[1].data=cd;eC.update('none');bC.data.datasets[0].data=bd;bC.update('none');
     }catch(e){console.log('چارٹ:',e);}
 }
 
+/* === ڈیمو === */
 function refDemo(){
     if(conn)return;
-    var m={pv_voltage:+(30+Math.random()*15).toFixed(1),pv_current:+(5+Math.random()*10).toFixed(1),pv_power:0,battery_percent:Math.round(20+Math.random()*80),battery_voltage:0,battery_current:0,battery_temp:+(20+Math.random()*20).toFixed(1),battery_charging:Math.random()>.3,load_watts:Math.round(200+Math.random()*2000),load_voltage:+(210+Math.random()*20).toFixed(1),load_frequency:+(49.5+Math.random()*1).toFixed(1),grid_voltage:+(215+Math.random()*20).toFixed(1),grid_available:Math.random()>.2,inverter_on:true,scc_pv_voltage:0,panel_amperes:0,grid_watts:0,today_energy:+(1+Math.random()*8).toFixed(1),flag_pv_chg:Math.random()>.3,flag_ac_chg:false,timestamp:Date.now()};
+    var m={pv_voltage:+(30+Math.random()*15).toFixed(1),pv_current:+(5+Math.random()*10).toFixed(1),pv_power:0,battery_percent:Math.round(20+Math.random()*80),battery_voltage:0,battery_current:0,battery_temp:+(25+Math.random()*25).toFixed(1),battery_charging:Math.random()>.3,load_watts:Math.round(200+Math.random()*2000),load_voltage:+(210+Math.random()*20).toFixed(1),load_frequency:+(49.5+Math.random()*1).toFixed(1),grid_voltage:+(215+Math.random()*20).toFixed(1),grid_available:Math.random()>.2,inverter_on:true,scc_pv_voltage:0,panel_amperes:0,grid_watts:0,today_energy:+(1+Math.random()*8).toFixed(1),flag_pv_chg:Math.random()>.3,flag_ac_chg:false,timestamp:Date.now()};
     m.pv_power=Math.round(m.pv_voltage*m.pv_current);
     m.scc_pv_voltage=+(m.pv_voltage+5+Math.random()*5).toFixed(1);
     m.panel_amperes=+(m.pv_current+Math.random()*2).toFixed(1);
-    m.battery_voltage=+(12+m.battery_percent*.02).toFixed(1);
+    m.battery_voltage=+(12+m.battery_percent*0.02).toFixed(1);
     m.battery_current=m.battery_charging?+(2+Math.random()*8).toFixed(1):+(1+Math.random()*5).toFixed(1);
     if(!m.flag_pv_chg&&m.grid_available)m.flag_ac_chg=Math.random()>.5;
     updUI(m);document.getElementById('rawD').textContent=JSON.stringify(m,null,2);
 }
 
+/* === شروع === */
 window.addEventListener('DOMContentLoaded',function(){
     try{initCharts();}catch(e){}
+    try{initFlow();}catch(e){console.log('فلو:',e);}
     updConn();
     var s=localStorage.getItem('iz_c');
     if(s){try{var c=JSON.parse(s);if(c.ak&&c.du&&c.pi){ldCfg();doConnect();}}catch(e){}}
-    setTimeout(function(){if(!conn){updUI(DM);document.getElementById('rawD').textContent=JSON.stringify(DM,null,2);aLog('info','ڈیمو موڈ - Inverter Zone');}},500);
+    setTimeout(function(){if(!conn){updUI(DM);document.getElementById('rawD').textContent=JSON.stringify(DM,null,2);aLog('info','ڈیمو موڈ - Inverter Zone');}},600);
     setInterval(function(){try{refDemo();}catch(e){}},4000);
 });
 </script>
