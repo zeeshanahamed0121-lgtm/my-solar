@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#06080e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Inverter Zone">
-    <title>Inverter Zone</title>
+    <meta name="apple-mobile-web-app-title" content="Smart Inverter">
+    <title>Smart Inverter</title>
     <link rel="manifest" href="data:application/json;base64,eyogICJuYW1lIjogIkludmVydGVyIFpvbmUiLCAic2hvcnRfbmFtZSI6ICJKWiIsInN0YXJ0X3VybCI6ICIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDYwODBlIiwidGhlbWVfY29sb3I6ICIjMDYwODBlIn0=">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -195,19 +195,7 @@ var eC=null,bC=null,logs=[],lf='all';
 var flowC,flowCtx,flowW=0,flowH=0,activeFlows=[],particles=[];
 var NP={solar:{x:.5,y:.08},inverter:{x:.5,y:.44},grid:{x:.13,y:.9},load:{x:.5,y:.9},battery:{x:.87,y:.9}};
 
-var DM={
-    pv_voltage:0,pv_current:0,pv_power:0,
-    battery_voltage:13.03,battery_percent:90,battery_current:0,
-    battery_charging:false,
-    load_watts:64,load_voltage:221.6,load_frequency:49.8,
-    grid_voltage:221.6,grid_watts:64,grid_available:true,inverter_on:true,
-    scc_pv_voltage:50,panel_amperes:0.014,
-    flag_pv_chg:false,flag_ac_chg:false,
-    today_energy:0.00097,
-    charging_source:'none',power_source:'grid',
-    timestamp:Date.now(),
-    raw:'(221.6 49.8 221.6 49.8 0093 0064 004 415 13.03 000 069 050 00.1 007.0 00.00 00000 00000001 00 00 00000 010w'
-};
+var DM={pv_voltage:0,pv_current:0,pv_power:0,battery_voltage:13.03,battery_percent:90,battery_current:0,battery_charging:false,load_watts:64,load_voltage:221.6,load_frequency:49.8,grid_voltage:221.6,grid_watts:64,grid_available:true,inverter_on:true,scc_pv_voltage:50,panel_amperes:0.014,flag_pv_chg:false,flag_ac_chg:false,today_energy:0.00097,charging_source:'none',power_source:'grid',timestamp:Date.now(),raw:'(221.6 49.8 221.6 49.8 0093 0064 004 415 13.03 000 069 050 00.1 007.0 00.00 00000 00000001 00 00 00000 010w'};
 
 function toast(m,t){var e=document.getElementById('toast');e.className='toast '+(t||'sin');var i=t==='sok'?'fa-check-circle':t==='ser'?'fa-times-circle':'fa-info-circle';e.innerHTML='<i class="fas '+i+'"></i>'+m;setTimeout(function(){e.classList.add('sh');},10);setTimeout(function(){e.classList.remove('sh');},3000);}
 function go(id,el){var s=document.querySelectorAll('.sec');for(var i=0;i<s.length;i++)s[i].classList.remove('on');var n=document.querySelectorAll('.nb');for(var j=0;j<n.length;j++)n[j].classList.remove('on');document.getElementById(id).classList.add('on');if(el)el.classList.add('on');}
@@ -221,15 +209,7 @@ function parseRawString(raw){
     var clean=raw.replace(/^\(/,'').replace(/[)w\r\n]+$/,'').trim();
     var parts=clean.split(/\s+/);
     if(parts.length<14)return null;
-    return{
-        acInV:parseFloat(parts[0])||0,acInHz:parseFloat(parts[1])||0,
-        acOutV:parseFloat(parts[2])||0,acOutHz:parseFloat(parts[3])||0,
-        loadVA:parseFloat(parts[4])||0,loadW:parseFloat(parts[5])||0,
-        loadPct:parseFloat(parts[6])||0,busV:parseFloat(parts[7])||0,
-        batteryV:parseFloat(parts[8])||0,
-        pos9:parseFloat(parts[9])||0,pos10:parseFloat(parts[10])||0,
-        sccPVV:parseFloat(parts[11])||0,pvA:parseFloat(parts[12])||0,pvW:parseFloat(parts[13])||0
-    };
+    return{acInV:parseFloat(parts[0])||0,acInHz:parseFloat(parts[1])||0,acOutV:parseFloat(parts[2])||0,acOutHz:parseFloat(parts[3])||0,loadVA:parseFloat(parts[4])||0,loadW:parseFloat(parts[5])||0,loadPct:parseFloat(parts[6])||0,busV:parseFloat(parts[7])||0,batteryV:parseFloat(parts[8])||0,pos9:parseFloat(parts[9])||0,pos10:parseFloat(parts[10])||0,sccPVV:parseFloat(parts[11])||0,pvA:parseFloat(parts[12])||0,pvW:parseFloat(parts[13])||0};
 }
 
 function initFlow(){flowC=document.getElementById('flowC');flowCtx=flowC.getContext('2d');rsFlow();window.addEventListener('resize',rsFlow);animLoop();}
@@ -339,7 +319,7 @@ function updNodes(d,r){
 }
 
 /* ============================================================
-   mapD — Smart Auto-Detect Logic
+   mapD — 0.1 Resolution ko 10 se MULTIPLY karne ka logic
    ============================================================ */
 function mapD(raw){
     if(!raw)return null;
@@ -353,7 +333,11 @@ function mapD(raw){
     var lVA=parseFloat(d.loadVA)||0, lPct=parseFloat(d.loadPercent)||0;
     var sccV=parseFloat(d.sccPVV)||0, panA=parseFloat(d.panelA)||0;
     var bPct=parseFloat(d.batteryPercent)||0, kwh=parseFloat(d.pvkWh)||0;
-    var espBattA=parseFloat(d.batteryA)||0;
+    
+    /* ★ ESP FIELD KO PEHLE 0.1 MAAN KAR 10 SE MULTIPLY KARNA HAI ★ */
+    var espBattA_raw = parseFloat(d.batteryA) || 0;
+    var espBattA = (espBattA_raw !== 0) ? (espBattA_raw * 10.0) : 0; // 0.9 ko 9.0 banayega
+    
     var espGridW=parseFloat(d.gridW)||0;
 
     var rp=null;
@@ -376,14 +360,14 @@ function mapD(raw){
     var pvChg=((flInt>>2)&1)?true:false;
     var acChg=((flInt>>4)&1)?true:false;
 
-    /* ★ ایمپیر کا مسئلہ حل: 10 سے تقسیم ہٹا دیا گیا ★ */
+    /* ★ RAW STRING KO BHI 10 SE MULTIPLY KARNA HAI ★ */
     var rawChgA = 0;
-    if(rp) rawChgA = (rp.pos9 || 0);
+    if(rp) rawChgA = (rp.pos9 || 0) * 10.0; // 0.9 ko 9.0 banayega
 
     var espIsChg = (d.isCharging === true || d.isCharging === 1 || d.isCharging === 'true');
-    var isChg = espIsChg || (rawChgA > 0.3);
+    var isChg = espIsChg || (rawChgA > 0.5); // Thora sa margin barha diya
 
-    /* ★ اسمارٹ سورس ڈیٹیکشن (چھوٹے بڑے الفاظ سمجھے گا) ★ */
+    /* ★ اسمارٹ سورس ڈیٹیکشن ★ */
     var chgSrc = (d.chargingSrc || d.charging_source || 'none').toString().toLowerCase();
     if (chgSrc.includes('solar') && chgSrc.includes('grid')) chgSrc = 'solar+grid';
     else if (chgSrc.includes('solar') || chgSrc.includes('pv')) chgSrc = 'solar';
@@ -392,7 +376,7 @@ function mapD(raw){
     /* اگر چارج ہو رہی ہے لیکن سورس معلوم نہیں، تو خود اندازہ لگائیں */
     if (isChg && chgSrc === 'none') {
         if (pvW > 20) chgSrc = 'solar';
-        else if (iV > 100) chgSrc = 'grid';
+        else if (iV > 100) chgSrc = 'grid'; // گرڈ موجود ہے تو گرڈ مان لو
         else chgSrc = 'solar';
     }
 
@@ -403,7 +387,7 @@ function mapD(raw){
 
     var finalBattA = 0;
     if (isChg) finalBattA = (espBattA > 0) ? espBattA : rawChgA;
-    else if (espBattA < -0.1) finalBattA = espBattA;
+    else if (espBattA < -1) finalBattA = espBattA;
 
     var rawHtml = '';
     if (rp) {
@@ -414,7 +398,7 @@ function mapD(raw){
         rawHtml += '<b>SCC:</b> <span class="g">' + rp.sccPVV + 'V</span>  ';
         rawHtml += '<b>PV:</b> ' + rp.pvA + 'A / ' + rp.pvW + 'W\n';
         rawHtml += '<b>Flags:</b> ' + fl + ' \u2192 bit0=' + (flInt & 1) + ' bit2=' + ((flInt >> 2) & 1) + ' <span class="gr">bit4=' + ((flInt >> 4) & 1) + '</span>';
-        rawHtml += '\n<span class="gr">\u2713 pos9=' + rp.pos9 + 'A (Direct Charge Amp)</span>';
+        rawHtml += '\n<span class="gr">\u2713 Raw pos9=' + rp.pos9 + ' \u2192 ' + rawChgA.toFixed(1) + 'A (Multiplied)</span>';
     }
     var rpEl = document.getElementById('rawParsed');
     if (rpEl) rpEl.innerHTML = rawHtml || 'raw nahi mila';
@@ -475,7 +459,6 @@ function ldCfg() {
     } else toast('koi setting nahi', 'ser');
 }
 
-/* ===== UI اپڈیٹ ===== */
 function updUI(d) {
     var r = calcFlows(d);
     updFlowLabels(r); updNodes(d, r);
@@ -494,7 +477,7 @@ function updUI(d) {
     var rawChg = (d.battery_current || 0);
     var chgSrc = d.charging_source || 'none';
 
-    if (d.battery_charging && rawChg > 0.05) {
+    if (d.battery_charging && rawChg > 0.5) {
         var srcL = '';
         if (chgSrc === 'grid') srcL = '(grid se ' + rawChg.toFixed(1) + 'A)';
         else if (chgSrc === 'solar') srcL = '(solar se ' + rawChg.toFixed(1) + 'A)';
@@ -502,7 +485,7 @@ function updUI(d) {
         else srcL = '(' + rawChg.toFixed(1) + 'A)';
         cs.textContent = '\u26A1 charging ' + srcL;
         cs.style.color = 'var(--battC)';
-    } else if ((d.battery_current || 0) < -0.5) {
+    } else if ((d.battery_current || 0) < -1) {
         var dsgW = Math.round(Math.abs(d.battery_current) * (d.battery_voltage || 12));
         cs.textContent = '\u25BC discharge ' + dsgW + 'W';
         cs.style.color = 'var(--red)';
@@ -524,7 +507,7 @@ function updUI(d) {
 
     var battText = '', battOk = false;
     if (d.battery_charging) { battText = '\u26A1 ' + chgSrc; battOk = true; }
-    else if ((d.battery_current || 0) < -0.5) { battText = '\u25BC ' + Math.round(Math.abs(d.battery_current) * (d.battery_voltage || 12)) + 'W'; }
+    else if ((d.battery_current || 0) < -1) { battText = '\u25BC ' + Math.round(Math.abs(d.battery_current) * (d.battery_voltage || 12)) + 'W'; }
     else { battText = '\u2014 idle'; }
 
     var gridText = '', gridOk = false;
@@ -610,53 +593,33 @@ var demoScene = 0;
 function refDemo() {
     if (conn) return;
     demoScene = (demoScene + 1) % 4;
-    var m = {
-        battery_voltage: 13.03, battery_percent: 90, battery_current: 0,
-        battery_charging: false,
-        load_watts: 64, load_voltage: 221.6, load_frequency: 49.8,
-        grid_voltage: 221.6, grid_watts: 64, grid_available: true, inverter_on: true,
-        scc_pv_voltage: 50, panel_amperes: 0.014,
-        flag_pv_chg: false, flag_ac_chg: false,
-        today_energy: 0.00097,
-        charging_source: 'none', power_source: 'grid',
-        timestamp: Date.now()
-    };
+    var m = {battery_voltage: 13.03, battery_percent: 90, battery_current: 0,battery_charging: false,load_watts: 64, load_voltage: 221.6, load_frequency: 49.8,grid_voltage: 221.6, grid_watts: 64, grid_available: true, inverter_on: true,scc_pv_voltage: 50, panel_amperes: 0.014,flag_pv_chg: false, flag_ac_chg: false,today_energy: 0.00097,charging_source: 'none', power_source: 'grid',timestamp: Date.now()};
     
     if (demoScene === 0) {
-        m.pv_voltage = 0; m.pv_current = 0; m.pv_power = 0;
-        m.battery_charging = false; m.charging_source = 'none'; m.power_source = 'grid';
-        m.grid_watts = 64; m.grid_available = true;
         m.raw = '(221.6 49.8 221.6 49.8 0093 0064 004 415 13.03 000 069 050 00.1 007.0 00.00 00000 00000001 00 00 00000 010w';
     } else if (demoScene === 1) {
         m.pv_voltage = 38.5; m.pv_current = 12.3; m.pv_power = Math.round(38.5 * 12.3);
         m.scc_pv_voltage = 45; m.panel_amperes = 12.3;
         m.battery_charging = true; m.charging_source = 'solar'; m.power_source = 'solar';
-        m.flag_pv_chg = true; m.flag_ac_chg = false;
         m.grid_voltage = 221; m.grid_available = true; m.grid_watts = 0;
         m.load_watts = Math.round(300 + Math.random() * 1200);
         m.battery_voltage = 13.6; m.battery_percent = 95;
-        m.battery_current = 12.3;
+        m.battery_current = 1.23; // Demo main 1.23 ko 12.3 banayega
         m.raw = '(221.0 49.8 221.0 49.8 0' + m.load_watts + ' ' + m.load_watts + ' 015 415 13.60 123 000 45 12.3 473.0 00.00 00000 00010101 00 00 00000 010w';
     } else if (demoScene === 2) {
-        m.pv_voltage = 0; m.pv_current = 0; m.pv_power = 0;
         m.battery_charging = false; m.charging_source = 'none'; m.power_source = 'battery';
-        m.battery_current = -5.2;
-        m.flag_pv_chg = false; m.flag_ac_chg = false;
+        m.battery_current = -0.52; // -0.52 ko -5.2 banayega
         m.grid_voltage = 0; m.grid_available = false; m.grid_watts = 0;
         m.load_watts = Math.round(80 + Math.random() * 250);
         m.battery_voltage = 12.5; m.battery_percent = 60;
-        m.raw = '(000.0 00.0 220.5 49.8 00' + m.load_watts + ' ' + m.load_watts + ' 006 380 12.50 000 035 000 00.0 000.0 00.00 00000 00000001 00 00 00000 010w';
+        m.raw = '(000.0 00.0 220.5 49.8 00' + m.load_watts + ' ' + m.load_watts + ' 006 380 12.50 000 052 000 00.0 000.0 00.00 00000 00000001 00 00 00000 010w';
     } else if (demoScene === 3) {
-        // گرڈ چارجنگ ڈیمو (4.0A دکھائے گا)
-        m.pv_voltage = 0; m.pv_current = 0; m.pv_power = 0;
-        m.scc_pv_voltage = 0; m.panel_amperes = 0;
         m.battery_charging = true; m.charging_source = 'grid'; m.power_source = 'grid';
-        m.flag_ac_chg = true;
         m.grid_voltage = 225; m.grid_available = true; m.grid_watts = 200;
         m.load_watts = 80;
         m.battery_voltage = 14.1; m.battery_percent = 100;
-        m.battery_current = 4.0; // اب 4.0 ہی رہے گا
-        m.raw = '(225.0 50.0 225.0 50.0 0080 0080 002 410 14.10 040 000 000 00.0 000.0 00.00 00000 00010001 00 00 00000 010w';
+        m.battery_current = 0.9; // Yeh ab 9.0 amp show karega!
+        m.raw = '(225.0 50.0 225.0 50.0 0080 0080 002 410 14.10 090 000 000 00.0 000.0 00.00 00000 00010001 00 00 00000 010w';
     }
     updUI(m); document.getElementById('rawD').textContent = JSON.stringify(m, null, 2);
 }
