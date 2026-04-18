@@ -246,11 +246,11 @@ function mapD(raw){
     else if(pvW<=5&&iV>100){charging=false;bA=lW/Math.max(1,bV);chSrc='none';pSrc='grid';}
     else{charging=false;bA=lW/Math.max(1,bV);chSrc='none';pSrc='battery';}
 
-    if(d.powerSource)pSrc=d.powerSource;
-    if(d.isCharging===true||d.isCharging==='true')charging=true;
-    if(d.chargingSrc)chSrc=d.chargingSrc;
-    if(d.excessPower)exP=parseFloat(d.excessPower)||0;
-    if(d.gridW!==undefined)gW=parseFloat(d.gridW)||0;
+    if(d.powerSource) pSrc=d.powerSource;
+    if(d.isCharging===true||d.isCharging==='true') charging=true;
+    if(d.chargingSrc) chSrc=d.chargingSrc;
+    if(d.excessPower) exP=parseFloat(d.excessPower)||0;
+    if(d.gridW!==undefined) gW=parseFloat(d.gridW)||0;
 
     return {
         pv_voltage:pvV, pv_current:pvA, pv_power:pvW,
