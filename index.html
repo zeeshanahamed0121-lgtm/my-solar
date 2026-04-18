@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#06080e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" yes>
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Inverter Zone">
     <title>Inverter Zone</title>
@@ -16,7 +16,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <style>
-        :root{--bg:#06080e;--bg2:#0b0d16;--bg3:#10131e;--card:#0c0f1a;--brd:#161d30;--brd2:#1e2740;--txt:#dfe3ef;--txt2:#5c6580;--txt3:#363d55;--solar:#f59e0b;--grid:#3b82f6;--battC:#22c55e;--battD:#ef4444;--load:#06b6d4;--inv:#a78bfa;--red:#ef4444;--yel:#eab308}
+        :root{--bg:#06080e;--bg2:#0b0d16;--card:#0c0f1a;--brd:#161d30;--brd2:#1e2740;--txt:#dfe3ef;--txt2:#5c6580;--txt3:#363d55;--solar:#f59e0b;--grid:#3b82f6;--battC:#22c55e;--battD:#ef4444;--load:#06b6d4;--inv:#a78bfa;--red:#ef4444;--yel:#eab308}
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
         body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--txt);min-height:100dvh;overflow-x:hidden;-webkit-user-select:none;user-select:none}
         .top-bar{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;padding-top:calc(env(safe-area-inset-top)+12px);background:linear-gradient(180deg,var(--bg) 60%,transparent)}
@@ -43,7 +43,7 @@
         .stbl-r:last-child{border-bottom:none}
         .stbl-l{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt2)}
         .stbl-l i{font-size:9px;width:14px;text-align:center}
-        .stbl-r2{font-family:'JetBrains Mono';font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px}
+        .stbl-r2{font-family:'JetBrains Mono';font-size:10px;font-weight:700;display:flex;align-items:center;gap:5px}
         .std{width:5px;height:5px;border-radius:50%;flex-shrink:0}
         .std.on{background:var(--battC)}.std.off{background:var(--red)}.std.w{background:var(--yel)}
         .stitle{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin:14px 0 8px;padding-left:2px}
@@ -76,7 +76,6 @@
         .dbg.show{display:block}
         .pt{font-size:18px;font-weight:900;margin-bottom:14px;letter-spacing:-.3px}
         ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
-        @media(min-width:768px){.pp{padding:0 24px 24px;max-width:560px}}
     </style>
 </head>
 <body>
@@ -90,43 +89,37 @@
         <div class="pp">
             <div class="flow-wrap" id="flowWrap">
                 <canvas id="flowC"></canvas>
-                <!-- سولر -->
                 <div class="fnode" style="top:2%;left:50%;transform:translateX(-50%)">
                     <div class="fn-ico" id="icoSolar" style="background:rgba(245,158,11,.08)"><i class="fas fa-sun" style="color:var(--solar);font-size:15px"></i></div>
                     <div class="fn-val" id="vSolar" style="color:var(--solar)">0 W</div>
                     <div class="fn-lbl">سولر پینل</div>
                 </div>
-                <!-- انورٹر -->
                 <div class="fnode" style="top:40%;left:50%;transform:translate(-50%,-50%)">
                     <div class="fn-ico" id="icoInv" style="background:rgba(167,139,250,.08)"><i class="fas fa-microchip" style="color:var(--inv);font-size:14px"></i></div>
                     <div class="fn-val" id="vInv" style="color:var(--inv)">ON</div>
                     <div class="fn-lbl">انورٹر</div>
                 </div>
-                <!-- گریڈ -->
                 <div class="fnode" style="bottom:3%;left:10%">
                     <div class="fn-ico" id="icoGrid" style="background:rgba(59,130,246,.08)"><i class="fas fa-plug" style="color:var(--grid);font-size:14px"></i></div>
                     <div class="fn-val" id="vGrid" style="color:var(--grid)">0 V</div>
                     <div class="fn-lbl">گریڈ</div>
                 </div>
-                <!-- لوڈ -->
                 <div class="fnode" style="bottom:3%;left:50%;transform:translateX(-50%)">
                     <div class="fn-ico" id="icoLoad" style="background:rgba(6,182,212,.08)"><i class="fas fa-home" style="color:var(--load);font-size:14px"></i></div>
                     <div class="fn-val" id="vLoad" style="color:var(--load)">0 W</div>
                     <div class="fn-lbl">لوڈ / گھر</div>
                 </div>
-                <!-- بیٹری -->
                 <div class="fnode" style="bottom:3%;right:10%">
                     <div class="fn-ico" id="icoBatt" style="background:rgba(34,197,94,.08)"><i class="fas fa-car-battery" style="color:var(--battC);font-size:14px"></i></div>
                     <div class="fn-val" id="vBatt" style="color:var(--battC)">0%</div>
                     <div class="fn-lbl">بیٹری</div>
                 </div>
-                <!-- فلو لیبلز -->
                 <div class="flbl" id="lblPV" style="top:20%;left:56%;color:var(--solar);background:rgba(245,158,11,.08);opacity:0">0W</div>
-                <div class="flbl" id="lblGB" style="top:55%;left:14%;color:var(--grid);background:rgba(59,130,246,.08);opacity:0">0W</div>
-                <div class="flbl" id="lblBB" style="top:55%;right:14%;color:var(--battD);background:rgba(239,68,68,.08);opacity:0">0W</div>
-                <div class="flbl" id="lblIL" style="top:62%;left:36%;color:var(--load);background:rgba(6,182,212,.08);opacity:0">0W</div>
-                <div class="flbl" id="lblIB" style="top:62%;right:18%;color:var(--battC);background:rgba(34,197,94,.08);opacity:0">0W</div>
-                <div class="flbl" id="lblIG" style="top:62%;left:14%;color:var(--grid);background:rgba(59,130,246,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblGB" style="top:55%;left:10%;color:var(--grid);background:rgba(59,130,246,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblBB" style="top:55%;right:10%;color:var(--battD);background:rgba(239,68,68,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblIL" style="top:63%;left:36%;color:var(--load);background:rgba(6,182,212,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblIB" style="top:63%;right:16%;color:var(--battC);background:rgba(34,197,94,.08);opacity:0">0W</div>
+                <div class="flbl" id="lblIG" style="top:63%;left:10%;color:var(--grid);background:rgba(59,130,246,.08);opacity:0">0W</div>
             </div>
             <div class="stitle">System Status</div>
             <div class="stbl" id="sList"><div class="stbl-r"><span class="stbl-l"><i class="fas fa-circle" style="color:var(--txt3)"></i>لوڈنگ...</span></div></div>
@@ -212,108 +205,56 @@
 </div>
 
 <script>
-var db=null,dRef=null,lRef=null,conn=false,eC=null,bC=null,logs=[],lf='all',prev={};
-var flowC,flowCtx,flowW=0,flowH=0;
-var activeFlows=[],particles=[];
+var db=null,dRef=null,lRef=null,conn=false,eC=null,bC=null,logs=[],lf='all';
+var flowC,flowCtx,flowW=0,flowH=0,activeFlows=[],particles=[];
 var NP={solar:{x:.5,y:.08},inverter:{x:.5,y:.44},grid:{x:.13,y:.9},load:{x:.5,y:.9},battery:{x:.87,y:.9}};
+var DM={pv_voltage:38.5,pv_current:9.2,pv_power:5960,battery_voltage:13.9,battery_percent:85,battery_current:5.8,battery_temp:50,battery_charging:true,load_watts:432,load_voltage:220.5,load_frequency:50.1,grid_voltage:225.3,grid_available:true,inverter_on:true,scc_pv_voltage:45,panel_amperes:9.5,grid_watts:0,flag_pv_chg:true,flag_ac_chg:false,today_energy:3.8,charging_source:'solar',timestamp:Date.now()};
 
-var DM={pv_voltage:38.5,pv_current:9.2,pv_power:5960,battery_voltage:13.9,battery_percent:85,battery_current:5.8,battery_temp:50,battery_charging:true,load_watts:432,load_voltage:220.5,load_frequency:50.1,grid_voltage:225.3,grid_available:true,inverter_on:true,scc_pv_voltage:45,panel_amperes:9.5,grid_watts:0,flag_pv_chg:true,flag_ac_chg:false,today_energy:3.8,total_energy:1250.5,charging_source:'solar',timestamp:Date.now()};
-
-function toast(m,t){var e=document.getElementById('toast');var ic={sok:'fa-check-circle',ser:'fa-times-circle',sin:'fa-info-circle'};e.className='toast '+(t||'sin');e.innerHTML='<i class="fas '+(ic[t]||ic.sin)+'"></i>'+m;setTimeout(function(){e.classList.add('sh');},10);setTimeout(function(){e.classList.remove('sh');},3000);}
+function toast(m,t){var e=document.getElementById('toast');e.className='toast '+(t||'sin');e.innerHTML='<i class="fas '+(t==='sok'?'fa-check-circle':t==='ser'?'fa-times-circle':'fa-info-circle')+'"></i>'+m;setTimeout(function(){e.classList.add('sh');},10);setTimeout(function(){e.classList.remove('sh');},3000);}
 function go(id,el){var s=document.querySelectorAll('.sec');for(var i=0;i<s.length;i++)s[i].classList.remove('on');var n=document.querySelectorAll('.nb');for(var j=0;j<n.length;j++)n[j].classList.remove('on');document.getElementById(id).classList.add('on');if(el)el.classList.add('on');}
 function dbg(m){var b=document.getElementById('dbgBox');b.textContent=m;b.classList.add('show');}
 function updConn(){var d=document.getElementById('cDot'),t=document.getElementById('cTxt');if(conn){d.className='cd on';t.textContent='ONLINE';t.style.color='var(--battC)';}else{d.className='cd off';t.textContent='OFFLINE';t.style.color='var(--red)';}}
 function setLbl(id,show,txt){var el=document.getElementById(id);el.textContent=txt;el.style.opacity=show?'1':'0';}
+function px(k){return{x:NP[k].x*flowW,y:NP[k].y*flowH};}
 
 /* ===== فلو اینیمیشن ===== */
-function px(key){return{x:NP[key].x*flowW,y:NP[key].y*flowH};}
+function initFlow(){flowC=document.getElementById('flowC');flowCtx=flowC.getContext('2d');rsFlow();window.addEventListener('resize',rsFlow);animLoop();}
+function rsFlow(){var r=document.getElementById('flowWrap').getBoundingClientRect();flowW=r.width;flowH=r.height;var dpr=window.devicePixelRatio||1;flowC.width=flowW*dpr;flowC.height=flowH*dpr;flowC.style.width=flowW+'px';flowC.style.height=flowH+'px';flowCtx.setTransform(dpr,0,0,dpr,0,0);}
 
-function initFlow(){
-    flowC=document.getElementById('flowC');
-    flowCtx=flowC.getContext('2d');
-    rsFlow();window.addEventListener('resize',rsFlow);
-    animLoop();
-}
-
-function rsFlow(){
-    var r=document.getElementById('flowWrap').getBoundingClientRect();
-    flowW=r.width;flowH=r.height;
-    var dpr=window.devicePixelRatio||1;
-    flowC.width=flowW*dpr;flowC.height=flowH*dpr;
-    flowC.style.width=flowW+'px';flowC.style.height=flowH+'px';
-    flowCtx.setTransform(dpr,0,0,dpr,0,0);
-}
-
-/*
-  ===== ٹھیک فلو لاجک =====
-  انورٹر مرکز ہے۔ تمام پاور اس کے ذریعے گزرتی ہے:
-  
-  انورٹر میں آنے والی (IN):
-    - سولر سے
-    - بیٹری سے (ڈسچارج)
-    - گریڈ سے (امپورٹ)
-  
-  انورٹر سے جانے والی (OUT):
-    - لوڈ کو
-    - بیٹری کو (چارج)
-    - گریڈ کو (ایکسپورٹ)
-  
-  بیلنس: IN = OUT → اگر IN < OUT تو گریڈ سے پورا ہوگا
+/* 
+  فلو کیلکولیشن — صرف اصل بیلنس سے:
+  انورٹر IN  = سولر + بیٹری(ڈسچارج) + گریڈ(امپورٹ)
+  انورٹر OUT = لوڈ + بیٹری(چارج) + گریڈ(ایکسپورٹ)
+  deficit = OUT - IN → اگر مثبت ہو تو گریڈ سے پورا
 */
 function calcFlows(d){
     activeFlows=[];particles=[];
+    var pvW=d.pv_power||0, lW=d.load_watts||0;
+    var bW=Math.round(Math.abs(d.battery_current||0)*(d.battery_voltage||0));
+    var chg=d.battery_charging;
 
-    var pvW = d.pv_power || 0;               // سولر پاور
-    var lW  = d.load_watts || 0;              // لوڈ
-    var bV  = d.battery_voltage || 0;
-    var bA  = Math.abs(d.battery_current || 0);
-    var bW  = Math.round(bA * bV);             // بیٹری کل پاور
-    var chg = d.battery_charging;              // کیا چارج ہو رہی ہے
+    var solarIn=pvW;
+    var battToInv=chg?0:bW;
+    var invToLoad=lW;
+    var invToBatt=chg?bW:0;
+    var totalIn=solarIn+battToInv;
+    var totalOut=invToLoad+invToBatt;
+    var deficit=totalOut-totalIn;
+    var gridToInv=deficit>10?Math.round(deficit):0;
+    var invToGrid=deficit<-10?Math.round(-deficit):0;
 
-    // --- انورٹر میں آنے والی ---
-    var solarToInv = pvW;                       // سولر → انورٹر
-    var battToInv  = chg ? 0 : bW;             // بیٹری → انورٹر (صرف ڈسچارج پر)
+    if(solarIn>10)activeFlows.push({f:'solar',t:'inverter',p:solarIn,c:'#f59e0b'});
+    if(battToInv>10)activeFlows.push({f:'battery',t:'inverter',p:battToInv,c:'#ef4444'});
+    if(gridToInv>10)activeFlows.push({f:'grid',t:'inverter',p:gridToInv,c:'#3b82f6'});
+    if(invToLoad>10)activeFlows.push({f:'inverter',t:'load',p:invToLoad,c:'#06b6d4'});
+    if(invToBatt>10)activeFlows.push({f:'inverter',t:'battery',p:invToBatt,c:'#22c55e'});
+    if(invToGrid>10)activeFlows.push({f:'inverter',t:'grid',p:invToGrid,c:'#3b82f6'});
 
-    // --- انورٹر سے جانے والی ---
-    var invToLoad  = lW;                        // انورٹر → لوڈ (ہمیشہ اگر لوڈ ہو)
-    var invToBatt  = chg ? bW : 0;             // انورٹر → بیٹری (صرف چارجنگ پر)
-
-    // --- بیلنس: کتنی گریڈ چاہیے؟ ---
-    var totalIn  = solarToInv + battToInv;       // سولر + بیٹری ڈسچارج
-    var totalOut = invToLoad + invToBatt;        // لوڈ + بیٹری چارج
-    var deficit  = totalOut - totalIn;           // مثبت = گریڈ سے چاہیے
-
-    var gridToInv = deficit > 10 ? Math.round(deficit) : 0;   // گریڈ → انورٹر
-    var invToGrid = deficit < -10 ? Math.round(-deficit) : 0; // انورٹر → گریڈ (ایکسپورٹ)
-
-    // --- فلو بنائیں ---
-    // سورسز → انورٹر
-    if(solarToInv > 10)
-        activeFlows.push({f:'solar',t:'inverter',p:solarToInv,c:'#f59e0b',id:'pv'});
-    if(battToInv > 10)
-        activeFlows.push({f:'battery',t:'inverter',p:battToInv,c:'#ef4444',id:'bd'});
-    if(gridToInv > 10)
-        activeFlows.push({f:'grid',t:'inverter',p:gridToInv,c:'#3b82f6',id:'gi'});
-
-    // انورٹر → ڈیسٹینیشنز
-    if(invToLoad > 10)
-        activeFlows.push({f:'inverter',t:'load',p:invToLoad,c:'#06b6d4',id:'ld'});
-    if(invToBatt > 10)
-        activeFlows.push({f:'inverter',t:'battery',p:invToBatt,c:'#22c55e',id:'bc'});
-    if(invToGrid > 10)
-        activeFlows.push({f:'inverter',t:'grid',p:invToGrid,c:'#3b82f6',id:'ge'});
-
-    // --- پارٹیکلز ---
     for(var i=0;i<activeFlows.length;i++){
         var fl=activeFlows[i];
         var cnt=Math.min(14,Math.max(3,Math.round(fl.p/250)));
         for(var j=0;j<cnt;j++){
-            particles.push({
-                f:fl.f,t:fl.t,c:fl.c,id:fl.id,
-                prog:j/cnt,
-                spd:0.003+Math.min(0.016,fl.p/5000*0.016),
-                sz:2+Math.random()*1.5
-            });
+            particles.push({f:fl.f,t:fl.t,c:fl.c,prog:j/cnt,spd:0.003+Math.min(0.016,fl.p/5000*0.016),sz:2+Math.random()*1.5});
         }
     }
 }
@@ -338,45 +279,23 @@ function updFlowLabels(d){
 
 function animLoop(){
     flowCtx.clearRect(0,0,flowW,flowH);
-
-    // تمام ممکنہ لائنیں (بہت دیمی)
     var allL=[['solar','inverter'],['grid','inverter'],['battery','inverter'],['inverter','grid'],['inverter','load'],['inverter','battery']];
     flowCtx.lineWidth=1;
-    for(var i=0;i<allL.length;i++){
-        var a=px(allL[i][0]),b=px(allL[i][1]);
-        flowCtx.beginPath();flowCtx.moveTo(a.x,a.y);flowCtx.lineTo(b.x,b.y);
-        flowCtx.strokeStyle='rgba(255,255,255,0.03)';flowCtx.stroke();
-    }
-
-    // ایکٹیو لائنیں (روشن)
+    for(var i=0;i<allL.length;i++){var a=px(allL[i][0]),b=px(allL[i][1]);flowCtx.beginPath();flowCtx.moveTo(a.x,a.y);flowCtx.lineTo(b.x,b.y);flowCtx.strokeStyle='rgba(255,255,255,0.03)';flowCtx.stroke();}
     for(var i=0;i<activeFlows.length;i++){
-        var fl=activeFlows[i];
-        var a=px(fl.f),b=px(fl.t);
+        var fl=activeFlows[i];var a=px(fl.f),b=px(fl.t);
         flowCtx.beginPath();flowCtx.moveTo(a.x,a.y);flowCtx.lineTo(b.x,b.y);
-        flowCtx.strokeStyle=fl.c;flowCtx.globalAlpha=0.15;flowCtx.lineWidth=2.5;flowCtx.stroke();
-        flowCtx.globalAlpha=1;
-        // تیر
-        var mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
-        var ang=Math.atan2(b.y-a.y,b.x-a.x);
+        flowCtx.strokeStyle=fl.c;flowCtx.globalAlpha=0.15;flowCtx.lineWidth=2.5;flowCtx.stroke();flowCtx.globalAlpha=1;
+        var mx=(a.x+b.x)/2,my=(a.y+b.y)/2,ang=Math.atan2(b.y-a.y,b.x-a.x);
         flowCtx.save();flowCtx.translate(mx,my);flowCtx.rotate(ang);
         flowCtx.beginPath();flowCtx.moveTo(6,0);flowCtx.lineTo(-4,-4);flowCtx.lineTo(-4,4);flowCtx.closePath();
-        flowCtx.fillStyle=fl.c;flowCtx.globalAlpha=0.6;flowCtx.fill();
-        flowCtx.restore();flowCtx.globalAlpha=1;
+        flowCtx.fillStyle=fl.c;flowCtx.globalAlpha=0.6;flowCtx.fill();flowCtx.restore();flowCtx.globalAlpha=1;
     }
-
-    // پارٹیکلز
     for(var i=0;i<particles.length;i++){
-        var p=particles[i];
-        p.prog+=p.spd;if(p.prog>1)p.prog-=1;
-        var a=px(p.f),b=px(p.t);
-        var x=a.x+(b.x-a.x)*p.prog,y=a.y+(b.y-a.y)*p.prog;
-        // گلو
-        flowCtx.beginPath();flowCtx.arc(x,y,p.sz+5,0,Math.PI*2);
-        flowCtx.fillStyle=p.c;flowCtx.globalAlpha=0.12;flowCtx.fill();
-        flowCtx.globalAlpha=1;
-        // کور
-        flowCtx.beginPath();flowCtx.arc(x,y,p.sz,0,Math.PI*2);
-        flowCtx.fillStyle=p.c;flowCtx.fill();
+        var p=particles[i];p.prog+=p.spd;if(p.prog>1)p.prog-=1;
+        var a=px(p.f),b=px(p.t);var x=a.x+(b.x-a.x)*p.prog,y=a.y+(b.y-a.y)*p.prog;
+        flowCtx.beginPath();flowCtx.arc(x,y,p.sz+5,0,Math.PI*2);flowCtx.fillStyle=p.c;flowCtx.globalAlpha=0.12;flowCtx.fill();flowCtx.globalAlpha=1;
+        flowCtx.beginPath();flowCtx.arc(x,y,p.sz,0,Math.PI*2);flowCtx.fillStyle=p.c;flowCtx.fill();
     }
     requestAnimationFrame(animLoop);
 }
@@ -387,11 +306,9 @@ function updNodes(d){
     document.getElementById('vGrid').textContent=Math.round(d.grid_voltage||0)+' V';
     document.getElementById('vLoad').textContent=Math.round(d.load_watts||0)+' W';
     document.getElementById('vBatt').textContent=Math.round(d.battery_percent||0)+'%';
-
     var bc=d.battery_charging?'var(--battC)':'var(--battD)';
     document.getElementById('vBatt').style.color=bc;
     document.getElementById('icoBatt').querySelector('i').style.color=bc;
-
     document.getElementById('icoSolar').className='fn-ico'+((d.pv_power||0)>10?' active':'');
     document.getElementById('icoSolar').style.boxShadow=(d.pv_power||0)>10?'0 0 22px rgba(245,158,11,.2)':'none';
     document.getElementById('icoLoad').className='fn-ico'+((d.load_watts||0)>10?' active':'');
@@ -413,18 +330,18 @@ function mapD(raw){
     var iV=parseFloat(d.acInV)||0,iF=parseFloat(d.acInFreq)||0,oF=parseFloat(d.acOutFreq)||50;
     var lVA=parseFloat(d.loadVA)||0,lPct=parseFloat(d.loadPercent)||0;
     var sccV=parseFloat(d.sccPVV)||0,panA=parseFloat(d.panelA)||0,gW=parseFloat(d.gridW)||0;
-    var bPct=parseFloat(d.batteryPercent)||0,kwh=parseFloat(d.pvkWh)||0;
-    var iT=parseFloat(d.invTemp)||0;
+    var bPct=parseFloat(d.batteryPercent)||0,kwh=parseFloat(d.pvkWh)||0,iT=parseFloat(d.invTemp)||0;
     var bp=0;if(bPct>0&&bPct<=100)bp=Math.round(bPct);else{if(bV>=13)bp=100;else if(bV<=10.5)bp=0;else bp=Math.round(((bV-10.5)/2.5)*100);}
     var fl=d.statusFlags||'0',flInt=parseInt(fl)||0;
     var pvChg=((flInt>>2)&1)?true:false,acChg=((flInt>>3)&1)?true:false;
-    var bA=0,charging=false,chSrc='none',pSrc='battery',exP=0;
+    var bA=0,charging=false,chSrc='none',exP=0;
     if(pvChg||acChg)charging=true;
     if(charging){if(pvChg&&acChg)chSrc='solar+grid';else if(pvChg)chSrc='solar';else chSrc='grid';exP=Math.max(0,Math.round(pvW-lW));bA=exP/Math.max(1,bV);}
     else{var deficit=Math.max(0,lW-pvW);bA=deficit/Math.max(1,bV);}
-    if(gW>5)pSrc='grid';else if(pvW>5)pSrc='solar';else pSrc='battery';
-    if(d.powerSource)pSrc=d.powerSource;if(d.isCharging===true||d.isCharging==='true')charging=true;if(d.chargingSrc)chSrc=d.chargingSrc;if(d.excessPower)exP=parseFloat(d.excessPower)||0;if(d.gridW!==undefined)gW=parseFloat(d.gridW)||0;
-    return{pv_voltage:pvV,pv_current:pvA,pv_power:pvW,scc_pv_voltage:sccV,panel_amperes:panA,battery_voltage:bV,battery_percent:bp,battery_current:parseFloat(bA.toFixed(1)),battery_temp:iT,battery_charging:charging,charging_source:chSrc,excess_power:exP,power_source:pSrc,load_watts:lW,load_va:lVA,load_percent:lPct,load_voltage:oV,load_frequency:oF,grid_voltage:iV,grid_frequency:iF,grid_watts:gW,grid_available:iV>100,flag_pv_chg:pvChg,flag_ac_chg:acChg,inverter_on:oV>100,today_energy:kwh,total_energy:parseFloat(d.totalKwh)||0,uptimeMs:parseInt(d.uptimeMs)||0,raw:d.raw||'',output1:true,output2:true,output3:false,timestamp:parseInt(d.ts)||Date.now()};
+    if(d.isCharging===true||d.isCharging==='true')charging=true;
+    if(d.chargingSrc)chSrc=d.chargingSrc;if(d.excessPower)exP=parseFloat(d.excessPower)||0;
+    if(d.gridW!==undefined)gW=parseFloat(d.gridW)||0;
+    return{pv_voltage:pvV,pv_current:pvA,pv_power:pvW,scc_pv_voltage:sccV,panel_amperes:panA,battery_voltage:bV,battery_percent:bp,battery_current:parseFloat(bA.toFixed(1)),battery_temp:iT,battery_charging:charging,charging_source:chSrc,excess_power:exP,load_watts:lW,load_va:lVA,load_percent:lPct,load_voltage:oV,load_frequency:oF,grid_voltage:iV,grid_frequency:iF,grid_watts:gW,grid_available:iV>100,flag_pv_chg:pvChg,flag_ac_chg:acChg,inverter_on:oV>100,today_energy:kwh,total_energy:parseFloat(d.totalKwh)||0,uptimeMs:parseInt(d.uptimeMs)||0,raw:d.raw||'',output1:true,output2:true,output3:false,timestamp:parseInt(d.ts)||Date.now()};
 }
 
 /* ===== Firebase ===== */
@@ -446,9 +363,10 @@ function doConnect(){
 }
 function ldCfg(){var s=localStorage.getItem('iz_c');if(s){var c=JSON.parse(s);document.getElementById('fAK').value=c.ak||'';document.getElementById('fDU').value=c.du||'';document.getElementById('fPI').value=c.pi||'';document.getElementById('fDP').value=localStorage.getItem('iz_p')||'devices/inverter01';toast('لوڈ ہو گیا','sin');}else toast('کوئی سیٹنگ نہیں','ser');}
 
-/* ===== UI اپڈیٹ ===== */
+/* ===== UI اپڈیٹ — فلو سے پاور سورس نکالیں ===== */
 function updUI(d){
     calcFlows(d);updNodes(d);updFlowLabels(d);
+
     var bp=Math.max(0,Math.min(100,d.battery_percent||0));
     document.getElementById('bV').textContent=(d.battery_voltage||0).toFixed(1)+' V';
     document.getElementById('bA').textContent=(d.battery_current||0).toFixed(1)+' A';
@@ -464,32 +382,48 @@ function updUI(d){
     document.getElementById('lF').textContent=(d.load_frequency||0).toFixed(1);
     document.getElementById('lK').textContent=(d.today_energy||0).toFixed(2);
 
-    // اسٹیٹس
-    var pSrc=d.power_source||'battery';
-    var ut=d.uptimeMs||0;var us='';if(ut>86400000)us=Math.floor(ut/86400000)+'دن ';if(ut>3600000)us+=Math.floor((ut%86400000)/3600000)+'گھ ';if(ut>60000)us+=Math.floor((ut%3600000)/60000)+'م';if(!us)us='<1م';
-
-    // فلو کا خلاصہ
-    var pvW=d.pv_power||0,lW=d.load_watts||0;
+    /* === فلو سے اصل پاور سورس نکالیں (غلط نہیں ہوگا اب) === */
+    var pvW=d.pv_power||0, lW=d.load_watts||0;
     var bW=Math.round(Math.abs(d.battery_current||0)*(d.battery_voltage||0));
     var chg=d.battery_charging;
-    var solarIn=pvW,battToInv=chg?0:bW,invToBatt=chg?bW:0;
-    var totalIn=solarIn+battToInv,totalOut=lW+invToBatt;
+    var solarIn=pvW, battToInv=chg?0:bW, invToBatt=chg?bW:0, invToLoad=lW;
+    var totalIn=solarIn+battToInv, totalOut=invToLoad+invToBatt;
     var deficit=totalOut-totalIn;
     var gridToInv=deficit>10?Math.round(deficit):0;
     var invToGrid=deficit<-10?Math.round(-deficit):0;
-    var flowDesc='';
-    if(gridToInv>10)flowDesc='Grid '+gridToInv+'W';
-    if(solarIn>10)flowDesc+=(flowDesc?' + ':'')+solarIn+'W Solar';
-    if(battToInv>10)flowDesc+=(flowDesc?' + ':'')+battToInv+'W Battery';
-    flowDesc+=' → '+lW+'W Load';
-    if(invToBatt>10)flowDesc+=' + '+invToBatt+'W Charge';
-    if(invToGrid>10)flowDesc+=' + '+invToGrid+'W Export';
+
+    // پاور سورس: کون کون سے بجلی آرہی ہے
+    var srcArr=[];
+    if(solarIn>10) srcArr.push('\u2600\uFE0F سولر '+Math.round(solarIn)+'W');
+    if(gridToInv>10) srcArr.push('\uD83D\uDD0C گریڈ '+gridToInv+'W');
+    if(battToInv>10) srcArr.push('\uD83D\uDD0B بیٹری '+battToInv+'W');
+    var srcText=srcArr.length>0?srcArr.join(' + '):'\u2014';
+    var srcOk=solarIn>10; // سبز اگر سولر پرائمری ہو
+
+    // بیٹری اسٹیٹس
+    var battText='';
+    if(chg) battText='\u26A1 چارجنگ '+invToBatt+'W';
+    else if(bW>10) battText='\u25BC ڈسچارج '+battToInv+'W';
+    else battText='\u2014';
+    var battOk=chg;
+
+    // گریڈ اسٹیٹس: صرف اصل فلو سے
+    var gridText='', gridOk=false;
+    if(gridToInv>10){gridText='\u2193 امپورٹ '+gridToInv+'W';}
+    else if(invToGrid>10){gridText='\u2191 ایکسپورٹ '+invToGrid+'W';}
+    else if(d.grid_available){gridText='دستیاب (استعمال نہیں)';gridOk=true;}
+    else{gridText='بند';}
+
+    var ut=d.uptimeMs||0;var us='';
+    if(ut>86400000)us=Math.floor(ut/86400000)+'دن ';
+    if(ut>3600000)us+=Math.floor((ut%86400000)/3600000)+'گھ ';
+    if(ut>60000)us+=Math.floor((ut%3600000)/60000)+'م';
+    if(!us)us='<1م';
 
     var items=[
-        {l:'پاور فلو',v:flowDesc,ok:true},
-        {l:'پاور سورس',v:pSrc==='solar'?'سولر':pSrc==='grid'?'گریڈ':'بیٹری',ok:pSrc==='solar'},
-        {l:'بیٹری',v:d.battery_charging?'چارجنگ '+invToBatt+'W':'ڈسچارج '+battToInv+'W',ok:d.battery_charging},
-        {l:'گریڈ',v:gridToInv>10?'امپورٹ '+gridToInv+'W':(invToGrid>10?'ایکسپورٹ '+invToGrid+'W':'بند'),ok:gridToInv<10&&invToGrid<10},
+        {l:'پاور سورس',v:srcText,ok:srcOk},
+        {l:'بیٹری',v:battText,ok:battOk},
+        {l:'گریڈ',v:gridText,ok:gridOk},
         {l:'پینل',v:Math.round(d.scc_pv_voltage||0)+'V '+(d.panel_amperes||0).toFixed(1)+'A',ok:(d.scc_pv_voltage||0)>10},
         {l:'لوڈ',v:Math.round(d.load_watts)+'W'+(d.load_percent?' / '+d.load_percent+'%':''),ok:d.load_watts>0},
         {l:'انورٹر',v:d.inverter_on?'چالو '+(d.battery_temp||0).toFixed(1)+'\u00B0C':'بند',ok:d.inverter_on},
@@ -498,7 +432,7 @@ function updUI(d){
     var html='';
     for(var i=0;i<items.length;i++){
         var it=items[i];
-        html+='<div class="stbl-r"><span class="stbl-l"><i class="fas fa-circle" style="color:var('+(it.ok?'battC':'red')+')"></i>'+it.l+'</span><span class="stbl-r2" style="color:var('+(it.ok?'battC':'red')+');font-size:10px;max-width:55%;text-align:right"><span class="std '+(it.ok?'on':'off')+'"></span>'+it.v+'</span></div>';
+        html+='<div class="stbl-r"><span class="stbl-l"><i class="fas fa-circle" style="color:var('+(it.ok?'battC':'red')+')"></i>'+it.l+'</span><span class="stbl-r2" style="color:var('+(it.ok?'battC':'red')+');max-width:58%;text-align:right"><span class="std '+(it.ok?'on':'off')+'"></span>'+it.v+'</span></div>';
     }
     document.getElementById('sList').innerHTML=html;
 }
@@ -521,59 +455,58 @@ function initCharts(){
         var ed=[],cd=[],bd=[];
         for(var j=0;j<24;j++){if(j>=6&&j<=18){var f=Math.sin((j-6)/12*Math.PI);ed.push(Math.round(f*400));cd.push(Math.round(100+Math.random()*300));}else{ed.push(0);cd.push(Math.round(20+Math.random()*50));}var v=12+j*.05;if(j>=6&&j<=18)v+=Math.sin((j-6)/12*Math.PI)*1.5;bd.push(+v.toFixed(1));}
         eC.data.datasets[0].data=ed;eC.data.datasets[1].data=cd;eC.update('none');bC.data.datasets[0].data=bd;bC.update('none');
-    }catch(e){console.log('چارٹ:',e);}
+    }catch(e){}
 }
 
-/* ===== ڈیمو (مختلف سیناریوز) ===== */
+/* ===== ڈیمو — 4 حقیقی سیناریوز ===== */
 var demoScene=0;
 function refDemo(){
     if(conn)return;
     demoScene=(demoScene+1)%4;
-    var m={battery_percent:Math.round(30+Math.random()*60),battery_voltage:0,battery_current:0,battery_temp:+(25+Math.random()*20).toFixed(1),load_watts:Math.round(300+Math.random()*1500),load_voltage:+(210+Math.random()*20).toFixed(1),load_frequency:+(49.5+Math.random()*1).toFixed(1),grid_voltage:+(215+Math.random()*20).toFixed(1),grid_available:true,inverter_on:true,scc_pv_voltage:0,panel_amperes:0,grid_watts:0,today_energy:+(1+Math.random()*8).toFixed(1),flag_pv_chg:false,flag_ac_chg:false,timestamp:Date.now()};
+    var m={battery_percent:Math.round(30+Math.random()*55),battery_voltage:0,battery_current:0,battery_temp:+(25+Math.random()*20).toFixed(1),load_watts:Math.round(400+Math.random()*1200),load_voltage:+(210+Math.random()*20).toFixed(1),load_frequency:+(49.5+Math.random()*1).toFixed(1),inverter_on:true,scc_pv_voltage:0,panel_amperes:0,grid_watts:0,today_energy:+(1+Math.random()*8).toFixed(1),timestamp:Date.now()};
 
     if(demoScene===0){
-        // سیناریو 1: سولر تیز، چارجنگ، ایکسپورٹ
+        // ☀️ دن — سولر تیز، سب چل رہا، ایکسپورٹ بھی
         m.pv_voltage=+(35+Math.random()*10).toFixed(1);
         m.pv_current=+(8+Math.random()*8).toFixed(1);
         m.pv_power=Math.round(m.pv_voltage*m.pv_current);
-        m.scc_pv_voltage=+(m.pv_voltage+5+Math.random()*5).toFixed(1);
-        m.panel_amperes=+(m.pv_current+Math.random()*2).toFixed(1);
+        m.scc_pv_voltage=+(m.pv_voltage+5).toFixed(1);
+        m.panel_amperes=m.pv_current;
         m.battery_charging=true;
         m.charging_source='solar';
-        m.flag_pv_chg=true;
-        m.power_source='solar';
+        m.flag_pv_chg=true;m.flag_ac_chg=false;
+        m.grid_voltage=+(220+Math.random()*15).toFixed(1);
+        m.grid_available=true;
     }else if(demoScene===1){
-        // سیناریو 2: سولر کم، بیٹری ڈسچارج + گریڈ امپورٹ
-        m.pv_voltage=+(10+Math.random()*8).toFixed(1);
-        m.pv_current=+(1+Math.random()*3).toFixed(1);
+        // ☀️ دن — سولر کم، بیٹری ڈسچارج + گریڈ سے بھی پاور
+        m.pv_voltage=+(8+Math.random()*6).toFixed(1);
+        m.pv_current=+(1+Math.random()*2).toFixed(1);
         m.pv_power=Math.round(m.pv_voltage*m.pv_current);
-        m.scc_pv_voltage=+(m.pv_voltage+3).toFixed(1);
+        m.scc_pv_voltage=+(m.pv_voltage+2).toFixed(1);
         m.panel_amperes=m.pv_current;
         m.battery_charging=false;
         m.charging_source='none';
-        m.flag_pv_chg=false;
-        m.power_source='battery';
+        m.flag_pv_chg=false;m.flag_ac_chg=false;
+        m.grid_voltage=+(220+Math.random()*10).toFixed(1);
+        m.grid_available=true;
     }else if(demoScene===2){
-        // سیناریو 3: سولر صفر، گریڈ سے سب چل رہا + بیٹری چارجنگ
-        m.pv_voltage=+(2+Math.random()*3).toFixed(1);
-        m.pv_current=+(0+Math.random()*.5).toFixed(1);
-        m.pv_power=0;
-        m.scc_pv_voltage=+(m.pv_voltage).toFixed(1);
-        m.panel_amperes=0;
+        // ☁️ بادل/صبح — سولر صفر، گریڈ سے لوڈ چل رہا + بیٹری چارجنگ
+        m.pv_voltage=0;m.pv_current=0;m.pv_power=0;
+        m.scc_pv_voltage=0;m.panel_amperes=0;
         m.battery_charging=true;
         m.charging_source='grid';
-        m.flag_pv_chg=false;
-        m.flag_ac_chg=true;
-        m.power_source='grid';
+        m.flag_pv_chg=false;m.flag_ac_chg=true;
+        m.grid_voltage=+(220+Math.random()*10).toFixed(1);
+        m.grid_available=true;
     }else{
-        // سیناریو 4: رات، گریڈ سے لوڈ، بیٹری ڈسچارج
+        // 🌙 رات — سولر صفر، گریڈ سے لوڈ + بیٹری ڈسچارج
         m.pv_voltage=0;m.pv_current=0;m.pv_power=0;
         m.scc_pv_voltage=0;m.panel_amperes=0;
         m.battery_charging=false;
         m.charging_source='none';
-        m.flag_pv_chg=false;
-        m.flag_ac_chg=false;
-        m.power_source='grid';
+        m.flag_pv_chg=false;m.flag_ac_chg=false;
+        m.grid_voltage=+(220+Math.random()*10).toFixed(1);
+        m.grid_available=true;
     }
 
     m.battery_voltage=+(12+m.battery_percent*0.02).toFixed(1);
@@ -589,11 +522,11 @@ function refDemo(){
 /* ===== شروع ===== */
 window.addEventListener('DOMContentLoaded',function(){
     try{initCharts();}catch(e){}
-    try{initFlow();}catch(e){console.log('فلو:',e);}
+    try{initFlow();}catch(e){}
     updConn();
     var s=localStorage.getItem('iz_c');
     if(s){try{var c=JSON.parse(s);if(c.ak&&c.du&&c.pi){ldCfg();doConnect();}}catch(e){}}
-    setTimeout(function(){if(!conn){updUI(DM);document.getElementById('rawD').textContent=JSON.stringify(DM,null,2);aLog('info','ڈیمو موڈ - Inverter Zone');}},600);
+    setTimeout(function(){if(!conn){updUI(DM);document.getElementById('rawD').textContent=JSON.stringify(DM,null,2);aLog('info','ڈیمو موڈ');}},600);
     setInterval(function(){try{refDemo();}catch(e){}},4000);
 });
 </script>
