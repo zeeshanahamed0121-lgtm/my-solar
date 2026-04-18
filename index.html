@@ -28,12 +28,12 @@
         .nb.on::before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:28px;height:3px;background:var(--acc);border-radius:0 0 3px 3px}
         .top-bar{padding:10px 16px;background:rgba(17,24,39,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;padding-top:calc(env(safe-area-inset-top)+10px)}
         .c{background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:14px;transition:.3s}.c:active{transform:scale(.98)}
-        .gc{position:relative;width:105px;height:105px;margin:0 auto}
+        .gc{position:relative;width:100px;height:100px;margin:0 auto}
         .gb{fill:none;stroke:var(--brd);stroke-width:8}
         .gf{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s;filter:drop-shadow(0 0 4px rgba(245,158,11,.3))}
-        .gv{font-family:'JetBrains Mono';font-size:18px;font-weight:700;fill:var(--txt)}
+        .gv{font-family:'JetBrains Mono';font-size:15px;font-weight:700;fill:var(--txt)}
         .gu{font-family:'JetBrains Mono';font-size:9px;fill:var(--txt2)}
-        .gl{font-size:8px;fill:var(--txt2)}
+        .gl{font-size:9px;color:var(--txt2);text-align:center}
         .bb{width:100%;height:22px;background:var(--bg2);border-radius:11px;overflow:hidden;border:1px solid var(--brd)}
         .bf{height:100%;border-radius:11px;transition:width 1s,background .5s}
         .sd{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
@@ -63,8 +63,6 @@
         .bbb{width:70px;height:120px;border:3px solid var(--brd);border-radius:8px;position:relative;overflow:hidden;flex-shrink:0}
         .bbf{position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(180deg,var(--ok),#16a34a);transition:height 1s;border-radius:0 0 5px 5px}
         .bbc{width:24px;height:8px;background:var(--brd);border-radius:3px 3px 0 0;margin:0 auto}
-        .ib{position:fixed;bottom:66px;left:14px;right:14px;z-index:90;background:linear-gradient(135deg,var(--org),var(--acc));border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 25px rgba(245,158,11,.3);animation:su .5s}
-        @keyframes su{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
         .dbg{font-family:'JetBrains Mono';font-size:9px;color:var(--err);background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px;margin-top:8px;word-break:break-all;max-height:80px;overflow:auto;display:none}
         .dbg.show{display:block}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
@@ -75,10 +73,6 @@
 <div class="bg-grid"></div>
 <div class="bg-glow"></div>
 <div id="toast" class="toast"></div>
-<div class="ib" id="installBar" style="display:none">
-    <div style="display:flex;align-items:center;gap:8px"><i class="fas fa-download" style="color:#000;font-size:16px"></i><div><p style="font-weight:800;color:#000;font-size:13px">ایپ انسٹال کریں</p><p style="font-size:10px;color:rgba(0,0,0,.6)">ہوم سکرین پر شارٹ کٹ</p></div></div>
-    <button onclick="installApp()" style="background:#000;color:var(--acc);border:none;padding:7px 14px;border-radius:7px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Outfit'">انسٹال</button>
-</div>
 <div class="top-bar">
     <div style="display:flex;align-items:center;gap:7px">
         <div style="width:30px;height:30px;background:linear-gradient(135deg,var(--org),var(--yel));border-radius:7px;display:flex;align-items:center;justify-content:center"><i class="fas fa-solar-panel" style="color:#000;font-size:13px"></i></div>
@@ -101,14 +95,37 @@
             </div>
             <div class="c" style="margin-bottom:12px">
                 <p style="font-size:12px;font-weight:700;margin-bottom:10px"><i class="fas fa-tachometer-alt" style="color:var(--acc);margin-right:5px"></i>گجز</p>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
-                    <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g1" stroke="var(--org)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g1v" style="font-size:16px">0</text><text x="50" y="60" text-anchor="middle" class="gu">A</text><text x="50" y="76" text-anchor="middle" class="gl">PV کرنٹ</text></svg></div>
-                    <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g2" stroke="var(--ok)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g2v" style="font-size:16px">0</text><text x="50" y="60" text-anchor="middle" class="gu">V</text><text x="50" y="76" text-anchor="middle" class="gl">بیٹری</text></svg></div>
-                    <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g3" stroke="var(--acc)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g3v" style="font-size:16px">0</text><text x="50" y="60" text-anchor="middle" class="gu">W</text><text x="50" y="76" text-anchor="middle" class="gl">PV پاور</text></svg></div>
-                    <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g4" stroke="var(--yel)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g4v" style="font-size:16px">0</text><text x="50" y="60" text-anchor="middle" class="gu">W</text><text x="50" y="76" text-anchor="middle" class="gl">گریڈ لوڈ</text></svg></div>
-                    <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g5" stroke="var(--inf)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g5v" style="font-size:16px">0</text><text x="50" y="60" text-anchor="middle" class="gu">V</text><text x="50" y="76" text-anchor="middle" class="gl">پینل</text></svg></div>
-                    <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g6" stroke="#a78bfa" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g6v" style="font-size:16px">0</text><text x="50" y="60" text-anchor="middle" class="gu">A</text><text x="50" y="76" text-anchor="middle" class="gl">بیٹری A</text></svg></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+                    <div style="text-align:center">
+                        <i class="fas fa-bolt" style="font-size:16px;color:var(--org)"></i>
+                        <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g1" stroke="var(--org)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g1v">0</text><text x="50" y="60" text-anchor="middle" class="gu">A</text></svg></div>
+                        <p class="gl" style="margin-top:2px">PV کرنٹ</p>
+                    </div>
+                    <div style="text-align:center">
+                        <i class="fas fa-car-battery" style="font-size:16px;color:var(--ok)"></i>
+                        <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g2" stroke="var(--ok)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g2v">0</text><text x="50" y="60" text-anchor="middle" class="gu">V</text></svg></div>
+                        <p class="gl" style="margin-top:2px">بیٹری وولٹیج</p>
+                    </div>
+                    <div style="text-align:center">
+                        <i class="fas fa-solar-panel" style="font-size:16px;color:var(--acc)"></i>
+                        <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g3" stroke="var(--acc)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g3v">0</text><text x="50" y="60" text-anchor="middle" class="gu">W</text></svg></div>
+                        <p class="gl" style="margin-top:2px">سولر پاور</p>
+                    </div>
+                    <div style="text-align:center">
+                        <i class="fas fa-plug" style="font-size:16px;color:var(--yel)"></i>
+                        <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g4" stroke="var(--yel)" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g4v">0</text><text x="50" y="60" text-anchor="middle" class="gu">W</text></svg></div>
+                        <p class="gl" style="margin-top:2px">گریڈ لوڈ</p>
+                    </div>
+                    <div style="text-align:center">
+                        <i class="fas fa-sun" style="font-size:16px;color:#fb923c"></i>
+                        <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g5" stroke="#fb923c" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g5v">0</text><text x="50" y="60" text-anchor="middle" class="gu">V</text></svg></div>
+                        <p class="gl" style="margin-top:2px">پینل وولٹیج</p>
+                    </div>
+                    <div style="text-align:center">
+                        <i class="fas fa-battery-half" style="font-size:16px;color:#a78bfa"></i>
+                        <div class="gc"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" class="gb" stroke-dasharray="188 63" transform="rotate(135 50 50)"/><circle cx="50" cy="50" r="40" class="gf" id="g6" stroke="#a78bfa" stroke-dasharray="188 63" stroke-dashoffset="188" transform="rotate(135 50 50)"/><text x="50" y="48" text-anchor="middle" class="gv" id="g6v">0</text><text x="50" y="60" text-anchor="middle" class="gu">A</text></svg></div>
+                        <p class="gl" style="margin-top:2px">بیٹری ایمپیر</p>
+                    </div>
                 </div>
             </div>
             <div class="c" style="margin-bottom:12px">
@@ -204,59 +221,57 @@
 var db=null,dRef=null,lRef=null,conn=false,eC=null,bC=null,logs=[],lf='all',prev={},dprompt=null;
 var DM={pv_voltage:38.5,pv_current:9.2,pv_power:354,battery_voltage:13.9,battery_percent:85,battery_current:5.8,battery_temp:21.5,battery_charging:true,load_watts:1200,load_voltage:220.5,load_frequency:50.1,grid_voltage:225.3,grid_available:true,inverter_on:true,output1:true,output2:true,output3:false,today_energy:3.8,total_energy:1250.5,timestamp:Date.now()};
 
-window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dprompt=e;document.getElementById('installBar').style.display='flex';});
-function installApp(){if(dprompt){dprompt.prompt();dprompt.userChoice.then(function(){document.getElementById('installBar').style.display='none';dprompt=null;});}}
-if('serviceWorker' in navigator){var sw='self.addEventListener("install",function(e){self.skipWaiting();});self.addEventListener("activate",function(e){e.waitUntil(clients.claim());});self.addEventListener("fetch",function(e){e.respondWith(fetch(e.request).catch(function(){return caches.match(e.request);}));});';navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(function(){});}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dprompt=e;});
+function installApp(){if(dprompt){dprompt.prompt();dprompt.userChoice.then(function(){dprompt=null;});}}
+if('serviceWorker' in navigator){navigator.serviceWorker.register(URL.createObjectURL(new Blob(['self.addEventListener("install",function(){self.skipWaiting();});self.addEventListener("activate",function(e){e.waitUntil(clients.claim());});self.addEventListener("fetch",function(e){e.respondWith(fetch(e.request).catch(function(){return caches.match(e.request);}));});'],{type:'application/javascript'}))).catch(function(){});}
 
 function toast(m,t){var e=document.getElementById('toast');var ic={sok:'fa-check-circle',ser:'fa-times-circle',sin:'fa-info-circle'};e.className='toast '+(t||'sin');e.innerHTML='<i class="fas '+(ic[t]||ic.sin)+'"></i>'+m;setTimeout(function(){e.classList.add('sh');},10);setTimeout(function(){e.classList.remove('sh');},3000);}
 function go(id,el){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});document.getElementById(id).classList.add('on');if(el)el.classList.add('on');}
 function dbg(m){var b=document.getElementById('dbgBox');b.textContent=m;b.classList.add('show');}
 
 function mapD(raw){
-    if(!raw) return null;
+    if(!raw)return null;
     var d=raw;
-    if(raw.devices && raw.devices.inverter01) d=raw.devices.inverter01;
-    else if(raw.inverter01) d=raw.inverter01;
-    var pvV=parseFloat(d.pvV)||0;
-    var pvA=parseFloat(d.pvA)||0;
-    var pvW=parseFloat(d.pvW)||0;
-    var bV=parseFloat(d.batteryV)||0;
-    var lW=parseFloat(d.loadW)||0;
-    var oV=parseFloat(d.acOutV)||0;
-    var iV=parseFloat(d.acInV)||0;
-    var iF=parseFloat(d.acInFreq)||0;
-    var oF=parseFloat(d.acOutFreq)||50;
-    var lVA=parseFloat(d.loadVA)||0;
-    var lPct=parseFloat(d.loadPercent)||0;
-    var busV=parseFloat(d.busV)||0;
-    var sccV=parseFloat(d.sccPVV)||0;
-    var panA=parseFloat(d.panelA)||0;
-    var gW=parseFloat(d.gridW)||0;
-    var bPct=parseFloat(d.batteryPercent)||0;
-    var kwh=parseFloat(d.pvkWh)||0;
-    var iT=parseFloat(d.invTemp)||0;
-    var fan=parseInt(d.fanLevel)||0;
+    if(raw.devices&&raw.devices.inverter01)d=raw.devices.inverter01;
+    else if(raw.inverter01)d=raw.inverter01;
+    var pvV=parseFloat(d.pvV)||0,pvA=parseFloat(d.pvA)||0,pvW=parseFloat(d.pvW)||0;
+    var bV=parseFloat(d.batteryV)||0,lW=parseFloat(d.loadW)||0,oV=parseFloat(d.acOutV)||0;
+    var iV=parseFloat(d.acInV)||0,iF=parseFloat(d.acInFreq)||0,oF=parseFloat(d.acOutFreq)||50;
+    var lVA=parseFloat(d.loadVA)||0,lPct=parseFloat(d.loadPercent)||0;
+    var sccV=parseFloat(d.sccPVV)||0,panA=parseFloat(d.panelA)||0,gW=parseFloat(d.gridW)||0;
+    var bPct=parseFloat(d.batteryPercent)||0,kwh=parseFloat(d.pvkWh)||0;
+    var iT=parseFloat(d.invTemp)||0,fan=parseInt(d.fanLevel)||0;
     var bp=0;
-    if(bPct>0&&bPct<=100) bp=Math.round(bPct);
+    if(bPct>0&&bPct<=100)bp=Math.round(bPct);
     else{if(bV>=13)bp=100;else if(bV<=10.5)bp=0;else bp=Math.round(((bV-10.5)/2.5)*100);}
-    var netW=pvW-lW;
+    var fl=d.statusFlags||'0',flInt=parseInt(fl)||0;
+    var pvChg=((flInt>>2)&1)?true:false,acChg=((flInt>>3)&1)?true:false;
     var bA=0,charging=false,chSrc='none',pSrc='battery',exP=0;
-    if(netW>2){charging=true;bA=netW/Math.max(1,bV);exP=Math.round(netW);chSrc='solar';pSrc='solar';}
-    else if(netW<=2&&pvW>5){charging=false;bA=(lW-pvW)/Math.max(1,bV);if(bA<0)bA=0;chSrc='none';pSrc='solar';}
-    else if(pvW<=5&&iV>100){charging=false;bA=lW/Math.max(1,bV);chSrc='none';pSrc='grid';}
-    else{charging=false;bA=lW/Math.max(1,bV);chSrc='none';pSrc='battery';}
+    if(pvChg||acChg)charging=true;
+    if(charging){
+        if(pvChg&&acChg)chSrc='solar+grid';
+        else if(pvChg)chSrc='solar';
+        else chSrc='grid';
+        exP=Math.max(0,Math.round(pvW-lW));
+        bA=exP/Math.max(1,bV);
+    }else{
+        var deficit=Math.max(0,lW-pvW);
+        bA=deficit/Math.max(1,bV);
+    }
+    var pvTL=(pvW<lW)?pvW:0;
+    if(gW>5)pSrc='grid';
+    else if(pvW>5)pSrc='solar';
+    else pSrc='battery';
     if(d.powerSource)pSrc=d.powerSource;
     if(d.isCharging===true||d.isCharging==='true')charging=true;
     if(d.chargingSrc)chSrc=d.chargingSrc;
     if(d.excessPower)exP=parseFloat(d.excessPower)||0;
     if(d.gridW!==undefined)gW=parseFloat(d.gridW)||0;
-    return{pv_voltage:pvV,pv_current:pvA,pv_power:pvW,scc_pv_voltage:sccV,panel_amperes:panA,battery_voltage:bV,battery_percent:bp,battery_current:parseFloat(bA.toFixed(1)),battery_temp:iT,battery_charging:charging,charging_source:chSrc,excess_power:exP,power_source:pSrc,load_watts:lW,load_va:lVA,load_percent:lPct,load_voltage:oV,load_frequency:oF,grid_voltage:iV,grid_frequency:iF,grid_watts:gW,grid_available:iV>100,bus_voltage:busV,inverter_on:oV>100,today_energy:kwh,total_energy:parseFloat(d.totalKwh)||0,uptimeMs:parseInt(d.uptimeMs)||0,raw:d.raw||'',output1:true,output2:true,output3:false,timestamp:parseInt(d.ts)||Date.now()};
+    return{pv_voltage:pvV,pv_current:pvA,pv_power:pvW,scc_pv_voltage:sccV,panel_amperes:panA,battery_voltage:bV,battery_percent:bp,battery_current:parseFloat(bA.toFixed(1)),battery_temp:iT,battery_charging:charging,charging_source:chSrc,excess_power:exP,power_source:pSrc,load_watts:lW,load_va:lVA,load_percent:lPct,load_voltage:oV,load_frequency:oF,grid_voltage:iV,grid_frequency:iF,grid_watts:gW,grid_available:iV>100,flag_pv_chg:pvChg,flag_ac_chg:acChg,inverter_on:oV>100,today_energy:kwh,total_energy:parseFloat(d.totalKwh)||0,uptimeMs:parseInt(d.uptimeMs)||0,raw:d.raw||'',output1:true,output2:true,output3:false,timestamp:parseInt(d.ts)||Date.now()};
 }
 
 function doConnect(){
-    var ak=document.getElementById('fAK').value.trim();
-    var du=document.getElementById('fDU').value.trim();
-    var pi=document.getElementById('fPI').value.trim();
+    var ak=document.getElementById('fAK').value.trim(),du=document.getElementById('fDU').value.trim(),pi=document.getElementById('fPI').value.trim();
     var dp=document.getElementById('fDP').value.trim()||'devices/inverter01';
     if(!ak||!du||!pi){toast('تمام * فیلڈز ضروری','ser');return;}
     try{
@@ -265,7 +280,7 @@ function doConnect(){
         db=firebase.database();dRef=db.ref(dp);lRef=db.ref(dp+'_logs');
         dbg('کنکشن... پاتھ: '+dp);
         db.ref('.info/connected').on('value',function(s){conn=s.val();var dot=document.getElementById('cDot'),txt=document.getElementById('cTxt');if(conn){dot.className='sd on';txt.textContent='آن لائن';txt.style.color='var(--ok)';}else{dot.className='sd off';txt.textContent='آف لائن';txt.style.color='var(--err)';}});
-        dRef.on('value',function(s){var raw=s.val();dbg('خام: '+JSON.stringify(raw).substring(0,150));if(raw){var d=mapD(raw);dbg('میپ: PV='+d.pv_voltage+' B='+d.battery_percent+' L='+d.load_watts+' GridW='+d.grid_watts+' SCC='+d.scc_pv_voltage);if(d&&d.pv_voltage!==undefined){updUI(d);document.getElementById('rawD').textContent=JSON.stringify(d,null,2);chkAlert(d);prev=Object.assign({},d);}else{dbg('pv_voltage نہیں ملا');}}else{dbg('NULL - غلط پاتھ؟');toast('ڈیٹا نہیں ملا','ser');}});
+        dRef.on('value',function(s){var raw=s.val();dbg('خام: '+JSON.stringify(raw).substring(0,150));if(raw){var d=mapD(raw);dbg('میپ: PV='+d.pv_voltage+' B='+d.battery_percent+' L='+d.load_watts+' GridW='+d.grid_watts+' SCC='+d.scc_pv_voltage);if(d&&d.pv_voltage!==undefined){updUI(d);document.getElementById('rawD').textContent=JSON.stringify(d,null,2);chkAlert(d);prev=Object.assign({},d);}else dbg('pv_voltage نہیں ملا');}else{dbg('NULL - غلط پاتھ؟');toast('ڈیٹا نہیں ملا','ser');}});
         lRef.orderByChild('timestamp').limitToLast(50).on('value',function(s){var lg=[];s.forEach(function(c){lg.push(c.val());});lg.reverse();logs=lg;rLog('logBox',lg);});
         localStorage.setItem('sg_c',JSON.stringify({ak:ak,du:du,pi:pi}));localStorage.setItem('sg_p',dp);
         toast('جڑا گیا!','sok');aLog('info','کنکشن: '+dp);
@@ -283,12 +298,7 @@ function updUI(d){
     var bf=document.getElementById('dBB');bf.style.width=bp+'%';bf.style.background=bp<20?'var(--err)':bp<50?'var(--warn)':'var(--ok)';
     var gd=document.getElementById('dGD'),gs=document.getElementById('dGS');
     if(d.grid_available){gd.className='sd on';gs.textContent='دستیاب';gs.style.color='var(--ok)';}else{gd.className='sd off';gs.textContent='بند';gs.style.color='var(--err)';}
-        uG('g1',d.pv_current||0,15,'g1v');
-    uG('g2',d.battery_voltage||0,16,'g2v');
-    uG('g3',d.pv_power||0,5000,'g3v');
-    uG('g4',d.grid_watts||0,3000,'g4v');
-    uG('g5',d.scc_pv_voltage||0,80,'g5v');
-    uG('g6',d.battery_current||0,30,'g6v');
+    uG('g1',d.pv_current||0,15,'g1v');uG('g2',d.battery_voltage||0,16,'g2v');uG('g3',d.pv_power||0,5000,'g3v');uG('g4',d.grid_watts||0,3000,'g4v');uG('g5',d.scc_pv_voltage||0,80,'g5v');uG('g6',d.battery_current||0,30,'g6v');
     document.getElementById('dTE').textContent=(d.today_energy||0).toFixed(2)+' kWh';
     document.getElementById('bV').textContent=(d.battery_voltage||0).toFixed(1)+' V';
     document.getElementById('bA').textContent=(d.battery_current||0).toFixed(1)+' A';
@@ -305,7 +315,7 @@ function updUI(d){
     var items=[
         {l:'پاور سورس',s:pSrc==='solar'?'☀️ سولر':pSrc==='grid'?'🔌 گریڈ':'🔋 بیٹری',ok:pSrc==='solar'},
         {l:'بیٹری',s:d.battery_charging?'⚡ چارجنگ '+d.excess_power+'W':'📉 ڈسچارج '+d.battery_current+'A',ok:d.battery_charging},
-        {l:'چارج سورس',s:d.charging_source==='solar'?'☀️ سولر':d.charging_source==='grid'?'🔌 گریڈ':'—',ok:true},
+        {l:'چارج سورس',s:d.charging_source==='solar'?'☀️ سولر':d.charging_source==='grid'?'🔌 گریڈ':d.charging_source==='solar+grid'?'☀️+🔌 دونوں':'—',ok:true},
         {l:'پینل',s:Math.round(d.scc_pv_voltage||0)+'V '+(d.panel_amperes||0).toFixed(1)+'A',ok:(d.scc_pv_voltage||0)>10},
         {l:'MPPT بعد',s:Math.round(d.pv_voltage)+'V '+d.pv_current.toFixed(1)+'A = '+Math.round(d.pv_power)+'W',ok:d.pv_power>10},
         {l:'گریڈ',s:Math.round(d.grid_voltage)+'V '+(d.grid_frequency||0).toFixed(1)+'Hz',ok:d.grid_available},
