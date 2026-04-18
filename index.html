@@ -219,41 +219,66 @@ function mapD(raw){
     var pvA=parseFloat(d.pvA)||0;
     var pvW=parseFloat(d.pvW)||0;
     var bV=parseFloat(d.batteryV)||0;
-    var bA=parseFloat(d.batteryA)||0;
     var lW=parseFloat(d.loadW)||0;
     var oV=parseFloat(d.acOutV)||0;
     var iV=parseFloat(d.acInV)||0;
     var kwh=parseFloat(d.pvkWh)||0;
     var bPct=parseFloat(d.batteryPercent)||0;
 
-    // بیٹری فیصد - اگر ESP سے آ رہا ہو تو استعمال کریں ورنہ کیلکولیٹ
+    // بیٹری فیصد
     var bp=0;
-    if(bPct>0 && bPct<=100){
-        bp=Math.round(bPct);
-    } else {
-        if(bV>=13.0) bp=100; else if(bV<=10.5) bp=0; else bp=Math.round(((bV-10.5)/2.5)*100);
-    }
+    if(bPct>0 && bPct<=100) bp=Math.round(bPct);
+    else { if(bV>=13.0) bp=100; else if(bV<=10.5) bp=0; else bp=Math.round(((bV-10.5)/2.5)*100); }
 
+    // فریکوئنسی
     var freq=50;
     if(d.raw){var p=d.raw.replace(/[()]/g,'').split(' ');if(p.length>=2) freq=parseFloat(p[1])||50;}
 
-    // نئے فیلڈز - سیدھا ESP سے
-    var charging = d.isCharging === true || d.isCharging === 'true';
-    var chSrc = d.chargingSrc || 'none';
-    var pSrc = d.powerSource || 'battery';
-    var exP = parseFloat(d.excessPower)||0;
+    // ========== بیٹری ایمپیر خود کیلکولیٹ ==========
+    var netW = pvW - lW;
+    var bA = 0;
+    var charging = false;
+    var chSrc = 'none';
+    var pSrc = 'battery';
+    var exP = 0;
 
-    // اگر پرانے ڈیٹا ہو تو خود کیلکولیٹ
-    if(!d.powerSource){
-        if(pvW>5 && pvW>lW){pSrc='solar';charging=true;chSrc='solar';exP=Math.round(pvW-lW);}
-        else if(pvW>5){pSrc='solar';charging=false;chSrc='none';exP=0;}
-        else if(iV>100){pSrc='grid';charging=true;chSrc='grid';exP=0;}
-        else{pSrc='battery';charging=false;chSrc='none';exP=0;}
+    if(netW > 2){
+        // سولر لوڈ سے زیادہ = چارجنگ
+        charging = true;
+        bA = netW / Math.max(1, bV);
+        exP = Math.round(netW);
+        chSrc = 'solar';
+        pSrc = 'solar';
+    } else if(netW <= 2 && pvW > 5){
+        // سولر ہے لیکن لوڈ زیادہ = ڈسچارج
+        charging = false;
+        bA = (lW - pvW) / Math.max(1, bV);
+        if(bA < 0) bA = 0;
+        chSrc = 'none';
+        pSrc = 'solar';
+    } else if(pvW <= 5 && iV > 100){
+        // گریڈ
+        charging = false;
+        bA = lW / Math.max(1, bV);
+        chSrc = 'none';
+        pSrc = 'grid';
+    } else {
+        // صرف بیٹری
+        charging = false;
+        bA = lW / Math.max(1, bV);
+        chSrc = 'none';
+        pSrc = 'battery';
     }
+
+    // اگر ESP نے بھیجا تو ESP کو ترجیح دیں
+    if(d.powerSource) pSrc = d.powerSource;
+    if(d.isCharging === true || d.isCharging === 'true') charging = true;
+    if(d.chargingSrc) chSrc = d.chargingSrc;
+    if(d.excessPower) exP = parseFloat(d.excessPower)||0;
 
     return {
         pv_voltage:pvV, pv_current:pvA, pv_power:pvW,
-        battery_voltage:bV, battery_percent:bp, battery_current:bA,
+        battery_voltage:bV, battery_percent:bp, battery_current:parseFloat(bA.toFixed(1)),
         battery_temp:parseFloat(d.batteryTemp)||0,
         battery_charging:charging,
         charging_source:chSrc,
@@ -269,7 +294,6 @@ function mapD(raw){
         timestamp:parseInt(d.ts)||Date.now()
     };
 }
-
 function doConnect(){
     var ak=document.getElementById('fAK').value.trim();
     var du=document.getElementById('fDU').value.trim();
