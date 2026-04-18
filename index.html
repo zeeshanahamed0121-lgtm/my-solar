@@ -378,7 +378,7 @@ function mapD(raw){
     var bPct=parseFloat(d.batteryPercent)||0, kwh=parseFloat(d.pvkWh)||0;
     
     var espBattA_raw = parseFloat(d.batteryA) || 0;
-    var espBattA = (espBattA_raw !== 0) ? (espBattA_raw * 10.0) : 0;
+    var espBattA = espBattA_raw;
     
     var espGridW=parseFloat(d.gridW)||0;
 
