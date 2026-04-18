@@ -97,6 +97,7 @@
                 <div class="fnode" style="bottom:3%;left:10%"><div class="fn-ico" id="icoGrid" style="background:rgba(59,130,246,.08)"><i class="fas fa-plug" style="color:var(--grid);font-size:14px"></i></div><div class="fn-val" id="vGrid" style="color:var(--grid)">0 V</div><div class="fn-lbl">گریڈ</div></div>
                 <div class="fnode" style="bottom:3%;left:50%;transform:translateX(-50%)"><div class="fn-ico" id="icoLoad" style="background:rgba(6,182,212,.08)"><i class="fas fa-home" style="color:var(--load);font-size:14px"></i></div><div class="fn-val" id="vLoad" style="color:var(--load)">0 W</div><div class="fn-lbl">لوڈ / گھر</div></div>
                 <div class="fnode" style="bottom:3%;right:10%"><div class="fn-ico" id="icoBatt" style="background:rgba(34,197,94,.08)"><i class="fas fa-car-battery" style="color:var(--battC);font-size:14px"></i></div><div class="fn-val" id="vBatt" style="color:var(--battC)">0%</div><div class="fn-lbl">بیٹری</div></div>
+                
                 <div class="flbl" id="lblPV" style="top:20%;left:56%;color:var(--solar);background:rgba(245,158,11,.08);opacity:0">0W</div>
                 <div class="flbl" id="lblGB" style="top:56%;left:10%;color:var(--grid);background:rgba(59,130,246,.08);opacity:0">0W</div>
                 <div class="flbl" id="lblBB" style="top:56%;right:10%;color:var(--battD);background:rgba(239,68,68,.08);opacity:0">0W</div>
@@ -235,26 +236,47 @@ function parseRawString(raw){
 function initFlow(){flowC=document.getElementById('flowC');flowCtx=flowC.getContext('2d');rsFlow();window.addEventListener('resize',rsFlow);animLoop();}
 function rsFlow(){var r=document.getElementById('flowWrap').getBoundingClientRect();flowW=r.width;flowH=r.height;var dpr=window.devicePixelRatio||1;flowC.width=flowW*dpr;flowC.height=flowH*dpr;flowC.style.width=flowW+'px';flowC.style.height=flowH+'px';flowCtx.setTransform(dpr,0,0,dpr,0,0);}
 
+/* ★★★ یہاں Flows کا نا راستہ لکھا گیا ہے (گرڈ، سولر، بیٹری سب کا) ★★★ */
 function calcFlows(d){
     activeFlows=[];particles=[];
     var pvW=d.pv_power||0,lW=d.load_watts||0;
     var gridAvail=d.grid_available,isChg=d.battery_charging;
     var espGridW=d.grid_watts||0;
+    var chgSrc=d.charging_source||'none';
+    var battA=d.battery_current||0;
+    var battV=d.battery_voltage||12;
 
     var solarIn=pvW;
     var invToLoad=lW>10?lW:0;
 
     var gridToInv=0;
-    if(gridAvail&&espGridW>10) gridToInv=espGridW;
-
-    var battToInv=0;
-    if(!isChg&&!gridAvail&&lW>10){battToInv=lW-pvW;if(battToInv<10)battToInv=0;}
-
     var invToBatt=0;
-    if(isChg&&pvW>lW+10) invToBatt=pvW-lW;
-
+    var battToInv=0;
     var invToGrid=0;
-    if(gridAvail&&!isChg&&pvW>lW+10) invToGrid=pvW-lW;
+
+    // بیٹری کو جو واٹس مل رہی ہیں ان کا حساب
+    var battChgW = (isChg && battA > 0) ? Math.abs(battA * battV) : 0;
+
+    if(isChg && chgSrc === 'grid') {
+        // اگر گرڈ سے چارج ہو رہی ہے
+        invToBatt = battChgW;
+        gridToInv = (espGridW > 10) ? espGridW : (invToLoad + battChgW);
+    } else if(isChg && chgSrc === 'solar+grid') {
+        // اگر سولر اور گرڈ دونوں سے چارج ہو
+        invToBatt = battChgW;
+        var totalNeed = invToLoad + battChgW;
+        if(pvW >= totalNeed) { invToGrid = pvW - totalNeed; }
+        else { gridToInv = totalNeed - pvW; }
+    } else if(isChg && chgSrc === 'solar') {
+        // اگر صرف سولر سے چارج ہو رہی ہو
+        if(pvW > invToLoad+10) { invToBatt = pvW - invToLoad; }
+        else { invToBatt = battChgW; }
+    } else {
+        // اگر چارج نہیں ہو رہی (لوڈ یا بیٹری سے چل رہا ہے)
+        if(gridAvail && espGridW > 10 && pvW < lW) { gridToInv = espGridW; }
+        else if(pvW > invToLoad && gridAvail) { invToGrid = pvW - invToLoad; }
+        else if(pvW < invToLoad && !gridAvail) { battToInv = invToLoad - pvW; }
+    }
 
     if(solarIn>10)activeFlows.push({f:'solar',t:'inverter',p:solarIn,c:'#f59e0b'});
     if(gridToInv>10)activeFlows.push({f:'grid',t:'inverter',p:gridToInv,c:'#3b82f6'});
@@ -324,7 +346,7 @@ function updNodes(d,r){
 }
 
 /* ============================================================
-   mapD — پوزیشن 9 = چارج ایمپیر (درست ثابت ہوا!)
+   mapD — ایمپیر اور ڈیٹا میپنگ کا فنکشن
    ============================================================ */
 function mapD(raw){
     if(!raw)return null;
@@ -341,7 +363,7 @@ function mapD(raw){
     var espBattA=parseFloat(d.batteryA)||0;
     var espGridW=parseFloat(d.gridW)||0;
 
-    /* Raw فال بیک — صرف وولٹیج/لوڈ */
+    /* Raw فال بیک */
     var rp=null;
     if(d.raw){
         rp=parseRawString(d.raw);
@@ -362,32 +384,25 @@ function mapD(raw){
     var pvChg=((flInt>>2)&1)?true:false;
     var acChg=((flInt>>4)&1)?true:false;
 
-    /* ★★★ پوزیشن 9 = چارج ایمپیر (0.1A) ★★★ */
     var rawChgA = 0;
     if(rp) rawChgA = (rp.pos9 || 0) / 10.0;
 
-    /* ESP سے isCharging پڑھیں */
     var espIsChg = (d.isCharging === true || d.isCharging === 1 || d.isCharging === 'true');
-
-    /* ★ دووں مل کر کے فیصلہ */
     var isChg = espIsChg || (rawChgA > 0.05);
 
-    /* اگر چارج ہو لیکن سورس معلوم نہیں تو آئیڈل */
     var chgSrc = d.chargingSrc || 'none';
     if (isChg && chgSrc === 'none') isChg = false;
 
-    /* بیٹری فیصد */
     var bp=0;
     if(bPct>0&&bPct<=100) bp=Math.round(bPct);
     else{if(bV>=13)bp=100;else if(bV<=10.5)bp=0;else bp=Math.round(((bV-10.5)/2.5)*100);}
     bp=Math.max(0,Math.min(100,bp));
 
-    /* بیٹری کرنٹ — چارج تو +ve، ڈسچارج تو -ve */
+    /* ★ ایمپیر کا مسئلہ حل: اب ESP کا 9 ایمپیر 9 ہی رہے گا ★ */
     var finalBattA = 0;
-    if (isChg) finalBattA = rawChgA;
+    if (isChg) finalBattA = (espBattA > 0) ? espBattA : rawChgA;
     else if (espBattA < -0.1) finalBattA = espBattA;
 
-    /* Raw UI */
     var rawHtml = '';
     if (rp) {
         rawHtml += '<b>AC In:</b> <span class="g">' + rp.acInV + 'V</span> ' + rp.acInHz + 'Hz  ';
@@ -475,7 +490,6 @@ function updUI(d) {
     else bF.style.background = 'var(--battC)';
     document.getElementById('bBP').textContent = Math.round(bp) + '%';
 
-    /* ★ بیٹری اسٹیٹس — پوزیشن 9 سے */
     var cs = document.getElementById('bS');
     var rawChg = (d.battery_current || 0);
     var chgSrc = d.charging_source || 'none';
@@ -503,7 +517,7 @@ function updUI(d) {
     document.getElementById('lF').textContent = (d.load_frequency || 0).toFixed(1);
     document.getElementById('lK').textContent = (d.today_energy || 0).toFixed(3);
 
-    /* اسٹیٹس ٹیبل */
+    /* ★System Status کی لسٹ میں PV Volt اور Panel Amp شامل کیا گیا★ */
     var srcArr = [];
     if (r.solarIn > 10) srcArr.push('\u2600\uFE0F solar ' + Math.round(r.solarIn) + 'W');
     if (r.gridToInv > 10) srcArr.push('\uD83D\uDD0C grid ' + Math.round(r.gridToInv) + 'W');
@@ -536,11 +550,13 @@ function updUI(d) {
         { l: 'power source', v: (d.power_source || 'none').toUpperCase(), ok: d.power_source === 'solar', clr: psColor },
         { l: 'battery', v: battText, ok: battOk },
         { l: 'grid', v: gridText, ok: gridOk },
-        { l: 'panel', v: Math.round(d.scc_pv_voltage || 0) + 'V / ' + (d.panel_amperes || 0).toFixed(2) + 'A', ok: (d.pv_power || 0) > 10 },
+        { l: 'pv voltage', v: Math.round(d.pv_voltage || 0) + ' V', ok: (d.pv_voltage || 0) > 10, clr: 'var(--solar)' },
+        { l: 'panel volt/amp', v: Math.round(d.scc_pv_voltage || 0) + 'V / ' + (d.panel_amperes || 0).toFixed(1) + 'A', ok: (d.panel_amperes || 0) > 0.1, clr: 'var(--solar)' },
         { l: 'load', v: Math.round(d.load_watts) + 'W' + (d.load_percent ? ' / ' + d.load_percent + '%' : ''), ok: d.load_watts > 0 },
         { l: 'inverter', v: d.inverter_on ? 'chaloo' : 'band', ok: d.inverter_on },
         { l: 'uptime', v: us, ok: true }
     ];
+    
     var html = '';
     for (var i = 0; i < items.length; i++) {
         var it = items[i];
@@ -592,10 +608,11 @@ function initCharts() {
     } catch (e) { console.warn('chart fail:', e); }
 }
 
+/* ★ ڈیمو موڈ میں 4 سین بنائے گئے ہیں تاکہ آپ گرڈ چارجنگ بھی دیکھ سکیں ★ */
 var demoScene = 0;
 function refDemo() {
     if (conn) return;
-    demoScene = (demoScene + 1) % 3;
+    demoScene = (demoScene + 1) % 4;
     var m = {
         battery_voltage: 13.03, battery_percent: 90, battery_current: 0,
         battery_charging: false,
@@ -607,12 +624,13 @@ function refDemo() {
         charging_source: 'none', power_source: 'grid',
         timestamp: Date.now()
     };
-    if (demoScene === 0) {
+    
+    if (demoScene === 0) { // صرف گریڈ لوڈ
         m.pv_voltage = 0; m.pv_current = 0; m.pv_power = 0;
         m.battery_charging = false; m.charging_source = 'none'; m.power_source = 'grid';
         m.grid_watts = 64; m.grid_available = true;
         m.raw = '(221.6 49.8 221.6 49.8 0093 0064 004 415 13.03 000 069 050 00.1 007.0 00.00 00000 00000001 00 00 00000 010w';
-    } else if (demoScene === 1) {
+    } else if (demoScene === 1) { // صرف سولر چارجنگ
         m.pv_voltage = 38.5; m.pv_current = 12.3; m.pv_power = Math.round(38.5 * 12.3);
         m.scc_pv_voltage = 45; m.panel_amperes = 12.3;
         m.battery_charging = true; m.charging_source = 'solar'; m.power_source = 'solar';
@@ -622,7 +640,7 @@ function refDemo() {
         m.battery_voltage = 13.6; m.battery_percent = 95;
         m.battery_current = 12.3;
         m.raw = '(221.0 49.8 221.0 49.8 0' + m.load_watts + ' ' + m.load_watts + ' 015 415 13.60 123 000 45 12.3 473.0 00.00 00000 00010101 00 00 00000 010w';
-    } else {
+    } else if (demoScene === 2) { // بیٹری ڈسچارج
         m.pv_voltage = 0; m.pv_current = 0; m.pv_power = 0;
         m.battery_charging = false; m.charging_source = 'none'; m.power_source = 'battery';
         m.battery_current = -5.2;
@@ -631,6 +649,16 @@ function refDemo() {
         m.load_watts = Math.round(80 + Math.random() * 250);
         m.battery_voltage = 12.5; m.battery_percent = 60;
         m.raw = '(000.0 00.0 220.5 49.8 00' + m.load_watts + ' ' + m.load_watts + ' 006 380 12.50 000 035 000 00.0 000.0 00.00 00000 00000001 00 00 00000 010w';
+    } else if (demoScene === 3) { // گرڈ سے چارجنگ + پینل ڈیٹا
+        m.pv_voltage = 15.2; m.pv_current = 0.5; m.pv_power = 7; // رات کے وقت تھوڑی سولر
+        m.scc_pv_voltage = 18.5; m.panel_amperes = 0.5;
+        m.battery_charging = true; m.charging_source = 'grid'; m.power_source = 'grid';
+        m.flag_ac_chg = true;
+        m.grid_voltage = 221; m.grid_available = true; m.grid_watts = 180;
+        m.load_watts = 65;
+        m.battery_voltage = 13.8; m.battery_percent = 92;
+        m.battery_current = 9.5; // یہیں 9.5A دکھائے گا 0.9 نہیں
+        m.raw = '(221.0 49.8 221.0 49.8 0065 0065 003 415 13.80 095 000 18 00.5 007.0 00.00 00000 00010001 00 00 00000 010w';
     }
     updUI(m); document.getElementById('rawD').textContent = JSON.stringify(m, null, 2);
 }
