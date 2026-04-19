@@ -629,7 +629,35 @@ function pushAlert(t,m,tp){const k=t+m,n=Date.now();if(lastAlertTimes[k]&&n-last
 function clearAlerts(){document.getElementById('alertsList').innerHTML='';document.getElementById('alertsFullList').innerHTML='<p class="text-xs text-center py-8" style="color:var(--muted);">Clear</p>';document.getElementById('sidebarAlertDot').style.display='none';lastAlertTimes={};}
 
 /* ============================================= INIT ============================================= */
-window.addEventListener('DOMContentLoaded',()=>{const s=localStorage.getItem('sg_cfg');if(s){try{connectFirebase();}catch(e){}}});
-</script>
+/* ============================================= INIT ============================================= */
+window.addEventListener('DOMContentLoaded',()=>{
+    // Pehle check karein ke purani settings (sg_firebase) toh nahi hain
+    let cfg = localStorage.getItem('sg_cfg');
+    if (!cfg) {
+        let old = localStorage.getItem('sg_firebase'); // Purane version ki key
+        if (old) {
+            try {
+                const o = JSON.parse(old);
+                cfg = JSON.stringify({ dbUrl: o.databaseURL, path: o.dataPath, apiKey: o.apiKey });
+                localStorage.setItem('sg_cfg', cfg); // Naye format mein save kar do
+            } catch(e) {}
+        }
+    }
+
+    // Agar settings mili hain, toh unhe input fields mein daalo aur connect karo
+    if(cfg){
+        try{
+            const c=JSON.parse(cfg);
+            document.getElementById('cfgDbUrl').value = c.dbUrl || '';
+            document.getElementById('cfgDataPath').value = c.path || '';
+            document.getElementById('cfgApiKey').value = c.apiKey || '';
+            loadMap(); // Field mapping load karo
+            connectFirebase(); // Auto connect karo
+        }catch(e){}
+    } else {
+        // Agar pehli baar open kar rahe hain toh settings wala popup khol do
+        openConfigModal();
+    }
+});</script>
 </body>
 </html>
