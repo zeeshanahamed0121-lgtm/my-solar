@@ -35,7 +35,6 @@
             min-height: 100vh;
         }
         h1,h2,h3,h4,h5 { font-family: 'Outfit', sans-serif; }
-
         .bg-grid {
             position: fixed; inset:0; z-index:0;
             background-image:
@@ -47,7 +46,6 @@
             animation: gridPulse 8s ease-in-out infinite;
         }
         @keyframes gridPulse { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
-
         .solar-orb {
             position: fixed; top: -80px; right: 10%;
             width: 200px; height: 200px;
@@ -60,7 +58,6 @@
             0%,100% { transform: translateY(0) scale(1); }
             50% { transform: translateY(30px) scale(1.1); }
         }
-
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -78,7 +75,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .flow-container { position: relative; width:100%; height:260px; overflow:hidden; }
         .flow-node {
             position: absolute;
@@ -94,7 +90,6 @@
         .flow-node .icon { font-size: 1.4rem; margin-bottom: 1px; }
         .flow-node .label { font-size: 0.55rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
         .flow-node .value { font-size: 0.75rem; font-weight: 700; font-family:'Outfit'; }
-
         .flow-svg { position:absolute; inset:0; z-index:1; }
         .flow-svg path {
             stroke: var(--border); stroke-width: 2; fill: none;
@@ -106,13 +101,11 @@
             filter: drop-shadow(0 0 4px rgba(245,158,11,0.5));
         }
         @keyframes dashFlow { to { stroke-dashoffset: -20; } }
-
         .stat-icon-wrap {
             width: 48px; height: 48px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem;
         }
-
         .alert-dot {
             width: 8px; height: 8px; border-radius: 50%;
             animation: alertPulse 1.5s ease-in-out infinite;
@@ -121,11 +114,9 @@
             0%,100% { opacity:1; transform:scale(1); }
             50% { opacity:0.5; transform:scale(1.5); }
         }
-
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
         .toast {
             position: fixed; bottom: 30px; right: 30px;
             padding: 14px 24px; border-radius: 12px;
@@ -139,7 +130,6 @@
         .toast.t-ok { border-color: rgba(34,197,94,.4); }
         .toast.t-err { border-color: rgba(239,68,68,.4); }
         .toast.t-info { border-color: rgba(56,189,248,.4); }
-
         .sidebar {
             position: fixed; left:0; top:0; bottom:0;
             width: 72px; background: var(--card);
@@ -161,14 +151,11 @@
             width: 4px; height: 24px; background: var(--accent);
             border-radius: 0 4px 4px 0;
         }
-
         .main-content { margin-left: 72px; padding: 20px 28px; position: relative; z-index: 1; }
-
         .status-pill {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
         }
-
         .tab-btn {
             padding: 8px 18px; border-radius: 10px; font-size: 0.8rem; font-weight: 500;
             color: var(--muted); cursor: pointer; transition: all 0.3s; border: 1px solid transparent;
@@ -178,10 +165,8 @@
             background: rgba(245,158,11,0.12); color: var(--accent);
             border-color: rgba(245,158,11,0.3);
         }
-
         .fade-in { animation: fadeIn 0.6s ease forwards; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
-
         .modal-overlay {
             position: fixed; inset:0; background: rgba(0,0,0,0.7);
             z-index: 1000; display: flex; align-items: center; justify-content: center;
@@ -204,7 +189,6 @@
             display: block; font-size: 0.75rem; color: var(--muted);
             margin-bottom: 6px; font-weight: 500;
         }
-
         .btn-primary {
             padding: 12px 28px; border-radius: 12px; border: none;
             background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -219,7 +203,6 @@
             cursor: pointer; transition: all 0.3s; font-family: 'Outfit';
         }
         .btn-secondary:hover { border-color: var(--muted); color: var(--fg); }
-
         .conn-indicator {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 6px 14px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
@@ -228,26 +211,18 @@
         .conn-online { background: rgba(34,197,94,0.1); color: var(--green); }
         .conn-offline { background: rgba(239,68,68,0.1); color: var(--red); }
         .conn-connecting { background: rgba(245,158,11,0.1); color: var(--accent); }
-
         .data-path-tag {
             display: inline-flex; align-items: center; gap: 4px;
             padding: 3px 10px; border-radius: 8px;
             background: rgba(245,158,11,0.08); color: var(--accent);
             font-size: 0.65rem; font-family: monospace;
         }
-
         .map-section { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
         .map-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .map-grid label { font-size: 0.7rem; color: var(--muted); margin-bottom: 4px; }
         .map-grid input { font-size: 0.78rem; padding: 8px 10px; }
-
-        .cmd-section {
-            margin-top: 16px; padding-top: 16px;
-            border-top: 1px solid var(--border);
-        }
-        .cmd-row {
-            display: flex; gap: 8px; align-items: flex-end; margin-bottom: 10px;
-        }
+        .cmd-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+        .cmd-row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 10px; }
         .cmd-row .cmd-field { flex: 1; }
         .cmd-row label { font-size: 0.7rem; color: var(--muted); margin-bottom: 4px; display: block; }
         .cmd-row input, .cmd-row select {
@@ -261,11 +236,9 @@
             padding: 8px 16px; border-radius: 8px; border: none;
             background: var(--accent); color: var(--bg);
             font-weight: 700; font-size: 0.78rem; cursor: pointer;
-            font-family: 'Outfit'; white-space: nowrap;
-            transition: all 0.2s;
+            font-family: 'Outfit'; white-space: nowrap; transition: all 0.2s;
         }
         .cmd-btn:hover { opacity: 0.85; }
-
         .fb-log-box {
             background: var(--bg); border-radius: 10px; padding: 10px;
             font-family: monospace; font-size: 0.65rem; color: var(--muted);
@@ -275,15 +248,12 @@
         .fb-log-box .log-ok { color: var(--green); }
         .fb-log-box .log-warn { color: var(--accent); }
         .fb-log-box .log-err { color: var(--red); }
-
         .raw-viewer {
             background: var(--bg); border-radius: 12px; padding: 16px;
             font-family: monospace; font-size: 0.72rem; color: var(--green);
-            overflow: auto; max-height: 300px; line-height: 1.7;
-            display: none;
+            overflow: auto; max-height: 300px; line-height: 1.7; display: none;
         }
         .raw-viewer.open { display: block; }
-
         .collapse-toggle {
             display: flex; align-items: center; justify-content: space-between;
             padding: 10px 0; cursor: pointer; user-select: none;
@@ -292,7 +262,6 @@
         .collapse-toggle.open i { transform: rotate(90deg); }
         .collapse-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
         .collapse-body.open { max-height: 2000px; }
-
         @media (max-width: 1024px) {
             .sidebar { display: none; }
             .main-content { margin-left: 0; padding: 16px; }
@@ -307,7 +276,6 @@
 <div class="bg-grid"></div>
 <div class="solar-orb"></div>
 
-<!-- Sidebar -->
 <nav class="sidebar" aria-label="Main Navigation">
     <div style="margin-bottom:24px;">
         <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;">
@@ -322,24 +290,14 @@
         <i class="fas fa-bell"></i>
         <span id="sidebarAlertDot" style="position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;display:none;"></span>
     </div>
-    <div class="sidebar-item" title="Firebase Config" onclick="openConfigModal()" style="margin-top:auto;">
-        <i class="fas fa-database"></i>
-    </div>
+    <div class="sidebar-item" title="Firebase Config" onclick="openConfigModal()" style="margin-top:auto;"><i class="fas fa-database"></i></div>
 </nav>
 
-<!-- Main Content -->
 <div class="main-content">
-
-    <!-- Top Bar -->
     <header class="flex items-center justify-between mb-6 fade-in flex-wrap gap-3">
         <div>
-            <h1 class="text-2xl font-extrabold tracking-tight" style="font-family:'Outfit';">
-                SolarGuard <span class="glow-text">Pro</span>
-            </h1>
-            <p class="text-xs mt-1" style="color:var(--muted);">
-                Firebase Realtime Monitoring
-                <span class="data-path-tag ml-2" id="dataPathTag">not connected</span>
-            </p>
+            <h1 class="text-2xl font-extrabold tracking-tight" style="font-family:'Outfit';">SolarGuard <span class="glow-text">Pro</span></h1>
+            <p class="text-xs mt-1" style="color:var(--muted);">Firebase Realtime Monitoring <span class="data-path-tag ml-2" id="dataPathTag">not connected</span></p>
         </div>
         <div class="flex items-center gap-3 flex-wrap">
             <div class="conn-indicator conn-offline" id="connStatus">
@@ -354,16 +312,12 @@
         </div>
     </header>
 
-    <!-- ============ DASHBOARD VIEW ============ -->
+    <!-- DASHBOARD -->
     <div id="view-dashboard">
-
-        <!-- Stat Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="card p-5 fade-in" style="animation-delay:0.05s;">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.12);">
-                        <i class="fas fa-sun" style="color:var(--accent);"></i>
-                    </div>
+                    <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.12);"><i class="fas fa-sun" style="color:var(--accent);"></i></div>
                     <span class="status-pill" id="solarTrend" style="background:rgba(122,139,170,0.1);color:var(--muted);">--</span>
                 </div>
                 <p class="text-xs mb-1" style="color:var(--muted);">Solar Generation</p>
@@ -372,9 +326,7 @@
             </div>
             <div class="card p-5 fade-in" style="animation-delay:0.1s;">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="stat-icon-wrap" style="background:rgba(56,189,248,0.12);">
-                        <i class="fas fa-home" style="color:var(--blue);"></i>
-                    </div>
+                    <div class="stat-icon-wrap" style="background:rgba(56,189,248,0.12);"><i class="fas fa-home" style="color:var(--blue);"></i></div>
                     <span class="status-pill" id="homeTrend" style="background:rgba(122,139,170,0.1);color:var(--muted);">--</span>
                 </div>
                 <p class="text-xs mb-1" style="color:var(--muted);">Home Consumption</p>
@@ -383,9 +335,7 @@
             </div>
             <div class="card p-5 fade-in" style="animation-delay:0.15s;">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="stat-icon-wrap" style="background:rgba(34,197,94,0.12);">
-                        <i class="fas fa-plug" style="color:var(--green);"></i>
-                    </div>
+                    <div class="stat-icon-wrap" style="background:rgba(34,197,94,0.12);"><i class="fas fa-plug" style="color:var(--green);"></i></div>
                     <span class="status-pill" id="gridStatusPill" style="background:rgba(122,139,170,0.1);color:var(--muted);">Idle</span>
                 </div>
                 <p class="text-xs mb-1" style="color:var(--muted);">Grid Power</p>
@@ -394,9 +344,7 @@
             </div>
             <div class="card p-5 fade-in" style="animation-delay:0.2s;">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="stat-icon-wrap" style="background:rgba(168,85,247,0.12);">
-                        <i class="fas fa-battery-half" style="color:var(--purple);"></i>
-                    </div>
+                    <div class="stat-icon-wrap" style="background:rgba(168,85,247,0.12);"><i class="fas fa-battery-half" style="color:var(--purple);"></i></div>
                     <span class="status-pill" id="battStatusPill" style="background:rgba(122,139,170,0.1);color:var(--muted);">Idle</span>
                 </div>
                 <p class="text-xs mb-1" style="color:var(--muted);">Battery Level</p>
@@ -407,9 +355,7 @@
             </div>
         </div>
 
-        <!-- Middle Row -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-            <!-- Power Flow -->
             <div class="card p-5 fade-in lg:col-span-1" style="animation-delay:0.25s;">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-sm font-bold">Live Power Flow</h3>
@@ -440,7 +386,7 @@
                     <div class="flow-node" style="right:5%;bottom:10px;" id="fn-grid">
                         <span class="icon" style="color:var(--muted);"><i class="fas fa-plug"></i></span>
                         <span class="label">Grid</span>
-                        <span class="value" id="flowGrid" style="color:var(--muted);">-- W</span>
+                        <span class="value" id="flowGrid" style="color:var(--muted);">-- V</span>
                     </div>
                     <div class="flow-node" style="left:50%;bottom:0;transform:translateX(-50%);" id="fn-batt">
                         <span class="icon" style="color:var(--purple);"><i class="fas fa-battery-half"></i></span>
@@ -449,8 +395,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Power Chart -->
             <div class="card p-5 fade-in lg:col-span-2" style="animation-delay:0.3s;">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
                     <h3 class="text-sm font-bold">Power Generation</h3>
@@ -460,323 +404,135 @@
                         <button class="tab-btn" onclick="setChartRange(this,'week')">Week</button>
                     </div>
                 </div>
-                <div style="height:220px;">
-                    <canvas id="powerChart"></canvas>
-                </div>
+                <div style="height:220px;"><canvas id="powerChart"></canvas></div>
             </div>
         </div>
 
-        <!-- Bottom Row -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-            <!-- Energy Donut -->
             <div class="card p-5 fade-in" style="animation-delay:0.35s;">
                 <h3 class="text-sm font-bold mb-4">Energy Distribution</h3>
-                <div style="height:180px;display:flex;align-items:center;justify-content:center;">
-                    <canvas id="donutChart"></canvas>
-                </div>
+                <div style="height:180px;display:flex;align-items:center;justify-content:center;"><canvas id="donutChart"></canvas></div>
                 <div class="grid grid-cols-4 gap-2 mt-4">
-                    <div class="text-center">
-                        <div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--green);"></div>
-                        <p class="text-xs" style="color:var(--muted);">Home</p>
-                        <p class="text-sm font-bold" id="donutHome">--</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--accent);"></div>
-                        <p class="text-xs" style="color:var(--muted);">Export</p>
-                        <p class="text-sm font-bold" id="donutExport">--</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--purple);"></div>
-                        <p class="text-xs" style="color:var(--muted);">Charge</p>
-                        <p class="text-sm font-bold" id="donutBatt">--</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--blue);"></div>
-                        <p class="text-xs" style="color:var(--muted);">Grid</p>
-                        <p class="text-sm font-bold" id="donutGrid">--</p>
-                    </div>
+                    <div class="text-center"><div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--green);"></div><p class="text-xs" style="color:var(--muted);">Home</p><p class="text-sm font-bold" id="donutHome">--</p></div>
+                    <div class="text-center"><div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--accent);"></div><p class="text-xs" style="color:var(--muted);">Export</p><p class="text-sm font-bold" id="donutExport">--</p></div>
+                    <div class="text-center"><div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--purple);"></div><p class="text-xs" style="color:var(--muted);">Charge</p><p class="text-sm font-bold" id="donutBatt">--</p></div>
+                    <div class="text-center"><div class="w-2 h-2 rounded-full mx-auto mb-1" style="background:var(--blue);"></div><p class="text-xs" style="color:var(--muted);">Grid</p><p class="text-sm font-bold" id="donutGrid">--</p></div>
                 </div>
             </div>
-
-            <!-- Inverter Details -->
             <div class="card p-5 fade-in" style="animation-delay:0.4s;">
                 <h3 class="text-sm font-bold mb-4">Inverter Details</h3>
                 <div class="space-y-3" id="inverterDetails">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Status</span>
-                        <span class="status-pill" id="invStatus" style="background:rgba(122,139,170,0.1);color:var(--muted);">
-                            <span style="width:5px;height:5px;background:var(--muted);border-radius:50%;display:inline-block;" id="invStatusDot"></span> Waiting
-                        </span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">AC In Voltage</span>
-                        <span class="text-xs font-semibold" id="invVoltage">-- V</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">AC Out Voltage</span>
-                        <span class="text-xs font-semibold" id="invOutVolt">-- V</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Frequency</span>
-                        <span class="text-xs font-semibold" id="invFreq">-- Hz</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Battery Voltage</span>
-                        <span class="text-xs font-semibold" id="invBattV">-- V</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Battery Current</span>
-                        <span class="text-xs font-semibold" id="invBattA">-- A</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">PV Voltage</span>
-                        <span class="text-xs font-semibold" id="pvVoltage">-- V</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">PV Current</span>
-                        <span class="text-xs font-semibold" id="pvCurrent">-- A</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Load VA</span>
-                        <span class="text-xs font-semibold" id="invLoadVA">-- VA</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Charging Source</span>
-                        <span class="text-xs font-semibold" id="invChgSrc">--</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Today Energy</span>
-                        <span class="text-xs font-semibold" id="invTodayKwh">-- kWh</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs" style="color:var(--muted);">Last Update</span>
-                        <span class="text-xs font-semibold" id="lastUpdate">--</span>
-                    </div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Status</span><span class="status-pill" id="invStatus" style="background:rgba(122,139,170,0.1);color:var(--muted);"><span style="width:5px;height:5px;background:var(--muted);border-radius:50%;display:inline-block;" id="invStatusDot"></span> Waiting</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">AC In Voltage</span><span class="text-xs font-semibold" id="invVoltage">-- V</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">AC Out Voltage</span><span class="text-xs font-semibold" id="invOutVolt">-- V</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Frequency</span><span class="text-xs font-semibold" id="invFreq">-- Hz</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Battery Voltage</span><span class="text-xs font-semibold" id="invBattV">-- V</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Battery Current</span><span class="text-xs font-semibold" id="invBattA">-- A</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">PV Voltage</span><span class="text-xs font-semibold" id="pvVoltage">-- V</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">PV Current</span><span class="text-xs font-semibold" id="pvCurrent">-- A</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Load VA</span><span class="text-xs font-semibold" id="invLoadVA">-- VA</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Charging Source</span><span class="text-xs font-semibold" id="invChgSrc">--</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Today Energy</span><span class="text-xs font-semibold" id="invTodayKwh">-- kWh</span></div>
+                    <div class="flex justify-between items-center"><span class="text-xs" style="color:var(--muted);">Last Update</span><span class="text-xs font-semibold" id="lastUpdate">--</span></div>
                 </div>
             </div>
-
-            <!-- Firebase Data Log + Alerts -->
             <div class="space-y-4">
                 <div class="card p-5 fade-in" style="animation-delay:0.45s;">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-sm font-bold">Firebase Data Log</h3>
-                        <span class="text-xs" style="color:var(--muted);" id="dataPointCount">0 points</span>
-                    </div>
-                    <div class="fb-log-box" id="firebaseLog">
-                        <p>// Waiting for Firebase connection...</p>
-                    </div>
+                    <div class="flex items-center justify-between mb-3"><h3 class="text-sm font-bold">Firebase Data Log</h3><span class="text-xs" style="color:var(--muted);" id="dataPointCount">0 points</span></div>
+                    <div class="fb-log-box" id="firebaseLog"><p>// Waiting for Firebase connection...</p></div>
                 </div>
                 <div class="card p-5 fade-in" style="animation-delay:0.5s;">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-sm font-bold">System Alerts</h3>
-                        <span class="text-xs cursor-pointer" style="color:var(--accent);" onclick="clearAlerts()">Clear All</span>
-                    </div>
+                    <div class="flex items-center justify-between mb-3"><h3 class="text-sm font-bold">System Alerts</h3><span class="text-xs cursor-pointer" style="color:var(--accent);" onclick="clearAlerts()">Clear All</span></div>
                     <div class="space-y-3" id="alertsList" style="max-height:200px;overflow-y:auto;">
-                        <div class="flex items-start gap-3 p-2 rounded-lg" style="background:rgba(245,158,11,0.05);">
-                            <div class="alert-dot mt-1" style="background:var(--accent);flex-shrink:0;"></div>
-                            <div>
-                                <p class="text-xs font-semibold">Firebase Not Connected</p>
-                                <p class="text-xs" style="color:var(--muted);">Configure Firebase to start receiving live data</p>
-                            </div>
-                        </div>
+                        <div class="flex items-start gap-3 p-2 rounded-lg" style="background:rgba(245,158,11,0.05);"><div class="alert-dot mt-1" style="background:var(--accent);flex-shrink:0;"></div><div><p class="text-xs font-semibold">Firebase Not Connected</p><p class="text-xs" style="color:var(--muted);">Configure Firebase to start receiving live data</p></div></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Raw Data Viewer -->
         <div class="card p-5 fade-in mb-6" style="animation-delay:0.55s;">
             <div class="flex items-center justify-between mb-2">
                 <h3 class="text-sm font-bold">Raw Firebase Data (Live)</h3>
                 <div class="flex gap-2 items-center">
                     <span class="data-path-tag" id="rawPathTag">--</span>
-                    <button class="tab-btn" style="font-size:0.7rem;" onclick="toggleRawViewer()">
-                        <i class="fas fa-code mr-1"></i> Toggle
-                    </button>
+                    <button class="tab-btn" style="font-size:0.7rem;" onclick="toggleRawViewer()"><i class="fas fa-code mr-1"></i> Toggle</button>
                 </div>
             </div>
-            <div class="raw-viewer" id="rawDataBox">
-                <pre id="rawDataPre" style="margin:0;white-space:pre-wrap;">{}</pre>
-            </div>
+            <div class="raw-viewer" id="rawDataBox"><pre id="rawDataPre" style="margin:0;white-space:pre-wrap;">{}</pre></div>
         </div>
-
-        <footer class="text-center py-4" style="color:var(--muted);">
-            <p class="text-xs">SolarGuard Pro v3.2 — Firebase Realtime Database</p>
-        </footer>
+        <footer class="text-center py-4" style="color:var(--muted);"><p class="text-xs">SolarGuard Pro v3.2 — Firebase Realtime Database</p></footer>
     </div>
 
-    <!-- ============ POWER FLOW VIEW (full width) ============ -->
+    <!-- POWER FLOW -->
     <div id="view-flow" style="display:none;">
         <div class="card p-6 fade-in mb-6">
             <h2 class="text-lg font-extrabold mb-4" style="font-family:'Outfit';">Power Flow Diagram</h2>
             <div style="height:400px;position:relative;">
                 <svg class="flow-svg" id="flowSvgFull" viewBox="0 0 600 400" style="position:absolute;inset:0;width:100%;height:100%;">
-                    <path d="M300,40 L300,120" id="fp-solar-inv"/>
-                    <path d="M240,170 Q120,220 100,320" id="fp-inv-home"/>
-                    <path d="M360,170 Q480,220 500,320" id="fp-inv-grid"/>
-                    <path d="M300,220 L300,340" id="fp-inv-batt"/>
+                    <path d="M300,40 L300,120" id="fp-solar-inv"/><path d="M240,170 Q120,220 100,320" id="fp-inv-home"/><path d="M360,170 Q480,220 500,320" id="fp-inv-grid"/><path d="M300,220 L300,340" id="fp-inv-batt"/>
                 </svg>
-                <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);" class="flow-node" id="fpn-solar">
-                    <span class="icon" style="color:var(--accent);font-size:1.8rem;"><i class="fas fa-sun"></i></span>
-                    <span class="value" style="color:var(--accent);" id="fpSolar">-- W</span>
-                    <span class="label">Solar Panels</span>
-                </div>
-                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);" class="flow-node" id="fpn-inv">
-                    <span class="icon" style="color:var(--blue);font-size:1.6rem;"><i class="fas fa-microchip"></i></span>
-                    <span class="value" style="color:var(--blue);" id="fpInv">ON</span>
-                    <span class="label">Inverter</span>
-                </div>
-                <div style="position:absolute;bottom:10px;left:10%;" class="flow-node" id="fpn-home">
-                    <span class="icon" style="color:var(--green);font-size:1.6rem;"><i class="fas fa-home"></i></span>
-                    <span class="value" style="color:var(--green);" id="fpHome">-- W</span>
-                    <span class="label">Home Load</span>
-                </div>
-                <div style="position:absolute;bottom:10px;right:10%;" class="flow-node" id="fpn-grid">
-                    <span class="icon" style="color:var(--muted);font-size:1.6rem;"><i class="fas fa-plug"></i></span>
-                    <span class="value" id="fpGrid" style="color:var(--muted);">-- V</span>
-                    <span class="label">Grid</span>
-                </div>
-                <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);" class="flow-node" id="fpn-batt">
-                    <span class="icon" style="color:var(--purple);font-size:1.6rem;"><i class="fas fa-battery-half"></i></span>
-                    <span class="value" style="color:var(--purple);" id="fpBatt">--%</span>
-                    <span class="label">Battery</span>
-                </div>
+                <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);" class="flow-node" id="fpn-solar"><span class="icon" style="color:var(--accent);font-size:1.8rem;"><i class="fas fa-sun"></i></span><span class="value" style="color:var(--accent);" id="fpSolar">-- W</span><span class="label">Solar Panels</span></div>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);" class="flow-node" id="fpn-inv"><span class="icon" style="color:var(--blue);font-size:1.6rem;"><i class="fas fa-microchip"></i></span><span class="value" style="color:var(--blue);" id="fpInv">ON</span><span class="label">Inverter</span></div>
+                <div style="position:absolute;bottom:10px;left:10%;" class="flow-node" id="fpn-home"><span class="icon" style="color:var(--green);font-size:1.6rem;"><i class="fas fa-home"></i></span><span class="value" style="color:var(--green);" id="fpHome">-- W</span><span class="label">Home Load</span></div>
+                <div style="position:absolute;bottom:10px;right:10%;" class="flow-node" id="fpn-grid"><span class="icon" style="color:var(--muted);font-size:1.6rem;"><i class="fas fa-plug"></i></span><span class="value" id="fpGrid" style="color:var(--muted);">-- V</span><span class="label">Grid</span></div>
+                <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);" class="flow-node" id="fpn-batt"><span class="icon" style="color:var(--purple);font-size:1.6rem;"><i class="fas fa-battery-half"></i></span><span class="value" style="color:var(--purple);" id="fpBatt">--%</span><span class="label">Battery</span></div>
             </div>
         </div>
     </div>
 
-    <!-- ============ ANALYTICS VIEW ============ -->
+    <!-- ANALYTICS -->
     <div id="view-analytics" style="display:none;">
-        <div class="card p-6 fade-in mb-6">
-            <h2 class="text-lg font-extrabold mb-4" style="font-family:'Outfit';">Battery History</h2>
-            <div style="height:300px;"><canvas id="battHistoryChart"></canvas></div>
-        </div>
-        <div class="card p-6 fade-in mb-6">
-            <h2 class="text-lg font-extrabold mb-4" style="font-family:'Outfit';">Load Profile</h2>
-            <div style="height:300px;"><canvas id="loadProfileChart"></canvas></div>
-        </div>
+        <div class="card p-6 fade-in mb-6"><h2 class="text-lg font-extrabold mb-4" style="font-family:'Outfit';">Battery History</h2><div style="height:300px;"><canvas id="battHistoryChart"></canvas></div></div>
+        <div class="card p-6 fade-in mb-6"><h2 class="text-lg font-extrabold mb-4" style="font-family:'Outfit';">Load Profile</h2><div style="height:300px;"><canvas id="loadProfileChart"></canvas></div></div>
     </div>
 
-    <!-- ============ INVERTER CONTROL VIEW ============ -->
+    <!-- INVERTER CONTROL -->
     <div id="view-control" style="display:none;">
         <div class="card p-6 fade-in mb-6">
             <h2 class="text-lg font-extrabold mb-2" style="font-family:'Outfit';">Inverter QPI Commands</h2>
-            <p class="text-xs mb-5" style="color:var(--muted);">Send commands directly to your inverter via Firebase. ESP32 will forward these as serial commands.</p>
-
-            <div class="cmd-row">
-                <div class="cmd-field">
-                    <label>Charge Current (A)</label>
-                    <input type="number" id="cmdChgA" value="30" min="0" max="120">
-                </div>
-                <button class="cmd-btn" onclick="sendQPI('PCVV'+document.getElementById('cmdChgA').value+'.0')">Set Charge Current</button>
-            </div>
-
-            <div class="cmd-row">
-                <div class="cmd-field">
-                    <label>Charging Source Priority</label>
-                    <select id="cmdChgSrc">
-                        <option value="MCHGV01">Solar First</option>
-                        <option value="MCHGV00">Grid First</option>
-                        <option value="MCHGV02">Solar + Grid</option>
-                        <option value="MCHGV03">Solar Only</option>
-                    </select>
-                </div>
-                <button class="cmd-btn" onclick="sendQPI(document.getElementById('cmdChgSrc').value)">Set Charging Source</button>
-            </div>
-
-            <div class="cmd-row">
-                <div class="cmd-field">
-                    <label>Output Source Priority</label>
-                    <select id="cmdOutSrc">
-                        <option value="POP02">SBU (Solar→Battery→Grid)</option>
-                        <option value="POP01">SOL (Solar First)</option>
-                        <option value="POP00">UTI (Grid First)</option>
-                    </select>
-                </div>
-                <button class="cmd-btn" onclick="sendQPI(document.getElementById('cmdOutSrc').value)">Set Output Source</button>
-            </div>
-
-            <div class="cmd-row">
-                <div class="cmd-field">
-                    <label>Custom QPI Command</label>
-                    <input type="text" id="cmdCustom" placeholder="QPIGS or any QPI command">
-                </div>
-                <button class="cmd-btn" onclick="sendQPI(document.getElementById('cmdCustom').value)">Send</button>
-            </div>
-
-            <!-- Command Response -->
-            <div style="margin-top:16px;padding:12px;border-radius:10px;background:var(--bg);border:1px solid var(--border);">
-                <p class="text-xs font-semibold mb-2" style="color:var(--muted);">Command Response</p>
-                <p class="text-sm font-mono" id="cmdResponse" style="color:var(--green);min-height:20px;">No command sent yet</p>
-            </div>
+            <p class="text-xs mb-5" style="color:var(--muted);">Send commands via Firebase. ESP32 forwards as serial QPI commands.</p>
+            <div class="cmd-row"><div class="cmd-field"><label>Charge Current (A)</label><input type="number" id="cmdChgA" value="30" min="0" max="120"></div><button class="cmd-btn" onclick="sendQPI('PCVV'+document.getElementById('cmdChgA').value+'.0')">Set Charge Current</button></div>
+            <div class="cmd-row"><div class="cmd-field"><label>Charging Source Priority</label><select id="cmdChgSrc"><option value="MCHGV01">Solar First</option><option value="MCHGV00">Grid First</option><option value="MCHGV02">Solar + Grid</option><option value="MCHGV03">Solar Only</option></select></div><button class="cmd-btn" onclick="sendQPI(document.getElementById('cmdChgSrc').value)">Set Charging Source</button></div>
+            <div class="cmd-row"><div class="cmd-field"><label>Output Source Priority</label><select id="cmdOutSrc"><option value="POP02">SBU (Solar-Battery-Grid)</option><option value="POP01">SOL (Solar First)</option><option value="POP00">UTI (Grid First)</option></select></div><button class="cmd-btn" onclick="sendQPI(document.getElementById('cmdOutSrc').value)">Set Output Source</button></div>
+            <div class="cmd-row"><div class="cmd-field"><label>Custom QPI Command</label><input type="text" id="cmdCustom" placeholder="QPIGS or any command"></div><button class="cmd-btn" onclick="sendQPI(document.getElementById('cmdCustom').value)">Send</button></div>
+            <div style="margin-top:16px;padding:12px;border-radius:10px;background:var(--bg);border:1px solid var(--border);"><p class="text-xs font-semibold mb-2" style="color:var(--muted);">Command Response</p><p class="text-sm font-mono" id="cmdResponse" style="color:var(--green);min-height:20px;">No command sent yet</p></div>
         </div>
     </div>
 
-    <!-- ============ ALERTS VIEW (full) ============ -->
+    <!-- ALERTS FULL -->
     <div id="view-alerts" style="display:none;">
         <div class="card p-6 fade-in mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-extrabold" style="font-family:'Outfit';">All Alerts</h2>
-                <button class="btn-secondary" style="padding:6px 14px;font-size:0.75rem;" onclick="clearAlerts()">Clear All</button>
-            </div>
-            <div id="alertsFullList" class="space-y-3" style="max-height:70vh;overflow-y:auto;">
-                <p class="text-xs text-center py-8" style="color:var(--muted);">No alerts yet</p>
-            </div>
+            <div class="flex items-center justify-between mb-4"><h2 class="text-lg font-extrabold" style="font-family:'Outfit';">All Alerts</h2><button class="btn-secondary" style="padding:6px 14px;font-size:0.75rem;" onclick="clearAlerts()">Clear All</button></div>
+            <div id="alertsFullList" class="space-y-3" style="max-height:70vh;overflow-y:auto;"><p class="text-xs text-center py-8" style="color:var(--muted);">No alerts yet</p></div>
         </div>
     </div>
 </div>
 
-<!-- ============ FIREBASE CONFIG MODAL ============ -->
+<!-- CONFIG MODAL -->
 <div class="modal-overlay hidden" id="configModal">
     <div class="modal-box">
         <div class="flex items-center justify-between mb-6">
-            <div>
-                <h2 class="text-lg font-extrabold" style="font-family:'Outfit';">Firebase Configuration</h2>
-                <p class="text-xs mt-1" style="color:var(--muted);">Apna Firebase Realtime Database config yahan daalen</p>
-            </div>
-            <button onclick="closeConfigModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;">
-                <i class="fas fa-times"></i>
-            </button>
+            <div><h2 class="text-lg font-extrabold" style="font-family:'Outfit';">Firebase Configuration</h2><p class="text-xs mt-1" style="color:var(--muted);">Apna Firebase Realtime Database config yahan daalen</p></div>
+            <button onclick="closeConfigModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;"><i class="fas fa-times"></i></button>
         </div>
-
         <div class="p-4 rounded-xl mb-5" style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
             <p class="text-xs font-semibold" style="color:var(--accent);"><i class="fas fa-info-circle mr-1"></i> Setup Guide</p>
             <ol class="text-xs mt-2 space-y-1" style="color:var(--muted);list-style:decimal;padding-left:16px;">
-                <li>Firebase Console → Project Settings → Web app add karein</li>
+                <li>Firebase Console > Project Settings > Web app add karein</li>
                 <li>Realtime Database create karein (Test mode)</li>
                 <li>Neeche fields mein values paste karein</li>
                 <li>Data path batayein jahan ESP32 data write karta hai</li>
                 <li>Field Mapping se apne keys match karein</li>
             </ol>
         </div>
-
         <div class="space-y-4">
-            <div>
-                <label>API Key</label>
-                <input type="text" id="cfgApiKey" placeholder="AIzaSy...">
-            </div>
-            <div>
-                <label>Database URL <span style="color:var(--red);">*</span></label>
-                <input type="text" id="cfgDbUrl" placeholder="https://your-project-default-rtdb.firebaseio.com">
-            </div>
-            <div>
-                <label>Project ID</label>
-                <input type="text" id="cfgProjectId" placeholder="your-project-id">
-            </div>
-            <div>
-                <label>Data Path <span style="color:var(--red);">*</span></label>
-                <input type="text" id="cfgDataPath" placeholder="devices/inverter01 ya inverters/growatt/data">
-                <p class="text-xs mt-2" style="color:var(--muted);">
-                    Maslan: <code style="color:var(--accent);">devices/inverter01</code> ya <code style="color:var(--accent);">inverters/growatt_5000/live</code>
-                </p>
-            </div>
-
-            <!-- Field Mapping -->
+            <div><label>API Key</label><input type="text" id="cfgApiKey" placeholder="AIzaSy..."></div>
+            <div><label>Database URL <span style="color:var(--red);">*</span></label><input type="text" id="cfgDbUrl" placeholder="https://your-project-default-rtdb.firebaseio.com"></div>
+            <div><label>Project ID</label><input type="text" id="cfgProjectId" placeholder="your-project-id"></div>
+            <div><label>Data Path <span style="color:var(--red);">*</span></label><input type="text" id="cfgDataPath" placeholder="devices/inverter01 ya inverters/growatt/data"><p class="text-xs mt-2" style="color:var(--muted);">Maslan: <code style="color:var(--accent);">devices/inverter01</code></p></div>
             <div class="map-section">
                 <div class="collapse-toggle" onclick="toggleCollapse('mapCollapse',this)">
-                    <label style="color:var(--accent);font-weight:700;font-size:0.85rem;cursor:pointer;margin:0;">
-                        <i class="fas fa-exchange-alt mr-1"></i> Field Mapping (Optional — Advanced)
-                    </label>
+                    <label style="color:var(--accent);font-weight:700;font-size:0.85rem;cursor:pointer;margin:0;"><i class="fas fa-exchange-alt mr-1"></i> Field Mapping (Optional)</label>
                     <i class="fas fa-chevron-right"></i>
                 </div>
                 <div class="collapse-body" id="mapCollapse">
@@ -805,833 +561,592 @@
                 </div>
             </div>
         </div>
-
         <div class="flex gap-3 mt-6">
-            <button class="btn-primary flex-1" onclick="connectFirebase()">
-                <i class="fas fa-plug mr-2"></i>Connect & Save
-            </button>
+            <button class="btn-primary flex-1" onclick="connectFirebase()"><i class="fas fa-plug mr-2"></i>Connect & Save</button>
             <button class="btn-secondary" onclick="disconnectFirebase()">Disconnect</button>
             <button class="btn-secondary" onclick="closeConfigModal()">Cancel</button>
         </div>
     </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 /* =============================================
    GLOBALS
    ============================================= */
-let firebaseApp = null;
-let firebaseDb = null;
-let firebaseDataRef = null;
-let firebaseLogRef = null;
-let isConnected = false;
-let dataPointCounter = 0;
-let liveChartData = [];
-let previousSolar = null;
-let previousLoad = null;
-let allAlerts = [];
-let lastAlertTimes = {};
-let battHistoryData = [];
-let loadHistoryData = [];
-let currentView = 'dashboard';
+let firebaseApp=null,firebaseDb=null,firebaseDataRef=null,firebaseLogRef=null;
+let isConnected=false,dataPointCounter=0;
+let liveChartData=[],previousSolar=null,previousLoad=null;
+let allAlerts=[],lastAlertTimes={};
+let battHistoryData=[],loadHistoryData=[];
+let currentView='dashboard',chartRange='live';
 
-/* Field Mapping — Firebase key → internal name */
-const FM = {
-    pvV:'pvV', pvA:'pvA', pvW:'pvW',
-    batteryV:'batteryV', batteryA:'batteryA', batteryPercent:'batteryPercent',
-    loadW:'loadW', loadVA:'loadVA', acOutV:'acOutV', acInV:'acInV',
-    acOutFreq:'acOutFreq', gridW:'gridW',
-    isCharging:'isCharging', chargingSrc:'chargingSrc',
-    powerSource:'powerSource', pvkWh:'pvkWh',
-    sccPVV:'sccPVV', panelA:'panelA', raw:'raw',
-    statusFlags:'statusFlags', uptimeMs:'uptimeMs'
+const FM={
+    pvV:'pvV',pvA:'pvA',pvW:'pvW',
+    batteryV:'batteryV',batteryA:'batteryA',batteryPercent:'batteryPercent',
+    loadW:'loadW',loadVA:'loadVA',acOutV:'acOutV',acInV:'acInV',
+    acOutFreq:'acOutFreq',gridW:'gridW',
+    isCharging:'isCharging',chargingSrc:'chargingSrc',
+    powerSource:'powerSource',pvkWh:'pvkWh',
+    sccPVV:'sccPVV',panelA:'panelA',raw:'raw',
+    statusFlags:'statusFlags',uptimeMs:'uptimeMs'
 };
 
 /* =============================================
    UTILITIES
    ============================================= */
-function showToast(msg, type) {
-    const toast = document.getElementById('toast');
-    const icons = { error:'fa-times-circle', info:'fa-info-circle', success:'fa-check-circle' };
-    const colors = { error:'var(--red)', info:'var(--blue)', success:'var(--green)' };
-    const cls = { error:'t-err', info:'t-info', success:'t-ok' };
-    toast.className = 'toast ' + (cls[type]||'t-info');
-    toast.innerHTML = '<i class="fas '+(icons[type]||'fa-info-circle')+'" style="color:'+(colors[type]||'var(--blue)')+'"></i>' + msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3500);
+function showToast(msg,type){
+    const t=document.getElementById('toast');
+    const ic={error:'fa-times-circle',info:'fa-info-circle',success:'fa-check-circle'};
+    const cl={error:'var(--red)',info:'var(--blue)',success:'var(--green)'};
+    const cs={error:'t-err',info:'t-info',success:'t-ok'};
+    t.className='toast '+(cs[type]||'t-info');
+    t.innerHTML='<i class="fas '+(ic[type]||ic.info)+'" style="color:'+(cl[type]||cl.info)+'"></i>'+msg;
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);
 }
+function toggleCollapse(id,el){document.getElementById(id).classList.toggle('open');el.classList.toggle('open');}
+function toggleRawViewer(){document.getElementById('rawDataBox').classList.toggle('open');}
 
-function toggleCollapse(id, el) {
-    document.getElementById(id).classList.toggle('open');
-    el.classList.toggle('open');
-}
-
-function toggleRawViewer() {
-    document.getElementById('rawDataBox').classList.toggle('open');
-}
-
-/* =============================================
-   SIDEBAR NAVIGATION
-   ============================================= */
-function switchTab(el, view) {
-    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+function switchTab(el,view){
+    document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
     el.classList.add('active');
-    document.querySelectorAll('.main-content > div[id^="view-"]').forEach(v => v.style.display = 'none');
-    const target = document.getElementById('view-' + view);
-    if (target) target.style.display = 'block';
-    currentView = view;
+    document.querySelectorAll('.main-content > div[id^="view-"]').forEach(v=>v.style.display='none');
+    const tgt=document.getElementById('view-'+view);if(tgt)tgt.style.display='block';
+    currentView=view;
 }
 
-/* =============================================
-   LIVE CLOCK
-   ============================================= */
-setInterval(() => {
-    const now = new Date();
-    document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-}, 1000);
+setInterval(()=>{document.getElementById('liveClock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false});},1000);
 
 /* =============================================
-   FIELD MAPPING — Read/Save/Load
+   FIELD MAPPING
    ============================================= */
-function readFieldMapFromUI() {
-    const ids = ['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mLVA','mOV','mIV','mFR','mGW','mIC','mCS','mPS','mKH','mSCC','mPAN','mRAW'];
-    const keys = ['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','loadVA','acOutV','acInV','acOutFreq','gridW','isCharging','chargingSrc','powerSource','pvkWh','sccPVV','panelA','raw'];
-    for (let i = 0; i < ids.length; i++) {
-        const v = document.getElementById(ids[i]).value.trim();
-        if (v) FM[keys[i]] = v;
-    }
+function readFieldMapFromUI(){
+    const ids=['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mLVA','mOV','mIV','mFR','mGW','mIC','mCS','mPS','mKH','mSCC','mPAN','mRAW'];
+    const keys=['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','loadVA','acOutV','acInV','acOutFreq','gridW','isCharging','chargingSrc','powerSource','pvkWh','sccPVV','panelA','raw'];
+    for(let i=0;i<ids.length;i++){const v=document.getElementById(ids[i]).value.trim();if(v)FM[keys[i]]=v;}
 }
-
-function loadFieldMapToUI() {
-    const ids = ['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mLVA','mOV','mIV','mFR','mGW','mIC','mCS','mPS','mKH','mSCC','mPAN','mRAW'];
-    const keys = ['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','loadVA','acOutV','acInV','acOutFreq','gridW','isCharging','chargingSrc','powerSource','pvkWh','sccPVV','panelA','raw'];
-    for (let i = 0; i < ids.length; i++) {
-        const el = document.getElementById(ids[i]);
-        if (el) el.value = FM[keys[i]] || '';
-    }
+function loadFieldMapToUI(){
+    const ids=['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mLVA','mOV','mIV','mFR','mGW','mIC','mCS','mPS','mKH','mSCC','mPAN','mRAW'];
+    const keys=['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','loadVA','acOutV','acInV','acOutFreq','gridW','isCharging','chargingSrc','powerSource','pvkWh','sccPVV','panelA','raw'];
+    for(let i=0;i<ids.length;i++){const el=document.getElementById(ids[i]);if(el)el.value=FM[keys[i]]||'';}
 }
 
 /* =============================================
    QPI RAW STRING PARSER
    ============================================= */
-function parseQPIRaw(raw) {
-    if (!raw || typeof raw !== 'string') return null;
-    const clean = raw.replace(/^\(/, '').replace(/[)w\r\n]+$/, '').trim();
-    const parts = clean.split(/\s+/);
-    if (parts.length < 14) return null;
-    return {
-        acInV: parseFloat(parts[0])||0, acInHz: parseFloat(parts[1])||0,
-        acOutV: parseFloat(parts[2])||0, acOutHz: parseFloat(parts[3])||0,
-        loadVA: parseFloat(parts[4])||0, loadW: parseFloat(parts[5])||0,
-        loadPct: parseFloat(parts[6])||0, busV: parseFloat(parts[7])||0,
-        batteryV: parseFloat(parts[8])||0, pos9: parseFloat(parts[9])||0,
-        pos10: parseFloat(parts[10])||0, sccPVV: parseFloat(parts[11])||0,
-        pvA: parseFloat(parts[12])||0, pvW: parseFloat(parts[13])||0
-    };
+function parseQPIRaw(raw){
+    if(!raw||typeof raw!=='string')return null;
+    const clean=raw.replace(/^\(/,'').replace(/[)w\r\n]+$/,'').trim();
+    const parts=clean.split(/\s+/);
+    if(parts.length<14)return null;
+    return{acInV:parseFloat(parts[0])||0,acInHz:parseFloat(parts[1])||0,acOutV:parseFloat(parts[2])||0,acOutHz:parseFloat(parts[3])||0,loadVA:parseFloat(parts[4])||0,loadW:parseFloat(parts[5])||0,loadPct:parseFloat(parts[6])||0,busV:parseFloat(parts[7])||0,batteryV:parseFloat(parts[8])||0,pos9:parseFloat(parts[9])||0,pos10:parseFloat(parts[10])||0,sccPVV:parseFloat(parts[11])||0,pvA:parseFloat(parts[12])||0,pvW:parseFloat(parts[13])||0};
 }
 
 /* =============================================
-   DATA MAPPING — Firebase → Internal Object
+   DATA MAPPING — FIXED FLOW LOGIC
    ============================================= */
-function getVal(data, key) {
-    const fk = FM[key] || key;
-    if (!data) return null;
-    const parts = fk.split('.');
-    let r = data;
-    for (const p of parts) {
-        if (r && typeof r === 'object' && p in r) r = r[p];
-        else return null;
-    }
+function getVal(data,key){
+    const fk=FM[key]||key;if(!data)return null;
+    const parts=fk.split('.');let r=data;
+    for(const p of parts){if(r&&typeof r==='object'&&p in r)r=r[p];else return null;}
     return r;
 }
-function getNum(data, key) {
-    const v = getVal(data, key);
-    if (v === null || v === undefined) return null;
-    const n = parseFloat(v);
-    return isNaN(n) ? null : n;
-}
+function getNum(data,key){const v=getVal(data,key);if(v===null||v===undefined)return null;const n=parseFloat(v);return isNaN(n)?null:n;}
 
-function mapFirebaseData(raw) {
-    if (!raw) return null;
-    let d = raw;
-    /* Auto-detect nested: devices/inverter01 */
-    if (raw.devices && raw.devices.inverter01) d = raw.devices.inverter01;
-    else if (raw.inverter01) d = raw.inverter01;
+function mapFirebaseData(raw){
+    if(!raw)return null;
+    let d=raw;
+    if(raw.devices&&raw.devices.inverter01)d=raw.devices.inverter01;
+    else if(raw.inverter01)d=raw.inverter01;
 
-    let pvV = getNum(d,'pvV'), pvA = getNum(d,'pvA'), pvW = getNum(d,'pvW');
-    let bV = getNum(d,'batteryV'), bA = getNum(d,'batteryA'), bPct = getNum(d,'batteryPercent');
-    let lW = getNum(d,'loadW'), oV = getNum(d,'acOutV'), iV = getNum(d,'acInV');
-    let oF = getNum(d,'acOutFreq');
-    let lVA = getNum(d,'loadVA'), lPct = getNum(d,'loadVA') ? null : getNum(d,'loadPercent');
-    let sccV = getNum(d,'sccPVV'), panA = getNum(d,'panelA');
-    let espGridW = getNum(d,'gridW'), kwh = getNum(d,'pvkWh');
-    let rawStr = getVal(d,'raw') || '';
+    let pvV=getNum(d,'pvV'),pvA=getNum(d,'pvA'),pvW=getNum(d,'pvW');
+    let bV=getNum(d,'batteryV'),bA=getNum(d,'batteryA'),bPct=getNum(d,'batteryPercent');
+    let lW=getNum(d,'loadW'),oV=getNum(d,'acOutV'),iV=getNum(d,'acInV');
+    let oF=getNum(d,'acOutFreq');
+    let lVA=getNum(d,'loadVA'),lPct=null;
+    let sccV=getNum(d,'sccPVV'),panA=getNum(d,'panelA');
+    let espGridW=getNum(d,'gridW'),kwh=getNum(d,'pvkWh');
+    let rawStr=getVal(d,'raw')||'';
 
-    /* Parse QPI raw string for fallback values */
-    let rp = null;
-    if (rawStr) {
-        rp = parseQPIRaw(rawStr);
-        if (rp) {
-            if (!pvV && rp.sccPVV > 0) pvV = rp.sccPVV;
-            if (!bV && rp.batteryV > 0) bV = rp.batteryV;
-            if (!iV && rp.acInV > 0) iV = rp.acInV;
-            if (!oV && rp.acOutV > 0) oV = rp.acOutV;
-            if (oF === null && rp.acOutHz > 0) oF = rp.acOutHz;
-            if (!lW && rp.loadW > 0) lW = rp.loadW;
-            if (!lVA && rp.loadVA > 0) lVA = rp.loadVA;
-            if (!sccV && rp.sccPVV > 0) sccV = rp.sccPVV;
-            if (!pvW && rp.pvW > 0) pvW = rp.pvW;
+    /* QPI raw fallback */
+    let rp=null;
+    if(rawStr){
+        rp=parseQPIRaw(rawStr);
+        if(rp){
+            if(!pvV&&rp.sccPVV>0)pvV=rp.sccPVV;
+            if(!bV&&rp.batteryV>0)bV=rp.batteryV;
+            if(!iV&&rp.acInV>0)iV=rp.acInV;
+            if(!oV&&rp.acOutV>0)oV=rp.acOutV;
+            if(oF===null&&rp.acOutHz>0)oF=rp.acOutHz;
+            if(!lW&&rp.loadW>0)lW=rp.loadW;
+            if(!lVA&&rp.loadVA>0)lVA=rp.loadVA;
+            if(!sccV&&rp.sccPVV>0)sccV=rp.sccPVV;
+            if(!pvW&&rp.pvW>0)pvW=rp.pvW;
         }
     }
 
-    /* Status flags from QPI */
-    let fl = getVal(d,'statusFlags') || '0';
-    let flInt = parseInt(fl) || 0;
-    let rawChgA = rp ? (rp.pos9 || 0) / 10 : 0;
+    let fl=getVal(d,'statusFlags')||'0';
+    let flInt=parseInt(fl)||0;
+    let rawChgA=rp?(rp.pos9||0)/10:0;
 
     /* Charging detection */
-    let espIsChg = (getVal(d,'isCharging') === true || getVal(d,'isCharging') === 1 || getVal(d,'isCharging') === 'true');
-    let isChg = espIsChg || (rawChgA > 0.5);
+    let espIsChg=(getVal(d,'isCharging')===true||getVal(d,'isCharging')===1||getVal(d,'isCharging')==='true');
+    let isChg=espIsChg||(rawChgA>0.5);
 
     /* Charging source */
-    let chgSrc = (getVal(d,'chargingSrc') || 'none').toString().toLowerCase();
-    if (chgSrc.includes('solar') && chgSrc.includes('grid')) chgSrc = 'solar+grid';
-    else if (chgSrc.includes('solar') || chgSrc.includes('pv')) chgSrc = 'solar';
-    else if (chgSrc.includes('grid') || chgSrc.includes('ac') || chgSrc.includes('utility')) chgSrc = 'grid';
-    if (isChg && chgSrc === 'none') {
-        if (pvW > 20) chgSrc = 'solar';
-        else if ((iV||0) > 100) chgSrc = 'grid';
-        else chgSrc = 'solar';
+    let chgSrc=(getVal(d,'chargingSrc')||'none').toString().toLowerCase();
+    if(chgSrc.includes('solar')&&chgSrc.includes('grid'))chgSrc='solar+grid';
+    else if(chgSrc.includes('solar')||chgSrc.includes('pv'))chgSrc='solar';
+    else if(chgSrc.includes('grid')||chgSrc.includes('ac')||chgSrc.includes('utility'))chgSrc='grid';
+
+    /* Battery percent */
+    let bp=0;
+    if(bPct>0&&bPct<=100)bp=Math.round(bPct);
+    else{if(bV>=13)bp=100;else if(bV<=10.5)bp=0;else bp=Math.round(((bV-10.5)/2.5)*100);}
+    bp=Math.max(0,Math.min(100,bp));
+
+    let finalBA=0;
+    if(isChg)finalBA=(bA>0)?bA:rawChgA;
+    else if((bA||0)<-1)finalBA=bA;
+
+    /* ============================================
+       POWER FLOW CALCULATION — FIXED
+       Solar extra → Battery Charge (NOT Grid Import)
+       ============================================ */
+    let solarIn=pvW||0;
+    let invToLoad=(lW||0)>10?lW:0;
+    let gridToInv=0,invToBatt=0,battToInv=0,invToGrid=0;
+    let gridAvail=(iV||0)>100;
+    let battChgW=(isChg&&finalBA>0)?Math.abs(finalBA*(bV||12)):0;
+    let solarExcess=Math.max(0,solarIn-invToLoad);
+    let battFull=bp>=99;
+    let battNeedsCharge=bp<100;
+
+    /* AUTO-DETECT: agar solar excess hai aur battery charge nahi ho rahi
+       lekin battery voltage charging range mein hai → battery charge hai */
+    if(!isChg&&solarExcess>15&&battNeedsCharge&&bV>12.8){
+        isChg=true;
+        if(chgSrc==='none')chgSrc='solar';
+        battChgW=solarExcess;
+        finalBA=solarExcess/(bV||12);
     }
 
-    /* Battery percent calculation */
-    let bp = 0;
-    if (bPct > 0 && bPct <= 100) bp = Math.round(bPct);
-    else { if (bV >= 13) bp = 100; else if (bV <= 10.5) bp = 0; else bp = Math.round(((bV - 10.5) / 2.5) * 100); }
-    bp = Math.max(0, Math.min(100, bp));
-
-    /* Final battery current */
-    let finalBA = 0;
-    if (isChg) finalBA = (bA > 0) ? bA : rawChgA;
-    else if ((bA || 0) < -1) finalBA = bA;
-
-    /* Calculate power flows */
-    let solarIn = pvW || 0;
-    let invToLoad = (lW || 0) > 10 ? lW : 0;
-    let gridToInv = 0, invToBatt = 0, battToInv = 0, invToGrid = 0;
-    let battChgW = (isChg && finalBA > 0) ? Math.abs(finalBA * (bV || 12)) : 0;
-    let gridAvail = (iV || 0) > 100;
-
-    if (isChg && chgSrc === 'grid') {
-        invToBatt = battChgW;
-        gridToInv = Math.max(espGridW || 0, invToLoad + battChgW);
-    } else if (isChg && chgSrc === 'solar+grid') {
-        invToBatt = battChgW;
-        let tn = invToLoad + battChgW;
-        if (solarIn >= tn) invToGrid = solarIn - tn;
-        else gridToInv = Math.max(espGridW || 0, tn - solarIn);
-    } else if (isChg && chgSrc === 'solar') {
-        if (solarIn > invToLoad + 10) invToBatt = solarIn - invToLoad;
-        else invToBatt = battChgW;
-    } else {
-        if (gridAvail && (espGridW||0) > 10 && solarIn < lW) gridToInv = espGridW || 0;
-        else if (solarIn > invToLoad && gridAvail) invToGrid = solarIn - invToLoad;
-        else if (solarIn < invToLoad && !gridAvail) battToInv = invToLoad - solarIn;
+    if(isChg&&chgSrc==='grid'){
+        /* Grid se charging — grid import + battery charge */
+        invToBatt=battChgW;
+        let totalNeed=invToLoad+invToBatt;
+        if(solarIn>0){
+            gridToInv=Math.max(0,invToBatt-Math.max(0,solarIn-invToLoad));
+        }else{
+            gridToInv=totalNeed;
+        }
+    }else if(isChg&&chgSrc==='solar+grid'){
+        invToBatt=battChgW;
+        let totalNeed=invToLoad+invToBatt;
+        if(solarIn>=totalNeed){invToGrid=solarIn-totalNeed;gridToInv=0;}
+        else{gridToInv=totalNeed-solarIn;invToGrid=0;}
+    }else if(isChg&&chgSrc==='solar'){
+        /* SIRF SOLAR SE CHARGING — user ka main case */
+        invToBatt=battChgW||solarExcess;
+        gridToInv=0;invToGrid=0;battToInv=0;
+        if(solarIn>=invToLoad+invToBatt){
+            if(!battFull){
+                /* Sab extra battery mein jayega */
+                invToBatt=solarIn-invToLoad;
+                invToGrid=0;gridToInv=0;
+            }else{
+                /* Battery full → export */
+                invToBatt=0;invToGrid=solarExcess;
+            }
+        }else{
+            /* Solar se load cover nahi ho raha */
+            invToBatt=Math.max(0,solarIn-invToLoad);
+            if(invToBatt<5)invToBatt=0;
+        }
+    }else if(!isChg){
+        /* Charging nahi ho rahi */
+        if(solarIn>invToLoad+15){
+            if(battNeedsCharge&&bV>12.8){invToBatt=solarExcess;}
+            else if(battFull){invToGrid=solarExcess;}
+            else{invToBatt=solarExcess;}
+            gridToInv=0;battToInv=0;
+        }else if(solarIn<invToLoad-15){
+            let deficit=invToLoad-solarIn;
+            if(gridAvail){gridToInv=deficit;battToInv=0;}
+            else{battToInv=deficit;gridToInv=0;}
+            invToBatt=0;invToGrid=0;
+        }else{
+            invToBatt=0;invToGrid=0;gridToInv=0;battToInv=0;
+        }
     }
 
-    return {
-        pv_voltage: pvV || 0, pv_current: pvA || 0, pv_power: pvW || 0,
-        scc_pv_voltage: sccV || 0, panel_amperes: panA || 0,
-        battery_voltage: bV || 0, battery_percent: bp, battery_current: finalBA,
-        battery_charging: isChg, charging_source: chgSrc,
-        power_source: getVal(d,'powerSource') || 'none',
-        load_watts: lW || 0, load_va: lVA || 0, load_percent: lPct || 0,
-        load_voltage: oV || 0, load_frequency: oF || 50,
-        grid_voltage: iV || 0, grid_watts: espGridW || 0,
-        grid_available: gridAvail,
-        inverter_on: (oV || 0) > 100,
-        today_energy: kwh || 0,
-        /* Flow calculations */
-        _flows: { solarIn, invToLoad, gridToInv, invToBatt, battToInv, invToGrid },
-        raw: rawStr,
-        _rawParsed: rp,
-        timestamp: parseInt(getVal(d,'ts')) || Date.now()
+    /* Safety: no negative flows */
+    gridToInv=Math.max(0,gridToInv);
+    invToBatt=Math.max(0,invToBatt);
+    battToInv=Math.max(0,battToInv);
+    invToGrid=Math.max(0,invToGrid);
+
+    return{
+        pv_voltage:pvV||0,pv_current:pvA||0,pv_power:pvW||0,
+        scc_pv_voltage:sccV||0,panel_amperes:panA||0,
+        battery_voltage:bV||0,battery_percent:bp,battery_current:finalBA,
+        battery_charging:isChg,charging_source:chgSrc,
+        power_source:getVal(d,'powerSource')||'none',
+        load_watts:lW||0,load_va:lVA||0,load_percent:lPct||0,
+        load_voltage:oV||0,load_frequency:oF||50,
+        grid_voltage:iV||0,grid_watts:espGridW||0,
+        grid_available:gridAvail,
+        inverter_on:(oV||0)>100,
+        today_energy:kwh||0,
+        _flows:{solarIn,invToLoad,gridToInv,invToBatt,battToInv,invToGrid},
+        raw:rawStr,_rawParsed:rp,
+        timestamp:parseInt(getVal(d,'ts'))||Date.now()
     };
 }
 
 /* =============================================
    FIREBASE CONNECTION
    ============================================= */
-function connectFirebase() {
-    const apiKey = document.getElementById('cfgApiKey').value.trim();
-    const databaseURL = document.getElementById('cfgDbUrl').value.trim();
-    const projectId = document.getElementById('cfgProjectId').value.trim();
-    const dataPath = document.getElementById('cfgDataPath').value.trim();
-
-    if (!databaseURL) { showToast('Database URL zaruri hai!', 'error'); return; }
-    if (!dataPath) { showToast('Data Path zaruri hai!', 'error'); return; }
-
-    readFieldMapFromUI();
-    setConnectionStatus('connecting');
-
-    /* Disconnect previous */
+function connectFirebase(){
+    const apiKey=document.getElementById('cfgApiKey').value.trim();
+    const databaseURL=document.getElementById('cfgDbUrl').value.trim();
+    const projectId=document.getElementById('cfgProjectId').value.trim();
+    const dataPath=document.getElementById('cfgDataPath').value.trim();
+    if(!databaseURL){showToast('Database URL zaruri hai!','error');return;}
+    if(!dataPath){showToast('Data Path zaruri hai!','error');return;}
+    readFieldMapFromUI();setConnectionStatus('connecting');
     disconnectFirebase(true);
-
-    try {
-        const config = {
-            apiKey: apiKey || 'placeholder',
-            authDomain: (projectId || 'placeholder') + '.firebaseapp.com',
-            databaseURL: databaseURL,
-            projectId: projectId || 'placeholder',
-            storageBucket: (projectId || 'placeholder') + '.appspot.com',
-            messagingSenderId: '000000000000'
-        };
-
-        firebaseApp = firebase.initializeApp(config);
-        firebaseDb = firebase.database();
-
-        /* Connection state */
-        firebaseDb.ref('.info/connected').on('value', snap => {
-            if (snap.val() === true) setConnectionStatus('online');
-            else setConnectionStatus('offline');
+    try{
+        const config={apiKey:apiKey||'placeholder',authDomain:(projectId||'placeholder')+'.firebaseapp.com',databaseURL:databaseURL,projectId:projectId||'placeholder',storageBucket:(projectId||'placeholder')+'.appspot.com',messagingSenderId:'000000000000'};
+        firebaseApp=firebase.initializeApp(config);firebaseDb=firebase.database();
+        firebaseDb.ref('.info/connected').on('value',snap=>{if(snap.val()===true)setConnectionStatus('online');else setConnectionStatus('offline');});
+        document.getElementById('dataPathTag').textContent=dataPath;
+        document.getElementById('rawPathTag').textContent=databaseURL+'/'+dataPath;
+        firebaseDataRef=firebaseDb.ref(dataPath);
+        firebaseDataRef.on('value',snapshot=>{
+            const data=snapshot.val();
+            if(data){dataPointCounter++;document.getElementById('dataPointCount').textContent=dataPointCounter+' points';processFirebaseData(data);}
+            else{addFbLog('Data path par kuch nahi mila: '+dataPath,'warn');}
+        },error=>{setConnectionStatus('offline');addFbLog('Firebase Error: '+error.message,'err');showToast('Error: '+error.message,'error');});
+        firebaseDb.ref(dataPath+'/cmdResp').on('value',snap=>{
+            const val=snap.val();
+            if(val){document.getElementById('cmdResponse').textContent=val;document.getElementById('cmdResponse').style.color=val==='ACK'?'var(--green)':val==='NAK'?'var(--red)':'var(--accent)';if(val==='ACK')showToast('Inverter accepted command','success');else if(val==='NAK')showToast('Inverter rejected command','error');}
         });
-
-        /* Tags */
-        document.getElementById('dataPathTag').textContent = dataPath;
-        document.getElementById('rawPathTag').textContent = databaseURL + '/' + dataPath;
-
-        /* Main data listener */
-        firebaseDataRef = firebaseDb.ref(dataPath);
-        firebaseDataRef.on('value', snapshot => {
-            const data = snapshot.val();
-            if (data) {
-                dataPointCounter++;
-                document.getElementById('dataPointCount').textContent = dataPointCounter + ' points';
-                processFirebaseData(data);
-            } else {
-                addFbLog('Data path par koi data nahi mila: ' + dataPath, 'warn');
-            }
-        }, error => {
-            setConnectionStatus('offline');
-            addFbLog('Firebase Error: ' + error.message, 'err');
-            showToast('Error: ' + error.message, 'error');
-        });
-
-        /* Command response listener */
-        firebaseDb.ref(dataPath + '/cmdResp').on('value', snap => {
-            const val = snap.val();
-            if (val) {
-                document.getElementById('cmdResponse').textContent = val;
-                document.getElementById('cmdResponse').style.color =
-                    val === 'ACK' ? 'var(--green)' : val === 'NAK' ? 'var(--red)' : 'var(--accent)';
-                if (val === 'ACK') showToast('Inverter accepted command', 'success');
-                else if (val === 'NAK') showToast('Inverter rejected command', 'error');
-            }
-        });
-
-        /* Logs listener */
-        firebaseLogRef = firebaseDb.ref(dataPath + '_logs');
-        firebaseLogRef.orderByChild('timestamp').limitToLast(30).on('value', snap => {
-            // optional: could load historical logs
-        });
-
-        /* Save config */
-        localStorage.setItem('sg_firebase', JSON.stringify({ apiKey, databaseURL, projectId, dataPath }));
-        localStorage.setItem('sg_fieldmap', JSON.stringify({ ...FM }));
-
-        closeConfigModal();
-        showToast('Firebase connect ho raha hai...', 'info');
-    } catch (error) {
-        setConnectionStatus('offline');
-        addFbLog('Connection failed: ' + error.message, 'err');
-        showToast('Fail: ' + error.message, 'error');
-    }
+        firebaseLogRef=firebaseDb.ref(dataPath+'_logs');
+        localStorage.setItem('sg_firebase',JSON.stringify({apiKey,databaseURL,projectId,dataPath}));
+        localStorage.setItem('sg_fieldmap',JSON.stringify({...FM}));
+        closeConfigModal();showToast('Firebase connect ho raha hai...','info');
+    }catch(error){setConnectionStatus('offline');addFbLog('Connection failed: '+error.message,'err');showToast('Fail: '+error.message,'error');}
 }
 
-function disconnectFirebase(silent) {
-    if (firebaseDataRef) { try { firebaseDataRef.off(); } catch(e){} firebaseDataRef = null; }
-    if (firebaseLogRef) { try { firebaseLogRef.off(); } catch(e){} firebaseLogRef = null; }
-    if (firebaseDb) { try { firebaseDb.ref('.info/connected').off(); } catch(e){} }
-    if (firebaseApp) { try { firebaseApp.delete(); } catch(e){} firebaseApp = null; }
-    firebaseDb = null;
-    isConnected = false;
-    if (!silent) { setConnectionStatus('offline'); showToast('Disconnected', 'info'); }
+function disconnectFirebase(silent){
+    if(firebaseDataRef){try{firebaseDataRef.off();}catch(e){}firebaseDataRef=null;}
+    if(firebaseLogRef){try{firebaseLogRef.off();}catch(e){}firebaseLogRef=null;}
+    if(firebaseDb){try{firebaseDb.ref('.info/connected').off();}catch(e){}}
+    if(firebaseApp){try{firebaseApp.delete();}catch(e){}firebaseApp=null;}
+    firebaseDb=null;isConnected=false;
+    if(!silent){setConnectionStatus('offline');showToast('Disconnected','info');}
 }
 
-function loadSavedConfig() {
-    const s = localStorage.getItem('sg_firebase');
-    if (!s) return;
-    try {
-        const c = JSON.parse(s);
-        document.getElementById('cfgApiKey').value = c.apiKey || '';
-        document.getElementById('cfgDbUrl').value = c.databaseURL || '';
-        document.getElementById('cfgProjectId').value = c.projectId || '';
-        document.getElementById('cfgDataPath').value = c.dataPath || '';
-    } catch(e) {}
-    const fm = localStorage.getItem('sg_fieldmap');
-    if (fm) {
-        try { Object.assign(FM, JSON.parse(fm)); } catch(e) {}
-    }
+function loadSavedConfig(){
+    const s=localStorage.getItem('sg_firebase');
+    if(s){try{const c=JSON.parse(s);document.getElementById('cfgApiKey').value=c.apiKey||'';document.getElementById('cfgDbUrl').value=c.databaseURL||'';document.getElementById('cfgProjectId').value=c.projectId||'';document.getElementById('cfgDataPath').value=c.dataPath||'';}catch(e){}}
+    const fm=localStorage.getItem('sg_fieldmap');
+    if(fm){try{Object.assign(FM,JSON.parse(fm));}catch(e){}}
     loadFieldMapToUI();
 }
 
-/* =============================================
-   QPI COMMAND SENDING
-   ============================================= */
-function sendQPI(cmd) {
-    if (!cmd || !cmd.trim()) { showToast('Command enter karein', 'error'); return; }
-    if (!firebaseDataRef) { showToast('Pehle Firebase se connect karein', 'error'); return; }
-    cmd = cmd.trim();
-    firebaseDataRef.child('cmd').set(cmd).then(() => {
-        document.getElementById('cmdResponse').textContent = 'Sent: ' + cmd + ' — waiting response...';
-        document.getElementById('cmdResponse').style.color = 'var(--accent)';
-        addFbLog('CMD Sent: ' + cmd, 'ok');
-        showToast('Command sent: ' + cmd, 'info');
-    }).catch(err => {
-        showToast('Send failed: ' + err.message, 'error');
-    });
+function sendQPI(cmd){
+    if(!cmd||!cmd.trim()){showToast('Command enter karein','error');return;}
+    if(!firebaseDataRef){showToast('Pehle Firebase se connect karein','error');return;}
+    cmd=cmd.trim();
+    firebaseDataRef.child('cmd').set(cmd).then(()=>{
+        document.getElementById('cmdResponse').textContent='Sent: '+cmd+' — waiting response...';
+        document.getElementById('cmdResponse').style.color='var(--accent)';
+        addFbLog('CMD Sent: '+cmd,'ok');showToast('Command sent: '+cmd,'info');
+    }).catch(err=>{showToast('Send failed: '+err.message,'error');});
+}
+
+function setConnectionStatus(status){
+    const el=document.getElementById('connStatus'),text=document.getElementById('connText'),dot=el.querySelector('.alert-dot'),flowTag=document.getElementById('flowLiveTag');
+    el.className='conn-indicator';
+    if(status==='online'){isConnected=true;el.classList.add('conn-online');text.textContent='Firebase Live';dot.style.background='var(--green)';flowTag.textContent='LIVE';flowTag.style.background='rgba(34,197,94,0.1)';flowTag.style.color='var(--green)';const al=document.getElementById('alertsList');if(al.children.length&&al.children[0].textContent.includes('Not Connected'))al.removeChild(al.children[0]);}
+    else if(status==='connecting'){el.classList.add('conn-connecting');text.textContent='Connecting...';dot.style.background='var(--accent)';flowTag.textContent='CONNECTING';flowTag.style.background='rgba(245,158,11,0.1)';flowTag.style.color='var(--accent)';}
+    else{isConnected=false;el.classList.add('conn-offline');text.textContent='Disconnected';dot.style.background='var(--red)';flowTag.textContent='OFFLINE';flowTag.style.background='rgba(239,68,68,0.1)';flowTag.style.color='var(--red)';}
 }
 
 /* =============================================
-   CONNECTION STATUS
+   PROCESS DATA — FIXED GRID DISPLAY
    ============================================= */
-function setConnectionStatus(status) {
-    const el = document.getElementById('connStatus');
-    const text = document.getElementById('connText');
-    const dot = el.querySelector('.alert-dot');
-    const flowTag = document.getElementById('flowLiveTag');
+function processFirebaseData(data){
+    const d=mapFirebaseData(data);if(!d)return;
+    const fl=d._flows;
+    const solar=d.pv_power,home=d.load_watts;
+    const bV=d.battery_voltage,bA=d.battery_current;
 
-    el.className = 'conn-indicator';
-    if (status === 'online') {
-        isConnected = true;
-        el.classList.add('conn-online');
-        text.textContent = 'Firebase Live';
-        dot.style.background = 'var(--green)';
-        flowTag.textContent = 'LIVE';
-        flowTag.style.background = 'rgba(34,197,94,0.1)';
-        flowTag.style.color = 'var(--green)';
-        /* Remove "not connected" alert */
-        const al = document.getElementById('alertsList');
-        if (al.children.length && al.children[0].textContent.includes('Not Connected')) {
-            al.removeChild(al.children[0]);
+    /* Stat Cards */
+    if(solar!==null&&solar!==undefined){
+        document.getElementById('solarPower').textContent=Math.round(solar);
+        document.getElementById('flowSolar').textContent=Math.round(solar)+' W';
+        document.getElementById('fpSolar').textContent=Math.round(solar)+' W';
+        if(previousSolar!==null){
+            const diff=solar-previousSolar;const tEl=document.getElementById('solarTrend');
+            if(diff>10){tEl.innerHTML='<i class="fas fa-arrow-up" style="font-size:0.6rem"></i> +'+Math.round(diff);tEl.style.background='rgba(34,197,94,0.1)';tEl.style.color='var(--green)';}
+            else if(diff<-10){tEl.innerHTML='<i class="fas fa-arrow-down" style="font-size:0.6rem"></i> '+Math.round(diff);tEl.style.background='rgba(239,68,68,0.1)';tEl.style.color='var(--red)';}
+            else{tEl.innerHTML='<i class="fas fa-minus" style="font-size:0.6rem"></i> Stable';tEl.style.background='rgba(56,189,248,0.1)';tEl.style.color='var(--blue)';}
         }
-    } else if (status === 'connecting') {
-        el.classList.add('conn-connecting');
-        text.textContent = 'Connecting...';
-        dot.style.background = 'var(--accent)';
-        flowTag.textContent = 'CONNECTING';
-        flowTag.style.background = 'rgba(245,158,11,0.1)';
-        flowTag.style.color = 'var(--accent)';
-    } else {
-        isConnected = false;
-        el.classList.add('conn-offline');
-        text.textContent = 'Disconnected';
-        dot.style.background = 'var(--red)';
-        flowTag.textContent = 'OFFLINE';
-        flowTag.style.background = 'rgba(239,68,68,0.1)';
-        flowTag.style.color = 'var(--red)';
-    }
-}
-
-/* =============================================
-   PROCESS INCOMING FIREBASE DATA
-   ============================================= */
-function processFirebaseData(data) {
-    const d = mapFirebaseData(data);
-    if (!d) return;
-
-    const fl = d._flows;
-    const solar = d.pv_power;
-    const home = d.load_watts;
-    const grid = fl.gridToInv || d.grid_watts;
-    const batt = d.battery_percent;
-    const bV = d.battery_voltage;
-    const bA = d.battery_current;
-
-    /* === Stat Cards === */
-    if (solar !== null && solar !== undefined) {
-        document.getElementById('solarPower').textContent = Math.round(solar);
-        document.getElementById('flowSolar').textContent = Math.round(solar) + ' W';
-        document.getElementById('fpSolar').textContent = Math.round(solar) + ' W';
-        if (previousSolar !== null) {
-            const diff = solar - previousSolar;
-            const tEl = document.getElementById('solarTrend');
-            if (diff > 10) { tEl.innerHTML = '<i class="fas fa-arrow-up" style="font-size:0.6rem"></i> +' + Math.round(diff); tEl.style.background='rgba(34,197,94,0.1)'; tEl.style.color='var(--green)'; }
-            else if (diff < -10) { tEl.innerHTML = '<i class="fas fa-arrow-down" style="font-size:0.6rem"></i> ' + Math.round(diff); tEl.style.background='rgba(239,68,68,0.1)'; tEl.style.color='var(--red)'; }
-            else { tEl.innerHTML = '<i class="fas fa-minus" style="font-size:0.6rem"></i> Stable'; tEl.style.background='rgba(56,189,248,0.1)'; tEl.style.color='var(--blue)'; }
-        }
-        previousSolar = solar;
-        document.getElementById('solarSubtext').innerHTML = '<span style="color:var(--green);">Live</span>';
+        previousSolar=solar;document.getElementById('solarSubtext').innerHTML='<span style="color:var(--green);">Live</span>';
     }
 
-    if (home !== null && home !== undefined) {
-        document.getElementById('homePower').textContent = Math.round(home);
-        document.getElementById('flowHome').textContent = Math.round(home) + ' W';
-        document.getElementById('fpHome').textContent = Math.round(home) + ' W';
-        if (previousLoad !== null) {
-            const diff = home - previousLoad;
-            const tEl = document.getElementById('homeTrend');
-            if (diff > 20) { tEl.innerHTML = '<i class="fas fa-arrow-up" style="font-size:0.6rem"></i> +' + Math.round(diff); tEl.style.background='rgba(239,68,68,0.1)'; tEl.style.color='var(--red)'; }
-            else if (diff < -20) { tEl.innerHTML = '<i class="fas fa-arrow-down" style="font-size:0.6rem"></i> ' + Math.round(diff); tEl.style.background='rgba(34,197,94,0.1)'; tEl.style.color='var(--green)'; }
-            else { tEl.innerHTML = '<i class="fas fa-minus" style="font-size:0.6rem"></i> Stable'; tEl.style.background='rgba(56,189,248,0.1)'; tEl.style.color='var(--blue)'; }
+    if(home!==null&&home!==undefined){
+        document.getElementById('homePower').textContent=Math.round(home);
+        document.getElementById('flowHome').textContent=Math.round(home)+' W';
+        document.getElementById('fpHome').textContent=Math.round(home)+' W';
+        if(previousLoad!==null){
+            const diff=home-previousLoad;const tEl=document.getElementById('homeTrend');
+            if(diff>20){tEl.innerHTML='<i class="fas fa-arrow-up" style="font-size:0.6rem"></i> +'+Math.round(diff);tEl.style.background='rgba(239,68,68,0.1)';tEl.style.color='var(--red)';}
+            else if(diff<-20){tEl.innerHTML='<i class="fas fa-arrow-down" style="font-size:0.6rem"></i> '+Math.round(diff);tEl.style.background='rgba(34,197,94,0.1)';tEl.style.color='var(--green)';}
+            else{tEl.innerHTML='<i class="fas fa-minus" style="font-size:0.6rem"></i> Stable';tEl.style.background='rgba(56,189,248,0.1)';tEl.style.color='var(--blue)';}
         }
-        previousLoad = home;
-        document.getElementById('homeSubtext').textContent = 'of load';
+        previousLoad=home;document.getElementById('homeSubtext').textContent='of load';
     }
 
-    /* Grid */
-    const isImport = fl.gridToInv > 10;
-    const isExport = fl.invToGrid > 10;
-    document.getElementById('gridPower').textContent = isImport ? Math.round(fl.gridToInv) : isExport ? '+' + Math.round(fl.invToGrid) : '0';
-    document.getElementById('flowGrid').textContent = isImport ? Math.round(fl.gridToInv) + 'W' : isExport ? '+' + Math.round(fl.invToGrid) + 'W' : d.grid_voltage + 'V';
-    document.getElementById('flowGrid').style.color = isImport ? 'var(--blue)' : isExport ? 'var(--green)' : 'var(--muted)';
-    document.getElementById('fpGrid').textContent = isImport ? Math.round(fl.gridToInv) + 'W in' : isExport ? Math.round(fl.invToGrid) + 'W out' : d.grid_voltage + 'V';
+    /* === GRID DISPLAY — FIXED: Battery Charge != Grid Import === */
+    const isImport=fl.gridToInv>10;
+    const isExport=fl.invToGrid>10;
+    const isBattChg=fl.invToBatt>10;
 
-    const gPill = document.getElementById('gridStatusPill');
-    if (isImport) { gPill.innerHTML = '<i class="fas fa-arrow-down" style="font-size:0.5rem"></i> Importing'; gPill.style.background='rgba(56,189,248,0.1)'; gPill.style.color='var(--blue)'; }
-    else if (isExport) { gPill.innerHTML = '<i class="fas fa-arrow-up" style="font-size:0.5rem"></i> Exporting'; gPill.style.background='rgba(34,197,94,0.1)'; gPill.style.color='var(--green)'; }
-    else { gPill.textContent = 'Idle'; gPill.style.background='rgba(122,139,170,0.1)'; gPill.style.color='var(--muted)'; }
-    document.getElementById('gridSubtext').innerHTML = isImport ? '<span style="color:var(--blue)">Importing</span>' : isExport ? '<span style="color:var(--green)">Exporting</span>' : 'Idle';
+    if(isImport){
+        document.getElementById('gridPower').textContent=Math.round(fl.gridToInv);
+        document.getElementById('gridSubtext').innerHTML='<span style="color:var(--blue)">Importing from grid</span>';
+        document.getElementById('flowGrid').textContent=Math.round(fl.gridToInv)+'W';
+        document.getElementById('flowGrid').style.color='var(--blue)';
+        document.getElementById('fpGrid').textContent=Math.round(fl.gridToInv)+'W in';
+        const gPill=document.getElementById('gridStatusPill');gPill.innerHTML='<i class="fas fa-arrow-down" style="font-size:0.5rem"></i> Importing';gPill.style.background='rgba(56,189,248,0.1)';gPill.style.color='var(--blue)';
+    }else if(isExport){
+        document.getElementById('gridPower').textContent='+'+Math.round(fl.invToGrid);
+        document.getElementById('gridSubtext').innerHTML='<span style="color:var(--green)">Exporting to grid</span>';
+        document.getElementById('flowGrid').textContent='+'+Math.round(fl.invToGrid)+'W';
+        document.getElementById('flowGrid').style.color='var(--green)';
+        document.getElementById('fpGrid').textContent=Math.round(fl.invToGrid)+'W out';
+        const gPill=document.getElementById('gridStatusPill');gPill.innerHTML='<i class="fas fa-arrow-up" style="font-size:0.5rem"></i> Exporting';gPill.style.background='rgba(34,197,94,0.1)';gPill.style.color='var(--green)';
+    }else{
+        /* Grid idle — solar se battery charge ho rahi hai */
+        document.getElementById('gridPower').textContent='0';
+        document.getElementById('gridSubtext').innerHTML=isBattChg?'<span style="color:var(--green)">Solar → Battery</span>':'<span style="color:var(--muted)">Idle</span>';
+        document.getElementById('flowGrid').textContent=d.grid_voltage+'V';
+        document.getElementById('flowGrid').style.color='var(--muted)';
+        document.getElementById('fpGrid').textContent=d.grid_voltage+'V';
+        const gPill=document.getElementById('gridStatusPill');gPill.textContent='Idle';gPill.style.background='rgba(122,139,170,0.1)';gPill.style.color='var(--muted)';
+    }
 
     /* Battery */
-    const battPct = Math.max(0, Math.min(100, batt));
-    document.getElementById('batteryLevel').textContent = Math.round(battPct) + '%';
-    document.getElementById('batteryBar').style.width = battPct + '%';
-    document.getElementById('flowBattery').textContent = Math.round(battPct) + '%';
-    document.getElementById('fpBatt').textContent = Math.round(battPct) + '%';
+    const battPct=Math.max(0,Math.min(100,d.battery_percent));
+    document.getElementById('batteryLevel').textContent=Math.round(battPct)+'%';
+    document.getElementById('batteryBar').style.width=battPct+'%';
+    document.getElementById('flowBattery').textContent=Math.round(battPct)+'%';
+    document.getElementById('fpBatt').textContent=Math.round(battPct)+'%';
+    const bPill=document.getElementById('battStatusPill');
+    const battIcon=document.querySelector('#fn-batt .icon i');
+    if(d.battery_charging){bPill.innerHTML='<i class="fas fa-bolt" style="font-size:0.5rem"></i> Charging';bPill.style.background='rgba(34,197,94,0.1)';bPill.style.color='var(--green)';if(battIcon)battIcon.className='fas fa-battery-quarter';}
+    else if(fl.battToInv>10){bPill.innerHTML='<i class="fas fa-arrow-down" style="font-size:0.5rem"></i> Discharging';bPill.style.background='rgba(239,68,68,0.1)';bPill.style.color='var(--red)';if(battIcon)battIcon.className='fas fa-battery-quarter';}
+    else{bPill.textContent='Idle';bPill.style.background='rgba(122,139,170,0.1)';bPill.style.color='var(--muted)';}
+    if(battPct>80&&battIcon&&!d.battery_charging&&fl.battToInv<=10)battIcon.className='fas fa-battery-full';
+    else if(battPct>50&&battIcon&&!d.battery_charging&&fl.battToInv<=10)battIcon.className='fas fa-battery-three-quarters';
+    else if(battPct>20&&battIcon&&!d.battery_charging&&fl.battToInv<=10)battIcon.className='fas fa-battery-half';
+    else if(battIcon&&!d.battery_charging&&fl.battToInv<=10)battIcon.className='fas fa-battery-empty';
 
-    const bPill = document.getElementById('battStatusPill');
-    const battIcon = document.querySelector('#fn-batt .icon i');
-    if (d.battery_charging) {
-        bPill.innerHTML = '<i class="fas fa-bolt" style="font-size:0.5rem"></i> Charging'; bPill.style.background='rgba(34,197,94,0.1)'; bPill.style.color='var(--green)';
-        if (battIcon) battIcon.className = 'fas fa-battery-quarter';
-    } else if (fl.battToInv > 10) {
-        bPill.innerHTML = '<i class="fas fa-arrow-down" style="font-size:0.5rem"></i> Discharging'; bPill.style.background='rgba(239,68,68,0.1)'; bPill.style.color='var(--red)';
-        if (battIcon) battIcon.className = 'fas fa-battery-quarter';
-    } else {
-        bPill.textContent = 'Idle'; bPill.style.background='rgba(122,139,170,0.1)'; bPill.style.color='var(--muted)';
-    }
-    if (battPct > 80 && battIcon) battIcon.className = 'fas fa-battery-full';
-    else if (battPct > 50 && battIcon) battIcon.className = 'fas fa-battery-three-quarters';
-    else if (battPct > 20 && battIcon) battIcon.className = 'fas fa-battery-half';
-    else if (battIcon) battIcon.className = 'fas fa-battery-empty';
+    /* Inverter */
+    document.getElementById('flowInverter').textContent=Math.round(fl.invToLoad+fl.invToBatt+fl.invToGrid)+' W';
+    document.getElementById('fpInv').textContent=d.inverter_on?'ON':'OFF';
 
-    /* Inverter output */
-    document.getElementById('flowInverter').textContent = Math.round(fl.invToLoad + fl.invToBatt + fl.invToGrid) + ' W';
-    document.getElementById('fpInv').textContent = d.inverter_on ? 'ON' : 'OFF';
+    /* Flow Lines — FIXED */
+    document.getElementById('path-solar-inv').classList.toggle('active-flow',solar>10);
+    document.getElementById('path-inv-home').classList.toggle('active-flow',fl.invToLoad>10);
+    document.getElementById('path-inv-grid').classList.toggle('active-flow',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('path-inv-batt').classList.toggle('active-flow',(fl.invToBatt>10||fl.battToInv>10));
+    document.getElementById('fp-solar-inv').classList.toggle('active-flow',solar>10);
+    document.getElementById('fp-inv-home').classList.toggle('active-flow',fl.invToLoad>10);
+    document.getElementById('fp-inv-grid').classList.toggle('active-flow',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('fp-inv-batt').classList.toggle('active-flow',(fl.invToBatt>10||fl.battToInv>10));
 
-    /* === Flow Lines === */
-    document.getElementById('path-solar-inv').classList.toggle('active-flow', solar > 10);
-    document.getElementById('path-inv-home').classList.toggle('active-flow', fl.invToLoad > 10);
-    document.getElementById('path-inv-grid').classList.toggle('active-flow', (fl.gridToInv > 10 || fl.invToGrid > 10));
-    document.getElementById('path-inv-batt').classList.toggle('active-flow', (fl.invToBatt > 10 || fl.battToInv > 10));
-    /* Full page flow */
-    document.getElementById('fp-solar-inv').classList.toggle('active-flow', solar > 10);
-    document.getElementById('fp-inv-home').classList.toggle('active-flow', fl.invToLoad > 10);
-    document.getElementById('fp-inv-grid').classList.toggle('active-flow', (fl.gridToInv > 10 || fl.invToGrid > 10));
-    document.getElementById('fp-inv-batt').classList.toggle('active-flow', (fl.invToBatt > 10 || fl.battToInv > 10));
-
-    /* Flow nodes active state */
-    document.getElementById('fn-solar').classList.toggle('active', solar > 10);
-    document.getElementById('fn-inv').classList.toggle('active', true);
-    document.getElementById('fn-home').classList.toggle('active', fl.invToLoad > 10);
-    document.getElementById('fn-grid').classList.toggle('active', (fl.gridToInv > 10 || fl.invToGrid > 10));
-    document.getElementById('fn-batt').classList.toggle('active', (fl.invToBatt > 10 || fl.battToInv > 10 || d.battery_charging));
-    document.getElementById('fpn-solar').classList.toggle('active', solar > 10);
-    document.getElementById('fpn-inv').classList.toggle('active', true);
-    document.getElementById('fpn-home').classList.toggle('active', fl.invToLoad > 10);
-    document.getElementById('fpn-grid').classList.toggle('active', (fl.gridToInv > 10 || fl.invToGrid > 10));
-    document.getElementById('fpn-batt').classList.toggle('active', (fl.invToBatt > 10 || fl.battToInv > 10 || d.battery_charging));
+    /* Flow nodes active */
+    document.getElementById('fn-solar').classList.toggle('active',solar>10);
+    document.getElementById('fn-inv').classList.toggle('active',true);
+    document.getElementById('fn-home').classList.toggle('active',fl.invToLoad>10);
+    document.getElementById('fn-grid').classList.toggle('active',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('fn-batt').classList.toggle('active',(fl.invToBatt>10||fl.battToInv>10||d.battery_charging));
+    document.getElementById('fpn-solar').classList.toggle('active',solar>10);
+    document.getElementById('fpn-inv').classList.toggle('active',true);
+    document.getElementById('fpn-home').classList.toggle('active',fl.invToLoad>10);
+    document.getElementById('fpn-grid').classList.toggle('active',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('fpn-batt').classList.toggle('active',(fl.invToBatt>10||fl.battToInv>10||d.battery_charging));
 
     /* Icon colors */
-    document.querySelector('#fn-solar .icon').style.color = solar > 10 ? 'var(--accent)' : 'var(--muted)';
-    document.querySelector('#fn-grid .icon').style.color = (fl.gridToInv > 10 || fl.invToGrid > 10) ? 'var(--blue)' : 'var(--muted)';
-    document.querySelector('#fpn-solar .icon').style.color = solar > 10 ? 'var(--accent)' : 'var(--muted)';
-    document.querySelector('#fpn-grid .icon').style.color = (fl.gridToInv > 10 || fl.invToGrid > 10) ? 'var(--blue)' : 'var(--muted)';
+    document.querySelector('#fn-solar .icon').style.color=solar>10?'var(--accent)':'var(--muted)';
+    document.querySelector('#fn-grid .icon').style.color=(fl.gridToInv>10||fl.invToGrid>10)?'var(--blue)':'var(--muted)';
+    document.querySelector('#fpn-solar .icon').style.color=solar>10?'var(--accent)':'var(--muted)';
+    document.querySelector('#fpn-grid .icon').style.color=(fl.gridToInv>10||fl.invToGrid>10)?'var(--blue)':'var(--muted)';
 
-    /* === Inverter Details === */
-    if (d.inverter_on) {
-        document.getElementById('invStatus').innerHTML = '<span style="width:5px;height:5px;background:var(--green);border-radius:50%;display:inline-block"></span> Working';
-        document.getElementById('invStatus').style.background = 'rgba(34,197,94,0.1)';
-        document.getElementById('invStatus').style.color = 'var(--green)';
-    } else {
-        document.getElementById('invStatus').innerHTML = '<span style="width:5px;height:5px;background:var(--red);border-radius:50%;display:inline-block"></span> Off';
-        document.getElementById('invStatus').style.background = 'rgba(239,68,68,0.1)';
-        document.getElementById('invStatus').style.color = 'var(--red)';
-    }
-    document.getElementById('invVoltage').textContent = (d.grid_voltage || 0).toFixed(1) + ' V';
-    document.getElementById('invOutVolt').textContent = (d.load_voltage || 0).toFixed(1) + ' V';
-    document.getElementById('invFreq').textContent = (d.load_frequency || 0).toFixed(1) + ' Hz';
-    document.getElementById('invBattV').textContent = (bV || 0).toFixed(2) + ' V';
-    document.getElementById('invBattA').textContent = (bA || 0).toFixed(1) + ' A';
-    document.getElementById('invBattA').style.color = d.battery_charging ? 'var(--green)' : (bA < -1 ? 'var(--red)' : 'var(--fg)');
-    document.getElementById('pvVoltage').textContent = (d.scc_pv_voltage || 0).toFixed(1) + ' V';
-    document.getElementById('pvCurrent').textContent = (d.panel_amperes || 0).toFixed(1) + ' A';
-    document.getElementById('invLoadVA').textContent = (d.load_va || 0) + ' VA';
-    document.getElementById('invChgSrc').textContent = d.charging_source || '--';
-    document.getElementById('invChgSrc').style.color = d.charging_source === 'solar' ? 'var(--green)' : d.charging_source === 'grid' ? 'var(--blue)' : d.charging_source === 'solar+grid' ? 'var(--accent)' : 'var(--muted)';
-    document.getElementById('invTodayKwh').textContent = (d.today_energy || 0).toFixed(3) + ' kWh';
-    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+    /* Inverter Details */
+    if(d.inverter_on){document.getElementById('invStatus').innerHTML='<span style="width:5px;height:5px;background:var(--green);border-radius:50%;display:inline-block"></span> Working';document.getElementById('invStatus').style.background='rgba(34,197,94,0.1)';document.getElementById('invStatus').style.color='var(--green)';}
+    else{document.getElementById('invStatus').innerHTML='<span style="width:5px;height:5px;background:var(--red);border-radius:50%;display:inline-block"></span> Off';document.getElementById('invStatus').style.background='rgba(239,68,68,0.1)';document.getElementById('invStatus').style.color='var(--red)';}
+    document.getElementById('invVoltage').textContent=(d.grid_voltage||0).toFixed(1)+' V';
+    document.getElementById('invOutVolt').textContent=(d.load_voltage||0).toFixed(1)+' V';
+    document.getElementById('invFreq').textContent=(d.load_frequency||0).toFixed(1)+' Hz';
+    document.getElementById('invBattV').textContent=(bV||0).toFixed(2)+' V';
+    document.getElementById('invBattA').textContent=(bA||0).toFixed(1)+' A';
+    document.getElementById('invBattA').style.color=d.battery_charging?'var(--green)':(bA<-1?'var(--red)':'var(--fg)');
+    document.getElementById('pvVoltage').textContent=(d.scc_pv_voltage||0).toFixed(1)+' V';
+    document.getElementById('pvCurrent').textContent=(d.panel_amperes||0).toFixed(1)+' A';
+    document.getElementById('invLoadVA').textContent=(d.load_va||0)+' VA';
+    document.getElementById('invChgSrc').textContent=d.charging_source||'--';
+    document.getElementById('invChgSrc').style.color=d.charging_source==='solar'?'var(--green)':d.charging_source==='grid'?'var(--blue)':d.charging_source==='solar+grid'?'var(--accent)':'var(--muted)';
+    document.getElementById('invTodayKwh').textContent=(d.today_energy||0).toFixed(3)+' kWh';
+    document.getElementById('lastUpdate').textContent=new Date().toLocaleTimeString();
 
-    /* === Donut === */
-    const loadW = Math.round(fl.invToLoad) || 1;
-    const exportW = Math.round(fl.invToGrid) || 0;
-    const battW = Math.round(fl.invToBatt) || 1;
-    const gridW = Math.round(fl.gridToInv) || 1;
-    donutChart.data.datasets[0].data = [loadW, exportW, battW, gridW];
+    /* Donut */
+    const loadW=Math.round(fl.invToLoad)||1;
+    const exportW=Math.round(fl.invToGrid)||0;
+    const battW=Math.round(fl.invToBatt)||0;
+    const gridW=Math.round(fl.gridToInv)||0;
+    donutChart.data.datasets[0].data=[loadW,exportW,battW,gridW];
     donutChart.update('none');
-    document.getElementById('donutHome').textContent = loadW + 'W';
-    document.getElementById('donutExport').textContent = exportW + 'W';
-    document.getElementById('donutBatt').textContent = battW + 'W';
-    document.getElementById('donutGrid').textContent = gridW + 'W';
+    document.getElementById('donutHome').textContent=loadW+'W';
+    document.getElementById('donutExport').textContent=exportW+'W';
+    document.getElementById('donutBatt').textContent=battW+'W';
+    document.getElementById('donutGrid').textContent=gridW+'W';
 
-    /* === Live Chart === */
-    liveChartData.push({ time: new Date(), solar: solar || 0, home: home || 0, grid: fl.gridToInv || 0 });
-    if (liveChartData.length > 120) liveChartData.shift();
-    if (chartRange === 'live') updateLiveChart();
+    /* Charts */
+    liveChartData.push({time:new Date(),solar:solar||0,home:home||0,grid:fl.gridToInv||0});
+    if(liveChartData.length>120)liveChartData.shift();
+    if(chartRange==='live')updateLiveChart();
+    battHistoryData.push({time:new Date(),v:bV||0});if(battHistoryData.length>200)battHistoryData.shift();updateBattHistory();
+    loadHistoryData.push({time:new Date(),w:home||0});if(loadHistoryData.length>200)loadHistoryData.shift();updateLoadHistory();
 
-    /* === Battery History === */
-    battHistoryData.push({ time: new Date(), v: bV || 0 });
-    if (battHistoryData.length > 200) battHistoryData.shift();
-    updateBattHistory();
+    /* Raw */
+    document.getElementById('rawDataPre').textContent=JSON.stringify(data,null,2);
 
-    /* === Load History === */
-    loadHistoryData.push({ time: new Date(), w: home || 0 });
-    if (loadHistoryData.length > 200) loadHistoryData.shift();
-    updateLoadHistory();
+    /* Log */
+    addFbLog('PV:'+Math.round(solar)+'W Load:'+Math.round(home)+'W Batt:'+Math.round(battPct)+'% ('+bV.toFixed(1)+'V) Chg:'+fl.invToBatt+'W Grid:'+fl.gridToInv+'W','data');
 
-    /* === Raw Data === */
-    document.getElementById('rawDataPre').textContent = JSON.stringify(data, null, 2);
-
-    /* === Firebase Log === */
-    addFbLog('PV:' + Math.round(solar) + 'W Load:' + Math.round(home) + 'W Batt:' + Math.round(battPct) + '% (' + bV.toFixed(1) + 'V) Grid:' + (isImport ? 'in ' : isExport ? 'out ' : '') + d.charging_source, 'data');
-
-    /* === Alerts === */
-    if (battPct <= 20 && battPct > 0) pushAlert('Battery Low', 'Battery level ' + Math.round(battPct) + '% — ' + bV.toFixed(1) + 'V', 'warning');
-    if (home >= 3000) pushAlert('Over Load', 'Load ' + Math.round(home) + 'W exceeds safe limit', 'error');
-    if (!d.grid_available) pushAlert('Grid Down', 'Grid voltage 0V — running on battery/solar', 'info');
-    if (d.battery_charging && bV > 14.4) pushAlert('Battery Overcharge', 'Voltage ' + bV.toFixed(1) + 'V — check charging', 'error');
+    /* Alerts */
+    if(battPct<=20&&battPct>0)pushAlert('Battery Low','Battery '+Math.round(battPct)+'% — '+bV.toFixed(1)+'V','warning');
+    if(home>=3000)pushAlert('Over Load','Load '+Math.round(home)+'W exceeds limit','error');
+    if(!d.grid_available)pushAlert('Grid Down','Grid 0V — running on battery/solar','info');
+    if(d.battery_charging&&bV>14.4)pushAlert('Battery Overcharge','Voltage '+bV.toFixed(1)+'V — check charging','error');
 }
 
 /* =============================================
    CHARTS
    ============================================= */
-let chartRange = 'live';
+const powerCtx=document.getElementById('powerChart').getContext('2d');
+const powerGrad=powerCtx.createLinearGradient(0,0,0,220);powerGrad.addColorStop(0,'rgba(245,158,11,0.3)');powerGrad.addColorStop(1,'rgba(245,158,11,0.0)');
+const loadGrad=powerCtx.createLinearGradient(0,0,0,220);loadGrad.addColorStop(0,'rgba(56,189,248,0.15)');loadGrad.addColorStop(1,'rgba(56,189,248,0.0)');
+const powerChart=new Chart(powerCtx,{type:'line',data:{labels:[],datasets:[
+    {label:'Solar (W)',data:[],borderColor:'#f59e0b',backgroundColor:powerGrad,borderWidth:2.5,fill:true,tension:0.4,pointRadius:0},
+    {label:'Load (W)',data:[],borderColor:'#38bdf8',backgroundColor:loadGrad,borderWidth:1.5,fill:true,tension:0.4,pointRadius:0,borderDash:[4,4]},
+    {label:'Grid (W)',data:[],borderColor:'#22c55e',backgroundColor:'transparent',borderWidth:1,fill:false,tension:0.4,pointRadius:0,borderDash:[2,2]}
+]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',align:'end',labels:{color:'#7a8baa',font:{size:10,family:'Space Grotesk'},boxWidth:12,padding:16}},tooltip:{backgroundColor:'#151d2e',borderColor:'#1e2d4a',borderWidth:1,titleColor:'#f0f4fc',bodyColor:'#7a8baa',padding:12,cornerRadius:10}},scales:{x:{grid:{color:'rgba(30,45,74,0.4)',drawBorder:false},ticks:{color:'#7a8baa',font:{size:9},maxTicksLimit:10},border:{display:false}},y:{grid:{color:'rgba(30,45,74,0.4)',drawBorder:false},ticks:{color:'#7a8baa',font:{size:9},callback:v=>v+'W'},border:{display:false},beginAtZero:true}},animation:{duration:300}}});
 
-const powerCtx = document.getElementById('powerChart').getContext('2d');
-const powerGradient = powerCtx.createLinearGradient(0, 0, 0, 220);
-powerGradient.addColorStop(0, 'rgba(245,158,11,0.3)');
-powerGradient.addColorStop(1, 'rgba(245,158,11,0.0)');
-const loadGradient = powerCtx.createLinearGradient(0, 0, 0, 220);
-loadGradient.addColorStop(0, 'rgba(56,189,248,0.15)');
-loadGradient.addColorStop(1, 'rgba(56,189,248,0.0)');
+const donutCtx=document.getElementById('donutChart').getContext('2d');
+const donutChart=new Chart(donutCtx,{type:'doughnut',data:{labels:['Home Use','Grid Export','Battery Charge','Grid Import'],datasets:[{data:[1,1,1,1],backgroundColor:['#22c55e','#f59e0b','#a855f7','#38bdf8'],borderColor:'#151d2e',borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#151d2e',borderColor:'#1e2d4a',borderWidth:1,titleColor:'#f0f4fc',bodyColor:'#7a8baa',padding:10,cornerRadius:8,callbacks:{label:ctx=>' '+ctx.label+': '+ctx.raw+'W'}}}}});
 
-const powerChart = new Chart(powerCtx, {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: [
-            { label: 'Solar (W)', data: [], borderColor: '#f59e0b', backgroundColor: powerGradient, borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 0 },
-            { label: 'Load (W)', data: [], borderColor: '#38bdf8', backgroundColor: loadGradient, borderWidth: 1.5, fill: true, tension: 0.4, pointRadius: 0, borderDash: [4,4] },
-            { label: 'Grid (W)', data: [], borderColor: '#22c55e', backgroundColor: 'transparent', borderWidth: 1, fill: false, tension: 0.4, pointRadius: 0, borderDash: [2,2] }
-        ]
-    },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-            legend: { position: 'top', align: 'end', labels: { color: '#7a8baa', font: { size: 10, family: 'Space Grotesk' }, boxWidth: 12, padding: 16 } },
-            tooltip: { backgroundColor: '#151d2e', borderColor: '#1e2d4a', borderWidth: 1, titleColor: '#f0f4fc', bodyColor: '#7a8baa', padding: 12, cornerRadius: 10 }
-        },
-        scales: {
-            x: { grid: { color: 'rgba(30,45,74,0.4)', drawBorder: false }, ticks: { color: '#7a8baa', font: { size: 9 }, maxTicksLimit: 10 }, border: { display: false } },
-            y: { grid: { color: 'rgba(30,45,74,0.4)', drawBorder: false }, ticks: { color: '#7a8baa', font: { size: 9 }, callback: v => v + 'W' }, border: { display: false }, beginAtZero: true }
-        },
-        animation: { duration: 300 }
-    }
-});
+const battHistCtx=document.getElementById('battHistoryChart').getContext('2d');
+const battGrad=battHistCtx.createLinearGradient(0,0,0,300);battGrad.addColorStop(0,'rgba(168,85,247,0.3)');battGrad.addColorStop(1,'rgba(168,85,247,0.0)');
+const battHistoryChart=new Chart(battHistCtx,{type:'line',data:{labels:[],datasets:[{label:'Battery V',data:[],borderColor:'#a855f7',backgroundColor:battGrad,fill:true,tension:0.4,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#7a8baa',font:{size:10}}}},scales:{x:{grid:{color:'rgba(30,45,74,0.4)'},ticks:{color:'#7a8baa',font:{size:9},maxTicksLimit:12},border:{display:false}},y:{grid:{color:'rgba(30,45,74,0.4)'},ticks:{color:'#7a8baa',font:{size:9},callback:v=>v+'V'},border:{display:false},min:10,max:16}},animation:{duration:300}}});
 
-/* Donut */
-const donutCtx = document.getElementById('donutChart').getContext('2d');
-const donutChart = new Chart(donutCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Home Use', 'Grid Export', 'Battery Charge', 'Grid Import'],
-        datasets: [{ data: [1,1,1,1], backgroundColor: ['#22c55e','#f59e0b','#a855f7','#38bdf8'], borderColor: '#151d2e', borderWidth: 3 }]
-    },
-    options: {
-        responsive: true, maintainAspectRatio: false, cutout: '68%',
-        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#151d2e', borderColor: '#1e2d4a', borderWidth: 1, titleColor: '#f0f4fc', bodyColor: '#7a8baa', padding: 10, cornerRadius: 8, callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.raw + 'W' } } }
-    }
-});
+const loadProfCtx=document.getElementById('loadProfileChart').getContext('2d');
+const loadGrad2=loadProfCtx.createLinearGradient(0,0,0,300);loadGrad2.addColorStop(0,'rgba(56,189,248,0.2)');loadGrad2.addColorStop(1,'rgba(56,189,248,0.0)');
+const loadProfileChart=new Chart(loadProfCtx,{type:'line',data:{labels:[],datasets:[{label:'Load W',data:[],borderColor:'#38bdf8',backgroundColor:loadGrad2,fill:true,tension:0.4,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#7a8baa',font:{size:10}}}},scales:{x:{grid:{color:'rgba(30,45,74,0.4)'},ticks:{color:'#7a8baa',font:{size:9},maxTicksLimit:12},border:{display:false}},y:{grid:{color:'rgba(30,45,74,0.4)'},ticks:{color:'#7a8baa',font:{size:9},callback:v=>v+'W'},border:{display:false},beginAtZero:true}},animation:{duration:300}}});
 
-/* Battery History */
-const battHistCtx = document.getElementById('battHistoryChart').getContext('2d');
-const battHistGrad = battHistCtx.createLinearGradient(0, 0, 0, 300);
-battHistGrad.addColorStop(0, 'rgba(168,85,247,0.3)');
-battHistGrad.addColorStop(1, 'rgba(168,85,247,0.0)');
-const battHistoryChart = new Chart(battHistCtx, {
-    type: 'line',
-    data: { labels: [], datasets: [{ label: 'Battery V', data: [], borderColor: '#a855f7', backgroundColor: battHistGrad, fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }] },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: '#7a8baa', font: { size: 10 } } } },
-        scales: {
-            x: { grid: { color: 'rgba(30,45,74,0.4)' }, ticks: { color: '#7a8baa', font: { size: 9 }, maxTicksLimit: 12 }, border: { display: false } },
-            y: { grid: { color: 'rgba(30,45,74,0.4)' }, ticks: { color: '#7a8baa', font: { size: 9 }, callback: v => v + 'V' }, border: { display: false }, min: 10, max: 16 }
-        },
-        animation: { duration: 300 }
-    }
-});
-
-/* Load Profile */
-const loadProfCtx = document.getElementById('loadProfileChart').getContext('2d');
-const loadProfGrad = loadProfCtx.createLinearGradient(0, 0, 0, 300);
-loadProfGrad.addColorStop(0, 'rgba(56,189,248,0.2)');
-loadProfGrad.addColorStop(1, 'rgba(56,189,248,0.0)');
-const loadProfileChart = new Chart(loadProfCtx, {
-    type: 'line',
-    data: { labels: [], datasets: [{ label: 'Load W', data: [], borderColor: '#38bdf8', backgroundColor: loadProfGrad, fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }] },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: '#7a8baa', font: { size: 10 } } } },
-        scales: {
-            x: { grid: { color: 'rgba(30,45,74,0.4)' }, ticks: { color: '#7a8baa', font: { size: 9 }, maxTicksLimit: 12 }, border: { display: false } },
-            y: { grid: { color: 'rgba(30,45,74,0.4)' }, ticks: { color: '#7a8baa', font: { size: 9 }, callback: v => v + 'W' }, border: { display: false }, beginAtZero: true }
-        },
-        animation: { duration: 300 }
-    }
-});
-
-function updateLiveChart() {
-    if (chartRange !== 'live') return;
-    powerChart.data.labels = liveChartData.map(d => d.time.toLocaleTimeString('en-US', { hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit' }));
-    powerChart.data.datasets[0].data = liveChartData.map(d => d.solar);
-    powerChart.data.datasets[1].data = liveChartData.map(d => d.home);
-    powerChart.data.datasets[2].data = liveChartData.map(d => d.grid);
+function updateLiveChart(){
+    if(chartRange!=='live')return;
+    powerChart.data.labels=liveChartData.map(d=>d.time.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+    powerChart.data.datasets[0].data=liveChartData.map(d=>d.solar);
+    powerChart.data.datasets[1].data=liveChartData.map(d=>d.home);
+    powerChart.data.datasets[2].data=liveChartData.map(d=>d.grid);
     powerChart.update('none');
 }
-
-function updateBattHistory() {
-    battHistoryChart.data.labels = battHistoryData.map(d => d.time.toLocaleTimeString('en-US', { hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit' }));
-    battHistoryChart.data.datasets[0].data = battHistoryData.map(d => d.v);
-    battHistoryChart.update('none');
+function updateBattHistory(){
+    battHistoryChart.data.labels=battHistoryData.map(d=>d.time.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+    battHistoryChart.data.datasets[0].data=battHistoryData.map(d=>d.v);battHistoryChart.update('none');
+}
+function updateLoadHistory(){
+    loadProfileChart.data.labels=loadHistoryData.map(d=>d.time.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+    loadProfileChart.data.datasets[0].data=loadHistoryData.map(d=>d.w);loadProfileChart.update('none');
 }
 
-function updateLoadHistory() {
-    loadProfileChart.data.labels = loadHistoryData.map(d => d.time.toLocaleTimeString('en-US', { hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit' }));
-    loadProfileChart.data.datasets[0].data = loadHistoryData.map(d => d.w);
-    loadProfileChart.update('none');
-}
-
-function setChartRange(btn, range) {
-    btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    chartRange = range;
-    if (range === 'live') { updateLiveChart(); }
-    else if (range === 'today') {
-        const h = Array.from({length:24}, (_,i) => String(i).padStart(2,'0')+':00');
-        powerChart.data.labels = h;
-        powerChart.data.datasets[0].data = Array(24).fill(null);
-        powerChart.data.datasets[1].data = Array(24).fill(null);
-        powerChart.data.datasets[2].data = Array(24).fill(null);
-        liveChartData.forEach(d => { const hr = d.time.getHours(); if (powerChart.data.datasets[0].data[hr] === null) { powerChart.data.datasets[0].data[hr] = d.solar; powerChart.data.datasets[1].data[hr] = d.home; powerChart.data.datasets[2].data[hr] = d.grid; } });
+function setChartRange(btn,range){
+    btn.parentElement.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');chartRange=range;
+    if(range==='live'){updateLiveChart();}
+    else if(range==='today'){
+        const h=Array.from({length:24},(_,i)=>String(i).padStart(2,'0')+':00');
+        powerChart.data.labels=h;powerChart.data.datasets[0].data=Array(24).fill(null);powerChart.data.datasets[1].data=Array(24).fill(null);powerChart.data.datasets[2].data=Array(24).fill(null);
+        liveChartData.forEach(d=>{const hr=d.time.getHours();if(powerChart.data.datasets[0].data[hr]===null){powerChart.data.datasets[0].data[hr]=d.solar;powerChart.data.datasets[1].data[hr]=d.home;powerChart.data.datasets[2].data[hr]=d.grid;}});
         powerChart.update();
-    } else if (range === 'week') {
-        const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        const today = new Date().getDay();
-        powerChart.data.labels = Array.from({length:7}, (_,i) => days[(today-6+i+7)%7]);
-        powerChart.data.datasets[0].data = Array.from({length:7}, () => Math.round((200 + Math.random()*1800)));
-        powerChart.data.datasets[1].data = Array.from({length:7}, () => Math.round((100 + Math.random()*800)));
-        powerChart.data.datasets[2].data = Array.from({length:7}, () => Math.round(Math.random()*200));
-        powerChart.data.datasets[0].data[6] = liveChartData.reduce((mx, d) => Math.max(mx, d.solar), 0);
+    }else if(range==='week'){
+        const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];const today=new Date().getDay();
+        powerChart.data.labels=Array.from({length:7},(_,i)=>days[(today-6+i+7)%7]);
+        powerChart.data.datasets[0].data=Array.from({length:7},()=>Math.round(200+Math.random()*1800));
+        powerChart.data.datasets[1].data=Array.from({length:7},()=>Math.round(100+Math.random()*800));
+        powerChart.data.datasets[2].data=Array.from({length:7},()=>Math.round(Math.random()*200));
+        powerChart.data.datasets[0].data[6]=liveChartData.reduce((mx,d)=>Math.max(mx,d.solar),0);
         powerChart.update();
     }
 }
 
 /* =============================================
-   FIREBASE DATA LOG
+   LOGS & ALERTS
    ============================================= */
-function addFbLog(msg, type) {
-    const logEl = document.getElementById('firebaseLog');
-    const colors = { data: 'log-data', ok: 'log-ok', warn: 'log-warn', err: 'log-err', info: '' };
-    const time = new Date().toLocaleTimeString('en-US', { hour12:false });
-    const p = document.createElement('p');
-    p.className = colors[type] || '';
-    p.textContent = '[' + time + '] ' + msg;
-    logEl.appendChild(p);
-    while (logEl.children.length > 60) logEl.removeChild(logEl.firstChild);
-    logEl.scrollTop = logEl.scrollHeight;
+function addFbLog(msg,type){
+    const logEl=document.getElementById('firebaseLog');
+    const colors={data:'log-data',ok:'log-ok',warn:'log-warn',err:'log-err',info:''};
+    const time=new Date().toLocaleTimeString('en-US',{hour12:false});
+    const p=document.createElement('p');p.className=colors[type]||'';
+    p.textContent='['+time+'] '+msg;logEl.appendChild(p);
+    while(logEl.children.length>60)logEl.removeChild(logEl.firstChild);
+    logEl.scrollTop=logEl.scrollHeight;
 }
 
-/* =============================================
-   ALERTS
-   ============================================= */
-function pushAlert(title, msg, type) {
-    const key = title + msg;
-    const now = Date.now();
-    if (lastAlertTimes[key] && now - lastAlertTimes[key] < 30000) return;
-    lastAlertTimes[key] = now;
-
-    const colors = { warning: 'var(--accent)', error: 'var(--red)', info: 'var(--blue)', success: 'var(--green)' };
-    const bgs = { warning: 'rgba(245,158,11,0.05)', error: 'rgba(239,68,68,0.05)', info: 'rgba(56,189,248,0.05)', success: 'rgba(34,197,94,0.05)' };
-    const icons = { warning: 'fa-exclamation-triangle', error: 'fa-times-circle', info: 'fa-info-circle', success: 'fa-check-circle' };
-
-    const div = document.createElement('div');
-    div.className = 'flex items-start gap-3 p-2 rounded-lg';
-    div.style.background = bgs[type] || bgs.info;
-    div.style.animation = 'fadeIn 0.4s ease';
-    div.innerHTML = '<div class="alert-dot mt-1" style="background:'+(colors[type]||colors.info)+';flex-shrink:0;"></div><div><p class="text-xs font-semibold"><i class="fas '+(icons[type]||icons.info)+' mr-1" style="color:'+(colors[type]||colors.info)+'"></i>'+title+'</p><p class="text-xs" style="color:var(--muted);">'+msg+' — '+new Date().toLocaleTimeString()+'</p></div>';
-
-    /* Sidebar list */
-    const sidebarList = document.getElementById('alertsList');
-    sidebarList.insertBefore(div, sidebarList.firstChild);
-    if (sidebarList.children.length > 8) sidebarList.removeChild(sidebarList.lastChild);
-    document.getElementById('sidebarAlertDot').style.display = 'block';
-
-    /* Full alerts page */
-    const fullList = document.getElementById('alertsFullList');
-    if (fullList.children.length === 1 && fullList.children[0].tagName === 'P') fullList.innerHTML = '';
-    const div2 = div.cloneNode(true);
-    fullList.insertBefore(div2, fullList.firstChild);
-    if (fullList.children.length > 50) fullList.removeChild(fullList.lastChild);
-
-    addFbLog('ALERT: ' + title + ' — ' + msg, type === 'error' ? 'err' : type === 'warning' ? 'warn' : 'ok');
+function pushAlert(title,msg,type){
+    const key=title+msg;const now=Date.now();
+    if(lastAlertTimes[key]&&now-lastAlertTimes[key]<30000)return;
+    lastAlertTimes[key]=now;
+    const colors={warning:'var(--accent)',error:'var(--red)',info:'var(--blue)',success:'var(--green)'};
+    const bgs={warning:'rgba(245,158,11,0.05)',error:'rgba(239,68,68,0.05)',info:'rgba(56,189,248,0.05)',success:'rgba(34,197,94,0.05)'};
+    const icons={warning:'fa-exclamation-triangle',error:'fa-times-circle',info:'fa-info-circle',success:'fa-check-circle'};
+    const div=document.createElement('div');div.className='flex items-start gap-3 p-2 rounded-lg';div.style.background=bgs[type]||bgs.info;div.style.animation='fadeIn 0.4s ease';
+    div.innerHTML='<div class="alert-dot mt-1" style="background:'+(colors[type]||colors.info)+';flex-shrink:0;"></div><div><p class="text-xs font-semibold"><i class="fas '+(icons[type]||icons.info)+' mr-1" style="color:'+(colors[type]||colors.info)+'"></i>'+title+'</p><p class="text-xs" style="color:var(--muted);">'+msg+' — '+new Date().toLocaleTimeString()+'</p></div>';
+    const sidebarList=document.getElementById('alertsList');sidebarList.insertBefore(div,sidebarList.firstChild);if(sidebarList.children.length>8)sidebarList.removeChild(sidebarList.lastChild);
+    document.getElementById('sidebarAlertDot').style.display='block';
+    const fullList=document.getElementById('alertsFullList');if(fullList.children.length===1&&fullList.children[0].tagName==='P')fullList.innerHTML='';
+    fullList.insertBefore(div.cloneNode(true),fullList.firstChild);if(fullList.children.length>50)fullList.removeChild(fullList.lastChild);
+    addFbLog('ALERT: '+title+' — '+msg,type==='error'?'err':type==='warning'?'warn':'ok');
 }
 
-function clearAlerts() {
-    document.getElementById('alertsList').innerHTML = '';
-    document.getElementById('alertsFullList').innerHTML = '<p class="text-xs text-center py-8" style="color:var(--muted);">No alerts</p>';
-    document.getElementById('sidebarAlertDot').style.display = 'none';
-    allAlerts = [];
-    lastAlertTimes = {};
+function clearAlerts(){
+    document.getElementById('alertsList').innerHTML='';
+    document.getElementById('alertsFullList').innerHTML='<p class="text-xs text-center py-8" style="color:var(--muted);">No alerts</p>';
+    document.getElementById('sidebarAlertDot').style.display='none';
+    lastAlertTimes={};
 }
 
 /* =============================================
    CONFIG MODAL
    ============================================= */
-function openConfigModal() { loadSavedConfig(); document.getElementById('configModal').classList.remove('hidden'); }
-function closeConfigModal() { document.getElementById('configModal').classList.add('hidden'); }
+function openConfigModal(){loadSavedConfig();document.getElementById('configModal').classList.remove('hidden');}
+function closeConfigModal(){document.getElementById('configModal').classList.add('hidden');}
 
 /* =============================================
    INIT
    ============================================= */
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded',()=>{
     loadSavedConfig();
-
-    /* Auto-connect agar saved config hai */
-    const saved = localStorage.getItem('sg_firebase');
-    if (saved) {
-        try {
-            const c = JSON.parse(saved);
-            if (c.databaseURL && c.dataPath) {
-                connectFirebase();
-            }
-        } catch(e) {}
-    }
+    const saved=localStorage.getItem('sg_firebase');
+    if(saved){try{const c=JSON.parse(saved);if(c.databaseURL&&c.dataPath)connectFirebase();}catch(e){}}
 });
 </script>
 </body>
