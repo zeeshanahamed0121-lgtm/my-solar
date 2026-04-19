@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ur" dir="ltr">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolarGuard Pro v4 — Modern UI</title>
+    <title>SolarGuard Pro v4 — Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;800;900&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -13,9 +13,8 @@
     <style>
         :root {
             --bg: #030712;
-            --glass: rgba(15, 23, 42, 0.6);
+            --glass: rgba(15, 23, 42, 0.7);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.03);
             --fg: #f8fafc;
             --muted: #94a3b8;
             --accent: #f59e0b;
@@ -108,7 +107,7 @@
             border-color: rgba(0, 229, 255, 0.3);
         }
 
-        /* ⚡ POWER SOURCE BANNER (Masterpiece) */
+        /* POWER SOURCE BANNER */
         .ps-banner {
             background: rgba(15, 23, 42, 0.8);
             border-radius: 24px;
@@ -195,7 +194,7 @@
         /* Misc */
         .fade-in { animation: fadeIn 0.5s ease forwards; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        .toast { position: fixed; bottom: 30px; right: 30px; padding: 12px 20px; border-radius: 12px; background: var(--glass); border: 1px solid var(--glass-border); color: var(--fg); font-size: 0.8rem; z-index: 9999; transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); backdrop-filter: blur(20px); }
+        .toast { position: fixed; bottom: 30px; right: 30px; padding: 12px 20px; border-radius: 12px; background: var(--glass); border: 1px solid var(--glass-border); color: var(--fg); font-size: 0.8rem; z-index: 99999; transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); backdrop-filter: blur(20px); }
         .toast.show { transform: translateY(0); opacity: 1; }
         .conn-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 8px; font-size: 0.65rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.05); }
         .conn-online { background: rgba(0,255,136,0.1); color: var(--neon-green); border-color: rgba(0,255,136,0.2); }
@@ -203,27 +202,44 @@
         .conn-connecting { background: rgba(245,158,11,0.1); color: var(--accent); border-color: rgba(245,158,11,0.2); }
         .data-path-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; background: rgba(255,255,255,0.03); color: var(--neon-cyan); font-size: 0.6rem; font-family: monospace; border: 1px solid rgba(0,229,255,0.1); }
 
-        /* Modals & Config (Simplified styling for brevity, keeps functionality) */
-        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        /* Modals & Config */
+        .modal-overlay { position: fixed; inset:0; background: rgba(0,0,0,0.8); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal-overlay.hidden { display: none; }
         .modal-box { background: #0f172a; border: 1px solid var(--glass-border); border-radius: 24px; padding: 32px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .modal-box input, .modal-box select { width: 100%; padding: 10px 14px; border-radius: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--fg); font-size: 0.8rem; font-family: 'Inter'; outline: none; transition: border-color 0.3s; }
+        .modal-box input, .modal-box select { width: 100%; padding: 12px 14px; border-radius: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: var(--fg); font-size: 0.9rem; font-family: 'Inter'; outline: none; transition: border-color 0.3s; margin-bottom: 10px;}
         .modal-box input:focus, .modal-box select:focus { border-color: var(--neon-cyan); }
-        .modal-box label { display: block; font-size: 0.7rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-        .btn-primary { padding: 10px 24px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue)); color: #fff; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.3s; }
-        .btn-secondary { padding: 10px 24px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--muted); font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+        .modal-box label { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; margin-top: 10px;}
+        .btn-primary { padding: 12px 24px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue)); color: #fff; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; width: 100%; }
+        .btn-primary:hover { transform: scale(1.02); }
+        .btn-secondary { padding: 10px 24px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: var(--muted); font-weight: 600; font-size: 0.8rem; cursor: pointer; margin-top: 10px; width: 100%;}
         
         .cmd-row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 12px; }
         .cmd-row .cmd-field { flex: 1; }
         .cmd-btn { padding: 10px 16px; border-radius: 10px; border: none; background: rgba(0, 229, 255, 0.1); color: var(--neon-cyan); font-weight: 700; font-size: 0.75rem; cursor: pointer; border: 1px solid rgba(0, 229, 255, 0.2); }
         .cmd-btn:hover { background: rgba(0, 229, 255, 0.2); }
-        .collapse-toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; cursor: pointer; }
+        .collapse-toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); margin-top: 10px;}
         .collapse-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
         .collapse-body.open { max-height: 2000px; }
         .map-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
         .raw-viewer { background: rgba(0,0,0,0.4); border-radius: 12px; padding: 16px; font-family: monospace; font-size: 0.7rem; color: var(--neon-green); overflow: auto; max-height: 300px; line-height: 1.7; display: none; border: 1px solid rgba(0,255,136,0.1); }
         .raw-viewer.open { display: block; }
+        
+        /* Helper Button for Header */
+        .header-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--fg);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .header-btn:hover { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; }
 
         @media (max-width: 1024px) {
             .sidebar { display: none; }
@@ -268,14 +284,17 @@
                 <div class="alert-dot" style="background:var(--neon-red);width:5px;height:5px;"></div>
                 <span id="connText">Offline</span>
             </div>
-            <div class="sidebar-item" style="margin:0; width:36px; height:36px; font-size:0.8rem;" onclick="openConfigModal()"><i class="fas fa-database"></i></div>
+            <!-- EXPLICIT HEADER BUTTON FOR SETTINGS -->
+            <button class="header-btn" onclick="openConfigModal()">
+                <i class="fas fa-cog"></i> Settings
+            </button>
         </div>
     </header>
 
     <!-- DASHBOARD VIEW -->
     <div id="view-dashboard">
         
-        <!-- ⚡ MEGA POWER SOURCE BANNER -->
+        <!-- MEGA POWER SOURCE BANNER -->
         <div class="ps-banner fade-in" id="psBannerWrapper">
             <div class="ps-banner-bg"></div>
             <div class="ps-content">
@@ -409,7 +428,7 @@
         </div>
     </div>
 
-    <!-- VIEWS (Hidden by default, logic remains same) -->
+    <!-- VIEWS -->
     <div id="view-flow" style="display:none;"><div class="card p-6 fade-in"><h2 class="text-lg font-extrabold mb-4">Full Power Flow</h2><p class="text-xs" style="color:var(--muted);">Refer to the mini live flow on the main dashboard.</p></div></div>
     <div id="view-analytics" style="display:none;">
         <div class="card p-6 fade-in mb-6"><h2 class="text-lg font-extrabold mb-4">Battery History</h2><div style="height:300px;"><canvas id="battHistoryChart"></canvas></div></div>
@@ -436,10 +455,23 @@
             <button onclick="closeConfigModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;"><i class="fas fa-times"></i></button>
         </div>
         <div class="space-y-4">
-            <div><label>API Key</label><input type="text" id="cfgApiKey" placeholder="AIzaSy..."></div>
-            <div><label>Database URL *</label><input type="text" id="cfgDbUrl" placeholder="https://...firebaseio.com"></div>
-            <div><label>Data Path *</label><input type="text" id="cfgDataPath" placeholder="devices/inverter01"></div>
-            <div class="collapse-toggle" onclick="this.nextElementSibling.classList.toggle('open')"><label style="color:var(--neon-cyan);font-size:0.8rem;cursor:pointer;">Advanced Field Mapping</label><i class="fas fa-chevron-down text-xs" style="color:var(--muted);"></i></div>
+            <div>
+                <label>Database URL * (Required)</label>
+                <input type="text" id="cfgDbUrl" placeholder="https://my-project-default-rtdb.firebaseio.com">
+            </div>
+            <div>
+                <label>Data Path * (Required)</label>
+                <input type="text" id="cfgDataPath" placeholder="devices/inverter01">
+            </div>
+            <div>
+                <label>API Key (Optional)</label>
+                <input type="text" id="cfgApiKey" placeholder="AIzaSy...">
+            </div>
+            
+            <div class="collapse-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+                <label style="color:var(--neon-cyan);font-size:0.8rem;cursor:pointer;">Advanced Field Mapping</label>
+                <i class="fas fa-chevron-down text-xs" style="color:var(--muted);"></i>
+            </div>
             <div class="collapse-body">
                 <div class="map-grid mt-2">
                     <div><label>PV V</label><input id="mPVV" value="pvV"></div><div><label>PV A</label><input id="mPVA" value="pvA"></div>
@@ -449,8 +481,8 @@
                 </div>
             </div>
         </div>
-        <div class="flex gap-3 mt-6">
-            <button class="btn-primary flex-1" onclick="connectFirebase()">Connect</button>
+        <div class="flex gap-3 mt-6 flex-col">
+            <button class="btn-primary" onclick="connectFirebase()">Connect & Save</button>
             <button class="btn-secondary" onclick="disconnectFirebase()">Disconnect</button>
         </div>
     </div>
@@ -467,104 +499,317 @@ let battHistoryData=[],loadHistoryData=[],lastAlertTimes={},chartRange='live';
 const FM={pvV:'pvV',pvA:'pvA',pvW:'pvW',batteryV:'batteryV',batteryA:'batteryA',batteryPercent:'batteryPercent',loadW:'loadW',loadVA:'loadVA',acOutV:'acOutV',acInV:'acInV',acOutFreq:'acOutFreq',gridW:'gridW',isCharging:'isCharging',chargingSrc:'chargingSrc',powerSource:'powerSource',pvkWh:'pvkWh',sccPVV:'sccPVV',panelA:'panelA',raw:'raw',statusFlags:'statusFlags'};
 
 /* ============================================= UTILS ============================================= */
-function showToast(m,t){const e=document.getElementById('toast');e.innerHTML=m;e.style.borderColor=t==='error'?'var(--neon-red)':t==='success'?'var(--neon-green)':'var(--neon-cyan)';e.classList.add('show');setTimeout(()=>e.classList.remove('show'),3000);}
+function showToast(m,t){
+    const e=document.getElementById('toast');
+    e.innerHTML=m;
+    e.style.borderColor=t==='error'?'var(--neon-red)':t==='success'?'var(--neon-green)':'var(--neon-cyan)';
+    e.classList.add('show');
+    setTimeout(()=>e.classList.remove('show'),3000);
+}
 function toggleRawViewer(){document.getElementById('rawDataBox').classList.toggle('open');}
-function switchTab(el,v){document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));el.classList.add('active');document.querySelectorAll('.main-content > div[id^="view-"]').forEach(d=>d.style.display='none');document.getElementById('view-'+v).style.display='block';}
+function switchTab(el,v){
+    document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
+    if(el) el.classList.add('active');
+    document.querySelectorAll('.main-content > div[id^="view-"]').forEach(d=>d.style.display='none');
+    document.getElementById('view-'+v).style.display='block';
+}
 setInterval(()=>{document.getElementById('liveClock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false});},1000);
 
 /* ============================================= FIREBASE LOGIC ============================================= */
-function readMap(){const i=['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mGW'],k=['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','gridW'];for(let x=0;x<i.length;x++){const v=document.getElementById(i[x]).value.trim();if(v)FM[k[x]]=v;}}
-function loadMap(){const i=['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mGW'],k=['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','gridW'];for(let x=0;x<i.length;x++){const e=document.getElementById(i[x]);if(e)e.value=FM[k[x]]||'';}}
+function readMap(){
+    const i=['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mGW'],
+          k=['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','gridW'];
+    for(let x=0;x<i.length;x++){
+        const v=document.getElementById(i[x]).value.trim();
+        if(v)FM[k[x]]=v;
+    }
+}
+function loadMap(){
+    const i=['mPVV','mPVA','mPVW','mBV','mBA','mBP','mLW','mGW'],
+          k=['pvV','pvA','pvW','batteryV','batteryA','batteryPercent','loadW','gridW'];
+    for(let x=0;x<i.length;x++){
+        const e=document.getElementById(i[x]);
+        if(e)e.value=FM[k[x]]||'';
+    }
+}
 
-function getVal(d,k){const f=FM[k]||k;if(!d)return null;const p=f.split('.');let r=d;for(const x of p){if(r&&typeof r==='object'&&x in r)r=r[x];else return null;}return r;}
-function getNum(d,k){const v=getVal(d,k);if(v===null)return null;return parseFloat(v)||0;}
+function getVal(d,k){
+    const f=FM[k]||k;
+    if(!d)return null;
+    const p=f.split('.');
+    let r=d;
+    for(const x of p){
+        if(r&&typeof r==='object'&&x in r)r=r[x];
+        else return null;
+    }
+    return r;
+}
+function getNum(d,k){
+    const v=getVal(d,k);
+    if(v===null)return null;
+    return parseFloat(v)||0;
+}
 
-function parseQPIRaw(r){if(!r)return null;const c=r.replace(/^\(/,'').replace(/[)w\r\n]+$/,'').trim().split(/\s+/);if(c.length<14)return null;return{acInV:+c[0],acOutV:+c[2],batteryV:+c[8],pos9:+c[9],sccPVV:+c[11],pvA:+c[12],loadW:+c[5]};}
+function parseQPIRaw(r){
+    if(!r)return null;
+    const c=r.replace(/^\(/,'').replace(/[)w\r\n]+$/,'').trim().split(/\s+/);
+    if(c.length<14)return null;
+    return{acInV:+c[0],acOutV:+c[2],batteryV:+c[8],pos9:+c[9],sccPVV:+c[11],pvA:+c[12],loadW:+c[5]};
+}
 
 function mapData(raw){
-    if(!raw)return null;let d=raw;if(raw.devices&&raw.devices.inverter01)d=raw.devices.inverter01;else if(raw.inverter01)d=raw.inverter01;
+    if(!raw)return null;
+    let d=raw;
+    if(raw.devices&&raw.devices.inverter01)d=raw.devices.inverter01;
+    else if(raw.inverter01)d=raw.inverter01;
+    
     let pvV=getNum(d,'pvV'),pvA=getNum(d,'pvA'),pvW=getNum(d,'pvW'),bV=getNum(d,'batteryV'),bA=getNum(d,'batteryA'),bPct=getNum(d,'batteryPercent');
     let lW=getNum(d,'loadW'),oV=getNum(d,'acOutV'),iV=getNum(d,'acInV'),oF=getNum(d,'acOutFreq'),lVA=getNum(d,'loadVA');
     let sccV=getNum(d,'sccPVV'),panA=getNum(d,'panelA'),espGridW=getNum(d,'gridW'),kwh=getNum(d,'pvkWh'),rawStr=getVal(d,'raw')||'';
     
-    let rp=null;if(rawStr){rp=parseQPIRaw(rawStr);if(rp){if(!pvV&&rp.sccPVV>0)pvV=rp.sccPVV;if(!bV&&rp.batteryV>0)bV=rp.batteryV;if(!iV&&rp.acInV>0)iV=rp.acInV;if(!lW&&rp.loadW>0)lW=rp.loadW;}}
+    let rp=null;
+    if(rawStr){
+        rp=parseQPIRaw(rawStr);
+        if(rp){
+            if(!pvV&&rp.sccPVV>0)pvV=rp.sccPVV;
+            if(!bV&&rp.batteryV>0)bV=rp.batteryV;
+            if(!iV&&rp.acInV>0)iV=rp.acInV;
+            if(!lW&&rp.loadW>0)lW=rp.loadW;
+        }
+    }
 
     let rawChgA=rp?(rp.pos9||0)/10:0;
     let espIsChg=(getVal(d,'isCharging')===true||getVal(d,'isCharging')==='true');
     let isChg=espIsChg||(rawChgA>0.5);
     let chgSrc=(getVal(d,'chargingSrc')||'none').toString().toLowerCase();
-    if(chgSrc.includes('solar')&&chgSrc.includes('grid'))chgSrc='solar+grid';else if(chgSrc.includes('solar'))chgSrc='solar';else if(chgSrc.includes('grid'))chgSrc='grid';
+    if(chgSrc.includes('solar')&&chgSrc.includes('grid'))chgSrc='solar+grid';
+    else if(chgSrc.includes('solar'))chgSrc='solar';
+    else if(chgSrc.includes('grid'))chgSrc='grid';
 
-    let bp=0;if(bPct>0&&bPct<=100)bp=Math.round(bPct);else{if(bV>=13)bp=100;else if(bV<=10.5)bp=0;else bp=Math.round(((bV-10.5)/2.5)*100);}bp=Math.max(0,Math.min(100,bp));
+    let bp=0;
+    if(bPct>0&&bPct<=100)bp=Math.round(bPct);
+    else{
+        if(bV>=13)bp=100;
+        else if(bV<=10.5)bp=0;
+        else bp=Math.round(((bV-10.5)/2.5)*100);
+    }
+    bp=Math.max(0,Math.min(100,bp));
     let finalBA=isChg?((bA>0)?bA:rawChgA):((bA||0)<-1?bA:0);
     
     let solarIn=pvW||0, invToLoad=(lW||0)>10?lW:0, gridToInv=0, invToBatt=0, battToInv=0, invToGrid=0, gridAvail=(iV||0)>100;
     let battChgW=(isChg&&finalBA>0)?Math.abs(finalBA*(bV||12)):0, solarExcess=Math.max(0,solarIn-invToLoad);
     
-    if(!isChg&&solarExcess>15&&bp<100&&bV>12.8){isChg=true;if(chgSrc==='none')chgSrc='solar';battChgW=solarExcess;finalBA=solarExcess/(bV||12);}
-    if(isChg&&chgSrc==='solar'){invToBatt=battChgW||solarExcess;gridToInv=0;invToGrid=0;if(solarIn>=invToLoad+invToBatt){invToBatt=solarIn-invToLoad;invToGrid=0;}else{invToBatt=Math.max(0,solarIn-invToLoad);if(invToBatt<5)invToBatt=0;}}
-    else if(isChg&&chgSrc==='grid'){invToBatt=battChgW;gridToInv=(invToLoad+invToBatt)-solarIn;if(gridToInv<0)gridToInv=0;}
-    else if(!isChg){if(solarIn<invToLoad-15){let deficit=invToLoad-solarIn;if(gridAvail)gridToInv=deficit;else battToInv=deficit;}}
+    if(!isChg&&solarExcess>15&&bp<100&&bV>12.8){
+        isChg=true;
+        if(chgSrc==='none')chgSrc='solar';
+        battChgW=solarExcess;
+        finalBA=solarExcess/(bV||12);
+    }
+    if(isChg&&chgSrc==='solar'){
+        invToBatt=battChgW||solarExcess;
+        gridToInv=0;invToGrid=0;
+        if(solarIn>=invToLoad+invToBatt){invToBatt=solarIn-invToLoad;invToGrid=0;}
+        else{invToBatt=Math.max(0,solarIn-invToLoad);if(invToBatt<5)invToBatt=0;}
+    }
+    else if(isChg&&chgSrc==='grid'){
+        invToBatt=battChgW;
+        gridToInv=(invToLoad+invToBatt)-solarIn;
+        if(gridToInv<0)gridToInv=0;
+    }
+    else if(!isChg){
+        if(solarIn<invToLoad-15){
+            let deficit=invToLoad-solarIn;
+            if(gridAvail)gridToInv=deficit;
+            else battToInv=deficit;
+        }
+    }
 
     return{pv_voltage:pvV||0,pv_current:pvA||0,pv_power:pvW||0,scc_pv_voltage:sccV||0,panel_amperes:panA||0,battery_voltage:bV||0,battery_percent:bp,battery_current:finalBA,battery_charging:isChg,charging_source:chgSrc,power_source:getVal(d,'powerSource')||'none',load_watts:lW||0,load_va:lVA||0,load_voltage:oV||0,load_frequency:oF||50,grid_voltage:iV||0,grid_watts:espGridW||0,grid_available:gridAvail,today_energy:kwh||0,_flows:{solarIn,invToLoad,gridToInv,invToBatt,battToInv,invToGrid}};
 }
 
+function openConfigModal(){
+    const s=localStorage.getItem('sg_cfg');
+    if(s){
+        try{const c=JSON.parse(s);document.getElementById('cfgDbUrl').value=c.dbUrl||'';document.getElementById('cfgDataPath').value=c.path||'';document.getElementById('cfgApiKey').value=c.apiKey||'';}catch(e){}
+    }
+    loadMap();
+    document.getElementById('configModal').classList.remove('hidden');
+    console.log("Settings Modal Opened"); // Debugging
+}
+function closeConfigModal(){document.getElementById('configModal').classList.add('hidden');}
+
 function connectFirebase(){
     const dbUrl=document.getElementById('cfgDbUrl').value.trim(),path=document.getElementById('cfgDataPath').value.trim();
-    if(!dbUrl||!path){showToast('URL aur Path zaruri hai','error');return;}
-    readMap();setConnectionStatus('connecting');disconnectFirebase(true);
+    if(!dbUrl||!path){showToast('Database URL aur Path likhein','error');return;}
+    
+    readMap();
+    setConnectionStatus('connecting');
+    disconnectFirebase(true);
+    
     try{
         const cfg={apiKey:document.getElementById('cfgApiKey').value.trim()||'x',databaseURL:dbUrl,projectId:'x'};
-        firebaseApp=firebase.initializeApp(cfg);firebaseDb=firebase.database();
-        firebaseDb.ref('.info/connected').on('value',s=>{setConnectionStatus(s.val()?'online':'offline');});
+        firebaseApp=firebase.initializeApp(cfg);
+        firebaseDb=firebase.database();
+        
+        firebaseDb.ref('.info/connected').on('value',s=>{
+            setConnectionStatus(s.val()?'online':'offline');
+            if(!s.val()) {
+                // Agar connection khatam ho gaya to warning
+                showToast('Connection Lost','error');
+            }
+        });
+        
         document.getElementById('dataPathTag').textContent=path;
         firebaseDataRef=firebaseDb.ref(path);
-        firebaseDataRef.on('value',s=>{const d=s.val();if(d){dataPointCounter++;processFirebaseData(d);}else addLog('No data found at path','warn');});
-        firebaseDb.ref(path+'/cmdResp').on('value',s=>{const v=s.val();if(v){document.getElementById('cmdResponse').textContent=v;document.getElementById('cmdResponse').style.color=v==='ACK'?'var(--neon-green)':'var(--neon-red)';showToast(v,'success');}});
-        localStorage.setItem('sg_cfg',JSON.stringify({dbUrl,path}));closeConfigModal();showToast('Connecting...','success');
-    }catch(e){setConnectionStatus('offline');showToast(e.message,'error');}
+        
+        firebaseDataRef.on('value',s=>{
+            const d=s.val();
+            if(d){
+                dataPointCounter++;
+                processFirebaseData(d);
+            }else{
+                addLog('No data found at path','warn');
+            }
+        });
+        
+        // Save settings to localStorage
+        localStorage.setItem('sg_cfg',JSON.stringify({dbUrl,path,apiKey:cfg.apiKey}));
+        closeConfigModal();
+        showToast('Connected Successfully','success');
+        
+    }catch(e){
+        console.error(e);
+        setConnectionStatus('offline');
+        showToast(e.message,'error');
+        // Auto open settings if fail
+        setTimeout(openConfigModal, 1000);
+    }
 }
-function disconnectFirebase(s){if(firebaseDataRef)try{firebaseDataRef.off();}catch(e){}firebaseDataRef=null;if(firebaseDb)try{firebaseDb.ref('.info/connected').off();}catch(e){}if(firebaseApp)try{firebaseApp.delete();}catch(e){}firebaseApp=null;firebaseDb=null;isConnected=false;if(!s)setConnectionStatus('offline');}
-function setConnectionStatus(s){const e=document.getElementById('connStatus'),t=document.getElementById('connText'),d=e.querySelector('.alert-dot');e.className='conn-indicator';if(s==='online'){isConnected=true;e.classList.add('conn-online');t.textContent='Live';d.style.background='var(--neon-green)';document.getElementById('flowLiveTag').textContent='LIVE';document.getElementById('flowLiveTag').style.color='var(--neon-green)';}else if(s==='connecting'){e.classList.add('conn-connecting');t.textContent='...';d.style.background='var(--accent)';}else{isConnected=false;e.classList.add('conn-offline');t.textContent='Offline';d.style.background='var(--neon-red)';document.getElementById('flowLiveTag').textContent='OFFLINE';document.getElementById('flowLiveTag').style.color='var(--neon-red)';}}
-function sendQPI(c){if(!c||!firebaseDataRef){showToast('Connect first','error');return;}c=c.trim();firebaseDataRef.child('cmd').set(c).then(()=>{document.getElementById('cmdResponse').textContent='Sent: '+c;showToast('Sent','success');}).catch(e=>showToast(e.message,'error'));}
-function openConfigModal(){const s=localStorage.getItem('sg_cfg');if(s){try{const c=JSON.parse(s);document.getElementById('cfgDbUrl').value=c.dbUrl||'';document.getElementById('cfgDataPath').value=c.path||'';}catch(e){}}loadMap();document.getElementById('configModal').classList.remove('hidden');}
-function closeConfigModal(){document.getElementById('configModal').classList.add('hidden');}
+
+function disconnectFirebase(s){
+    if(firebaseDataRef)try{firebaseDataRef.off();}catch(e){}
+    firebaseDataRef=null;
+    if(firebaseDb)try{firebaseDb.ref('.info/connected').off();}catch(e){}
+    if(firebaseApp)try{firebaseApp.delete();}catch(e){}
+    firebaseApp=null;firebaseDb=null;isConnected=false;
+    if(!s)setConnectionStatus('offline');
+}
+
+function setConnectionStatus(s){
+    const e=document.getElementById('connStatus'),t=document.getElementById('connText'),d=e.querySelector('.alert-dot');
+    e.className='conn-indicator';
+    if(s==='online'){
+        isConnected=true;e.classList.add('conn-online');t.textContent='Live';d.style.background='var(--neon-green)';
+        document.getElementById('flowLiveTag').textContent='LIVE';document.getElementById('flowLiveTag').style.color='var(--neon-green)';
+    }else if(s==='connecting'){
+        e.classList.add('conn-connecting');t.textContent='...';d.style.background='var(--accent)';
+    }else{
+        isConnected=false;e.classList.add('conn-offline');t.textContent='Offline';d.style.background='var(--neon-red)';
+        document.getElementById('flowLiveTag').textContent='OFFLINE';document.getElementById('flowLiveTag').style.color='var(--neon-red)';
+    }
+}
+
+function sendQPI(c){
+    if(!c||!firebaseDataRef){showToast('Connect first','error');return;}
+    c=c.trim();
+    firebaseDataRef.child('cmd').set(c).then(()=>{document.getElementById('cmdResponse').textContent='Sent: '+c;showToast('Sent','success');}).catch(e=>showToast(e.message,'error'));
+}
 
 /* ============================================= PROCESS DATA ============================================= */
 function processFirebaseData(data){
-    const d=mapData(data);if(!d)return;const fl=d._flows;const solar=d.pv_power,home=d.load_watts,bV=d.battery_voltage,bA=d.battery_current;
+    const d=mapData(data);if(!d)return;
+    const fl=d._flows;
+    const solar=d.pv_power,home=d.load_watts,bV=d.battery_voltage,bA=d.battery_current;
 
     // Stat Cards
     document.getElementById('solarPower').textContent=Math.round(solar);
     document.getElementById('homePower').textContent=Math.round(home);
     document.getElementById('homePower2').textContent=Math.round(home)+'W';
-    if(previousSolar!==null){const df=solar-previousSolar,t=document.getElementById('solarTrend');if(df>10){t.innerHTML='▲ '+Math.round(df);t.style.color='var(--neon-green)';}else if(df<-10){t.innerHTML='▼ '+Math.round(df);t.style.color='var(--neon-red)';}else{t.innerHTML='—';t.style.color='var(--muted)';}}previousSolar=solar;
-    if(previousLoad!==null){const df=home-previousLoad,t=document.getElementById('homeTrend');if(df>20){t.innerHTML='▲ '+Math.round(df);t.style.color='var(--neon-red)';}else if(df<-20){t.innerHTML='▼ '+Math.round(df);t.style.color='var(--neon-green)';}else{t.innerHTML='—';t.style.color='var(--muted)';}}previousLoad=home;
+    
+    if(previousSolar!==null){
+        const df=solar-previousSolar,t=document.getElementById('solarTrend');
+        if(df>10){t.innerHTML='▲ '+Math.round(df);t.style.color='var(--neon-green)';}
+        else if(df<-10){t.innerHTML='▼ '+Math.round(df);t.style.color='var(--neon-red)';}
+        else{t.innerHTML='—';t.style.color='var(--muted)';}
+    }
+    previousSolar=solar;
+    
+    if(previousLoad!==null){
+        const df=home-previousLoad,t=document.getElementById('homeTrend');
+        if(df>20){t.innerHTML='▲ '+Math.round(df);t.style.color='var(--neon-red)';}
+        else if(df<-20){t.innerHTML='▼ '+Math.round(df);t.style.color='var(--neon-green)';}
+        else{t.innerHTML='—';t.style.color='var(--muted)';}
+    }
+    previousLoad=home;
 
-    // ⚡ MEGA BANNER LOGIC
+    // BANNER LOGIC
     const ps=(d.power_source||'none').toLowerCase();
     const banner=document.getElementById('psBannerWrapper');
     banner.className='ps-banner fade-in';
-    if(ps==='solar'){banner.classList.add('mode-solar');document.getElementById('psIcon').className='fas fa-sun';document.getElementById('psText').textContent='SOLAR';document.getElementById('solarSubtext').innerHTML='<span style="color:var(--accent)">Active</span>';}
-    else if(ps==='battery'){banner.classList.add('mode-battery');document.getElementById('psIcon').className='fas fa-car-battery';document.getElementById('psText').textContent='BATTERY';document.getElementById('solarSubtext').textContent='Standby';}
-    else if(ps==='grid'){banner.classList.add('mode-grid');document.getElementById('psIcon').className='fas fa-plug';document.getElementById('psText').textContent='GRID';document.getElementById('solarSubtext').textContent='Standby';}
-    else{document.getElementById('psIcon').className='fas fa-power-off';document.getElementById('psText').textContent='STANDBY';document.getElementById('solarSubtext').textContent='Idle';}
+    
+    if(ps==='solar'){
+        banner.classList.add('mode-solar');
+        document.getElementById('psIcon').className='fas fa-sun';
+        document.getElementById('psText').textContent='SOLAR';
+        document.getElementById('solarSubtext').innerHTML='<span style="color:var(--accent)">Active</span>';
+    }
+    else if(ps==='battery'){
+        banner.classList.add('mode-battery');
+        document.getElementById('psIcon').className='fas fa-car-battery';
+        document.getElementById('psText').textContent='BATTERY';
+        document.getElementById('solarSubtext').textContent='Standby';
+    }
+    else if(ps==='grid'){
+        banner.classList.add('mode-grid');
+        document.getElementById('psIcon').className='fas fa-plug';
+        document.getElementById('psText').textContent='GRID';
+        document.getElementById('solarSubtext').textContent='Standby';
+    }
+    else{
+        document.getElementById('psIcon').className='fas fa-power-off';
+        document.getElementById('psText').textContent='STANDBY';
+        document.getElementById('solarSubtext').textContent='Idle';
+    }
 
     const psChg=document.getElementById('psChgStatus');
-    if(d.battery_charging){psChg.innerHTML='<i class="fas fa-bolt" style="font-size:0.6rem"></i> CHARGING ('+d.charging_source.toUpperCase()+')';psChg.style.background='rgba(0,255,136,0.1)';psChg.style.color='var(--neon-green)';psChg.style.borderColor='rgba(0,255,136,0.2)';}
-    else{psChg.textContent='DISCHARGING / IDLE';psChg.style.background='rgba(255,255,255,0.03)';psChg.style.color='var(--muted)';psChg.style.borderColor='rgba(255,255,255,0.05)';}
+    if(d.battery_charging){
+        psChg.innerHTML='<i class="fas fa-bolt" style="font-size:0.6rem"></i> CHARGING ('+d.charging_source.toUpperCase()+')';
+        psChg.style.background='rgba(0,255,136,0.1)';psChg.style.color='var(--neon-green)';psChg.style.borderColor='rgba(0,255,136,0.2)';
+    }else{
+        psChg.textContent='DISCHARGING / IDLE';
+        psChg.style.background='rgba(255,255,255,0.03)';psChg.style.color='var(--muted)';psChg.style.borderColor='rgba(255,255,255,0.05)';
+    }
 
     // Grid Card
     const isImport=(d.grid_watts||0)>10, isExport=fl.invToGrid>10;
-    if(isImport){document.getElementById('gridPower').textContent=Math.round(d.grid_watts);document.getElementById('gridSubtext').innerHTML='<span style="color:var(--neon-blue)">Importing</span>';document.getElementById('gridStatusPill').textContent='IMPORT';document.getElementById('gridStatusPill').style.color='var(--neon-blue)';}
-    else if(isExport){document.getElementById('gridPower').textContent='+'+Math.round(fl.invToGrid);document.getElementById('gridSubtext').innerHTML='<span style="color:var(--neon-green)">Exporting</span>';document.getElementById('gridStatusPill').textContent='EXPORT';document.getElementById('gridStatusPill').style.color='var(--neon-green)';}
-    else{document.getElementById('gridPower').textContent='0';document.getElementById('gridSubtext').innerHTML=fl.invToBatt>10?'<span style="color:var(--neon-purple)">Solar → Batt</span>':'<span style="color:var(--muted)">Idle</span>';document.getElementById('gridStatusPill').textContent='IDLE';document.getElementById('gridStatusPill').style.color='var(--muted)';}
+    if(isImport){
+        document.getElementById('gridPower').textContent=Math.round(d.grid_watts);
+        document.getElementById('gridSubtext').innerHTML='<span style="color:var(--neon-blue)">Importing</span>';
+        document.getElementById('gridStatusPill').textContent='IMPORT';document.getElementById('gridStatusPill').style.color='var(--neon-blue)';
+    }
+    else if(isExport){
+        document.getElementById('gridPower').textContent='+'+Math.round(fl.invToGrid);
+        document.getElementById('gridSubtext').innerHTML='<span style="color:var(--neon-green)">Exporting</span>';
+        document.getElementById('gridStatusPill').textContent='EXPORT';document.getElementById('gridStatusPill').style.color='var(--neon-green)';
+    }else{
+        document.getElementById('gridPower').textContent='0';
+        document.getElementById('gridSubtext').innerHTML=fl.invToBatt>10?'<span style="color:var(--neon-purple)">Solar → Batt</span>':'<span style="color:var(--muted)">Idle</span>';
+        document.getElementById('gridStatusPill').textContent='IDLE';document.getElementById('gridStatusPill').style.color='var(--muted)';
+    }
 
     // Battery
     const bp=Math.max(0,Math.min(100,d.battery_percent));
-    document.getElementById('batteryLevel').textContent=Math.round(bp)+'%';document.getElementById('batteryBar').style.width=bp+'%';
+    document.getElementById('batteryLevel').textContent=Math.round(bp)+'%';
+    document.getElementById('batteryBar').style.width=bp+'%';
     const bPill=document.getElementById('battStatusPill');
-    if(d.battery_charging){bPill.innerHTML='<i class="fas fa-bolt" style="font-size:0.5rem"></i> CHG';bPill.style.color='var(--neon-green)';}else if(fl.battToInv>10){bPill.textContent='DISCHG';bPill.style.color='var(--neon-red)';}else{bPill.textContent='IDLE';bPill.style.color='var(--muted)';}
+    if(d.battery_charging){
+        bPill.innerHTML='<i class="fas fa-bolt" style="font-size:0.5rem"></i> CHG';
+        bPill.style.color='var(--neon-green)';
+    }else if(fl.battToInv>10){
+        bPill.textContent='DISCHG';bPill.style.color='var(--neon-red)';
+    }else{
+        bPill.textContent='IDLE';bPill.style.color='var(--muted)';
+    }
 
     // Flow SVG
     document.getElementById('flowSolar').textContent=Math.round(solar)+'W';
@@ -595,15 +840,21 @@ function processFirebaseData(data){
     document.getElementById('lastUpdate').textContent=new Date().toLocaleTimeString();
 
     // Charts
-    liveChartData.push({time:new Date(),solar:solar||0,home:home||0,grid:d.grid_watts||0});if(liveChartData.length>120)liveChartData.shift();
+    liveChartData.push({time:new Date(),solar:solar||0,home:home||0,grid:d.grid_watts||0});
+    if(liveChartData.length>120)liveChartData.shift();
     if(chartRange==='live')updateLiveChart();
-    battHistoryData.push({time:new Date(),v:bV||0});if(battHistoryData.length>200)battHistoryData.shift();updateBattHist();
-    loadHistoryData.push({time:new Date(),w:home||0});if(loadHistoryData.length>200)loadHistoryData.shift();updateLoadHist();
+    
+    battHistoryData.push({time:new Date(),v:bV||0});
+    if(battHistoryData.length>200)battHistoryData.shift();updateBattHist();
+    
+    loadHistoryData.push({time:new Date(),w:home||0});
+    if(loadHistoryData.length>200)loadHistoryData.shift();updateLoadHist();
 
     document.getElementById('rawDataPre').textContent=JSON.stringify(data,null,2);
     addLog(`PV:${Math.round(solar)}W Load:${Math.round(home)}W Batt:${Math.round(bp)}% Chg:${Math.round(fl.invToBatt)}W Grid:${Math.round(d.grid_watts||0)}W [${ps.toUpperCase()}]`,'data');
     
-    if(bp<=20&&bp>0)pushAlert('Battery Low',bp+'%','warning');if(home>=3000)pushAlert('Over Load',home+'W','error');
+    if(bp<=20&&bp>0)pushAlert('Battery Low',bp+'%','warning');
+    if(home>=3000)pushAlert('Over Load',home+'W','error');
 }
 
 /* ============================================= CHARTS ============================================= */
@@ -617,46 +868,82 @@ const battChart=new Chart(bCtx,{type:'line',data:{labels:[],datasets:[{label:'V'
 const lCtx=document.getElementById('loadProfileChart').getContext('2d');const lGr=lCtx.createLinearGradient(0,0,0,300);lGr.addColorStop(0,'rgba(0,229,255,0.15)');lGr.addColorStop(1,'transparent');
 const loadChart=new Chart(lCtx,{type:'line',data:{labels:[],datasets:[{label:'W',data:[],borderColor:'#00e5ff',backgroundColor:lGr,fill:true,tension:0.4,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.02)'},ticks:{color:'#64748b',font:{size:8},maxTicksLimit:10},border:{display:false}},y:{grid:{color:'rgba(255,255,255,0.02)'},ticks:{color:'#64748b',font:{size:8}},border:{display:false},beginAtZero:true}},animation:{duration:0}}});
 
-function updateLiveChart(){if(chartRange!=='live)return;powerChart.data.labels=liveChartData.map(d=>d.time.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}));powerChart.data.datasets[0].data=liveChartData.map(d=>d.solar);powerChart.data.datasets[1].data=liveChartData.map(d=>d.home);powerChart.data.datasets[2].data=liveChartData.map(d=>d.grid);powerChart.update('none');}
+function updateLiveChart(){if(chartRange!=='live')return;powerChart.data.labels=liveChartData.map(d=>d.time.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}));powerChart.data.datasets[0].data=liveChartData.map(d=>d.solar);powerChart.data.datasets[1].data=liveChartData.map(d=>d.home);powerChart.data.datasets[2].data=liveChartData.map(d=>d.grid);powerChart.update('none');}
 function updateBattHist(){battChart.data.labels=battHistoryData.map(d=>d.time.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}));battChart.data.datasets[0].data=battHistoryData.map(d=>d.v);battChart.update('none');}
 function updateLoadHist(){loadChart.data.labels=loadHistoryData.map(d=>d.time.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'}));loadChart.data.datasets[0].data=loadHistoryData.map(d=>d.w);loadChart.update('none');}
 
-function setChartRange(b,r){b.parentElement.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');chartRange=r;if(r==='live')updateLiveChart();else if(r==='today'){const h=Array.from({length:24},(_,i)=>String(i).padStart(2,'0')+':00');powerChart.data.labels=h;powerChart.data.datasets.forEach(x=>x.data=Array(24).fill(null));powerChart.update();}else{powerChart.data.labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];powerChart.data.datasets[0].data=[0,0,0,0,0,0,liveChartData.reduce((m,d)=>Math.max(m,d.solar),0)];powerChart.data.datasets[1].data=[0,0,0,0,0,0,liveChartData.reduce((m,d)=>Math.max(m,d.home),0)];powerChart.update();}}
+function setChartRange(b,r){
+    b.parentElement.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    chartRange=r;
+    if(r==='live')updateLiveChart();
+    else if(r==='today'){
+        const h=Array.from({length:24},(_,i)=>String(i).padStart(2,'0')+':00');
+        powerChart.data.labels=h;powerChart.data.datasets.forEach(x=>x.data=Array(24).fill(null));powerChart.update();
+    }else{
+        powerChart.data.labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        powerChart.data.datasets[0].data=[0,0,0,0,0,0,liveChartData.reduce((m,d)=>Math.max(m,d.solar),0)];
+        powerChart.data.datasets[1].data=[0,0,0,0,0,0,liveChartData.reduce((m,d)=>Math.max(m,d.home),0)];powerChart.update();
+    }
+}
 
 /* ============================================= LOGS & ALERTS ============================================= */
-function addLog(m,t){const l=document.getElementById('firebaseLog'),p=document.createElement('p');p.className='log-'+(t||'');p.textContent='['+new Date().toLocaleTimeString('en-US',{hour12:false})+'] '+m;l.appendChild(p);while(l.children.length>50)l.removeChild(l.firstChild);l.scrollTop=l.scrollHeight;}
-function pushAlert(t,m,tp){const k=t+m,n=Date.now();if(lastAlertTimes[k]&&n-lastAlertTimes[k]<30000)return;lastAlertTimes[k]=n;const c={warning:'var(--accent)',error:'var(--neon-red)',info:'var(--neon-cyan)'};const d=document.createElement('div');d.className='p-2 rounded-lg text-xs fade-in';d.style.borderLeft='2px solid '+(c[tp]||'var(--muted)');d.style.background='rgba(255,255,255,0.02)';d.innerHTML='<strong>'+t+'</strong><p style="color:var(--muted);margin-top:2px">'+m+'</p>';document.getElementById('alertsList').prepend(d);document.getElementById('sidebarAlertDot').style.display='block';const f=document.getElementById('alertsFullList');if(f.children.length===1&&f.children[0].tagName==='P')f.innerHTML='';f.prepend(d.cloneNode(true));addLog('ALERT: '+t,'err');}
-function clearAlerts(){document.getElementById('alertsList').innerHTML='';document.getElementById('alertsFullList').innerHTML='<p class="text-xs text-center py-8" style="color:var(--muted);">Clear</p>';document.getElementById('sidebarAlertDot').style.display='none';lastAlertTimes={};}
+function addLog(m,t){
+    const l=document.getElementById('firebaseLog'),p=document.createElement('p');
+    p.className='log-'+(t||'');
+    p.textContent='['+new Date().toLocaleTimeString('en-US',{hour12:false})+'] '+m;
+    l.appendChild(p);
+    while(l.children.length>50)l.removeChild(l.firstChild);
+    l.scrollTop=l.scrollHeight;
+}
+function pushAlert(t,m,tp){
+    const k=t+m,n=Date.now();
+    if(lastAlertTimes[k]&&n-lastAlertTimes[k]<30000)return;
+    lastAlertTimes[k]=n;
+    const c={warning:'var(--accent)',error:'var(--neon-red)',info:'var(--neon-cyan)'};
+    const d=document.createElement('div');
+    d.className='p-2 rounded-lg text-xs fade-in';
+    d.style.borderLeft='2px solid '+(c[tp]||'var(--muted)');
+    d.style.background='rgba(255,255,255,0.02)';
+    d.innerHTML='<strong>'+t+'</strong><p style="color:var(--muted);margin-top:2px">'+m+'</p>';
+    document.getElementById('alertsList').prepend(d);
+    document.getElementById('sidebarAlertDot').style.display='block';
+    const f=document.getElementById('alertsFullList');
+    if(f.children.length===1&&f.children[0].tagName==='P')f.innerHTML='';
+    f.prepend(d.cloneNode(true));
+    addLog('ALERT: '+t,'err');
+}
+function clearAlerts(){
+    document.getElementById('alertsList').innerHTML='';
+    document.getElementById('alertsFullList').innerHTML='<p class="text-xs text-center py-8" style="color:var(--muted);">Clear</p>';
+    document.getElementById('sidebarAlertDot').style.display='none';
+    lastAlertTimes={};
+}
 
 /* ============================================= INIT ============================================= */
-/* ============================================= INIT ============================================= */
 window.addEventListener('DOMContentLoaded',()=>{
-    // Pehle check karein ke purani settings (sg_firebase) toh nahi hain
+    console.log("App Loaded");
+    
+    // Force open settings for this debug version so user can enter URL
+    setTimeout(openConfigModal, 500);
+
     let cfg = localStorage.getItem('sg_cfg');
     if (!cfg) {
-        let old = localStorage.getItem('sg_firebase'); // Purane version ki key
+        let old = localStorage.getItem('sg_firebase');
         if (old) {
-            try {
-                const o = JSON.parse(old);
-                cfg = JSON.stringify({ dbUrl: o.databaseURL, path: o.dataPath, apiKey: o.apiKey });
-                localStorage.setItem('sg_cfg', cfg); // Naye format mein save kar do
-            } catch(e) {}
+            try {const o = JSON.parse(old);cfg = JSON.stringify({ dbUrl: o.databaseURL, path: o.dataPath, apiKey: o.apiKey });localStorage.setItem('sg_cfg', cfg);}catch(e){}
         }
     }
 
-    // Agar settings mili hain, toh unhe input fields mein daalo aur connect karo
     if(cfg){
         try{
             const c=JSON.parse(cfg);
             document.getElementById('cfgDbUrl').value = c.dbUrl || '';
             document.getElementById('cfgDataPath').value = c.path || '';
             document.getElementById('cfgApiKey').value = c.apiKey || '';
-            loadMap(); // Field mapping load karo
-            connectFirebase(); // Auto connect karo
-        }catch(e){}
-    } else {
-        // Agar pehli baar open kar rahe hain toh settings wala popup khol do
-        openConfigModal();
+            loadMap();
+            connectFirebase();
+        }catch(e){console.log("Config Error",e);}
     }
 });
 </script>
