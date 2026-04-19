@@ -314,6 +314,26 @@
 
     <!-- DASHBOARD -->
     <div id="view-dashboard">
+        
+        <!-- ⚡ NEW POWER SOURCE BANNER ADDED HERE -->
+        <div class="card p-4 mb-6 fade-in flex items-center justify-between flex-wrap gap-4" style="animation-delay:0.01s; border: 1px solid rgba(245,158,11,0.15); background: linear-gradient(90deg, var(--card) 0%, rgba(245,158,11,0.03) 100%);">
+            <div class="flex items-center gap-4">
+                <div class="stat-icon-wrap" style="background:rgba(245,158,11,0.15); width: 56px; height: 56px; border-radius: 16px;" id="psIconWrap">
+                    <i class="fas fa-question" style="color:var(--muted); font-size: 1.4rem;" id="psIcon"></i>
+                </div>
+                <div>
+                    <p class="text-xs" style="color:var(--muted);">Current Power Source</p>
+                    <h2 class="text-xl font-extrabold tracking-wide" id="psText" style="font-family:'Outfit'; color:var(--muted);">WAITING...</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <p class="text-xs" style="color:var(--muted);">Battery Status</p>
+                    <span class="status-pill text-xs font-bold" id="psChgStatus" style="background:rgba(122,139,170,0.1);color:var(--muted);">IDLE</span>
+                </div>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="card p-5 fade-in" style="animation-delay:0.05s;">
                 <div class="flex items-center justify-between mb-3">
@@ -710,10 +730,6 @@ function mapFirebaseData(raw){
     if(isChg)finalBA=(bA>0)?bA:rawChgA;
     else if((bA||0)<-1)finalBA=bA;
 
-    /* ============================================
-       POWER FLOW CALCULATION — FIXED
-       Solar extra → Battery Charge (NOT Grid Import)
-       ============================================ */
     let solarIn=pvW||0;
     let invToLoad=(lW||0)>10?lW:0;
     let gridToInv=0,invToBatt=0,battToInv=0,invToGrid=0;
@@ -723,8 +739,6 @@ function mapFirebaseData(raw){
     let battFull=bp>=99;
     let battNeedsCharge=bp<100;
 
-    /* AUTO-DETECT: agar solar excess hai aur battery charge nahi ho rahi
-       lekin battery voltage charging range mein hai → battery charge hai */
     if(!isChg&&solarExcess>15&&battNeedsCharge&&bV>12.8){
         isChg=true;
         if(chgSrc==='none')chgSrc='solar';
@@ -733,39 +747,26 @@ function mapFirebaseData(raw){
     }
 
     if(isChg&&chgSrc==='grid'){
-        /* Grid se charging — grid import + battery charge */
         invToBatt=battChgW;
         let totalNeed=invToLoad+invToBatt;
-        if(solarIn>0){
-            gridToInv=Math.max(0,invToBatt-Math.max(0,solarIn-invToLoad));
-        }else{
-            gridToInv=totalNeed;
-        }
+        if(solarIn>0){gridToInv=Math.max(0,invToBatt-Math.max(0,solarIn-invToLoad));}
+        else{gridToInv=totalNeed;}
     }else if(isChg&&chgSrc==='solar+grid'){
         invToBatt=battChgW;
         let totalNeed=invToLoad+invToBatt;
         if(solarIn>=totalNeed){invToGrid=solarIn-totalNeed;gridToInv=0;}
         else{gridToInv=totalNeed-solarIn;invToGrid=0;}
     }else if(isChg&&chgSrc==='solar'){
-        /* SIRF SOLAR SE CHARGING — user ka main case */
         invToBatt=battChgW||solarExcess;
         gridToInv=0;invToGrid=0;battToInv=0;
         if(solarIn>=invToLoad+invToBatt){
-            if(!battFull){
-                /* Sab extra battery mein jayega */
-                invToBatt=solarIn-invToLoad;
-                invToGrid=0;gridToInv=0;
-            }else{
-                /* Battery full → export */
-                invToBatt=0;invToGrid=solarExcess;
-            }
+            if(!battFull){invToBatt=solarIn-invToLoad;invToGrid=0;gridToInv=0;}
+            else{invToBatt=0;invToGrid=solarExcess;}
         }else{
-            /* Solar se load cover nahi ho raha */
             invToBatt=Math.max(0,solarIn-invToLoad);
             if(invToBatt<5)invToBatt=0;
         }
     }else if(!isChg){
-        /* Charging nahi ho rahi */
         if(solarIn>invToLoad+15){
             if(battNeedsCharge&&bV>12.8){invToBatt=solarExcess;}
             else if(battFull){invToGrid=solarExcess;}
@@ -781,7 +782,6 @@ function mapFirebaseData(raw){
         }
     }
 
-    /* Safety: no negative flows */
     gridToInv=Math.max(0,gridToInv);
     invToBatt=Math.max(0,invToBatt);
     battToInv=Math.max(0,battToInv);
@@ -912,17 +912,54 @@ function processFirebaseData(data){
         previousLoad=home;document.getElementById('homeSubtext').textContent='of load';
     }
 
-    /* === GRID DISPLAY — FIXED: Battery Charge != Grid Import === */
-    const isImport=fl.gridToInv>10;
-    const isExport=fl.invToGrid>10;
-    const isBattChg=fl.invToBatt>10;
+    /* ============================================
+       ⚡ TOP POWER SOURCE BANNER LOGIC
+       ============================================ */
+    const ps = (d.power_source || 'none').toLowerCase();
+    const psIconEl = document.getElementById('psIcon');
+    const psTextEl = document.getElementById('psText');
+    const psIconWrap = document.getElementById('psIconWrap');
+    const psChgEl = document.getElementById('psChgStatus');
+
+    if (ps === 'solar') {
+        psIconEl.className = 'fas fa-sun'; psIconEl.style.color = 'var(--accent)';
+        psIconWrap.style.background = 'rgba(245,158,11,0.2)'; psIconWrap.style.border = '1px solid rgba(245,158,11,0.4)';
+        psTextEl.textContent = 'SOLAR'; psTextEl.style.color = 'var(--accent)';
+    } else if (ps === 'battery') {
+        psIconEl.className = 'fas fa-battery-half'; psIconEl.style.color = 'var(--red)';
+        psIconWrap.style.background = 'rgba(239,68,68,0.1)'; psIconWrap.style.border = '1px solid rgba(239,68,68,0.3)';
+        psTextEl.textContent = 'BATTERY'; psTextEl.style.color = 'var(--red)';
+    } else if (ps === 'grid') {
+        psIconEl.className = 'fas fa-plug'; psIconEl.style.color = 'var(--blue)';
+        psIconWrap.style.background = 'rgba(56,189,248,0.1)'; psIconWrap.style.border = '1px solid rgba(56,189,248,0.3)';
+        psTextEl.textContent = 'GRID'; psTextEl.style.color = 'var(--blue)';
+    } else {
+        psIconEl.className = 'fas fa-power-off'; psIconEl.style.color = 'var(--muted)';
+        psIconWrap.style.background = 'rgba(122,139,170,0.1)'; psIconWrap.style.border = '1px solid var(--border)';
+        psTextEl.textContent = 'STANDBY'; psTextEl.style.color = 'var(--muted)';
+    }
+
+    if(d.battery_charging) {
+        psChgEl.textContent = '⚡ CHARGING (' + (d.charging_source || 'UNK').toUpperCase() + ')';
+        psChgEl.style.background = 'rgba(34,197,94,0.15)'; psChgEl.style.color = 'var(--green)';
+    } else {
+        psChgEl.textContent = 'DISCHARGING / IDLE';
+        psChgEl.style.background = 'rgba(122,139,170,0.1)'; psChgEl.style.color = 'var(--muted)';
+    }
+
+    /* ============================================
+       GRID DISPLAY — FIXED TO TRUST ESP DATA
+       ============================================ */
+    const isImport = (d.grid_watts || 0) > 10; 
+    const isExport = fl.invToGrid > 10;
+    const isBattChg = fl.invToBatt > 10;
 
     if(isImport){
-        document.getElementById('gridPower').textContent=Math.round(fl.gridToInv);
+        document.getElementById('gridPower').textContent=Math.round(d.grid_watts || 0);
         document.getElementById('gridSubtext').innerHTML='<span style="color:var(--blue)">Importing from grid</span>';
-        document.getElementById('flowGrid').textContent=Math.round(fl.gridToInv)+'W';
+        document.getElementById('flowGrid').textContent=Math.round(d.grid_watts || 0)+'W';
         document.getElementById('flowGrid').style.color='var(--blue)';
-        document.getElementById('fpGrid').textContent=Math.round(fl.gridToInv)+'W in';
+        document.getElementById('fpGrid').textContent=Math.round(d.grid_watts || 0)+'W in';
         const gPill=document.getElementById('gridStatusPill');gPill.innerHTML='<i class="fas fa-arrow-down" style="font-size:0.5rem"></i> Importing';gPill.style.background='rgba(56,189,248,0.1)';gPill.style.color='var(--blue)';
     }else if(isExport){
         document.getElementById('gridPower').textContent='+'+Math.round(fl.invToGrid);
@@ -964,30 +1001,30 @@ function processFirebaseData(data){
     /* Flow Lines — FIXED */
     document.getElementById('path-solar-inv').classList.toggle('active-flow',solar>10);
     document.getElementById('path-inv-home').classList.toggle('active-flow',fl.invToLoad>10);
-    document.getElementById('path-inv-grid').classList.toggle('active-flow',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('path-inv-grid').classList.toggle('active-flow',(isImport||isExport));
     document.getElementById('path-inv-batt').classList.toggle('active-flow',(fl.invToBatt>10||fl.battToInv>10));
     document.getElementById('fp-solar-inv').classList.toggle('active-flow',solar>10);
     document.getElementById('fp-inv-home').classList.toggle('active-flow',fl.invToLoad>10);
-    document.getElementById('fp-inv-grid').classList.toggle('active-flow',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('fp-inv-grid').classList.toggle('active-flow',(isImport||isExport));
     document.getElementById('fp-inv-batt').classList.toggle('active-flow',(fl.invToBatt>10||fl.battToInv>10));
 
     /* Flow nodes active */
     document.getElementById('fn-solar').classList.toggle('active',solar>10);
     document.getElementById('fn-inv').classList.toggle('active',true);
     document.getElementById('fn-home').classList.toggle('active',fl.invToLoad>10);
-    document.getElementById('fn-grid').classList.toggle('active',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('fn-grid').classList.toggle('active',(isImport||isExport));
     document.getElementById('fn-batt').classList.toggle('active',(fl.invToBatt>10||fl.battToInv>10||d.battery_charging));
     document.getElementById('fpn-solar').classList.toggle('active',solar>10);
     document.getElementById('fpn-inv').classList.toggle('active',true);
     document.getElementById('fpn-home').classList.toggle('active',fl.invToLoad>10);
-    document.getElementById('fpn-grid').classList.toggle('active',(fl.gridToInv>10||fl.invToGrid>10));
+    document.getElementById('fpn-grid').classList.toggle('active',(isImport||isExport));
     document.getElementById('fpn-batt').classList.toggle('active',(fl.invToBatt>10||fl.battToInv>10||d.battery_charging));
 
     /* Icon colors */
     document.querySelector('#fn-solar .icon').style.color=solar>10?'var(--accent)':'var(--muted)';
-    document.querySelector('#fn-grid .icon').style.color=(fl.gridToInv>10||fl.invToGrid>10)?'var(--blue)':'var(--muted)';
+    document.querySelector('#fn-grid .icon').style.color=(isImport||isExport)?'var(--blue)':'var(--muted)';
     document.querySelector('#fpn-solar .icon').style.color=solar>10?'var(--accent)':'var(--muted)';
-    document.querySelector('#fpn-grid .icon').style.color=(fl.gridToInv>10||fl.invToGrid>10)?'var(--blue)':'var(--muted)';
+    document.querySelector('#fpn-grid .icon').style.color=(isImport||isExport)?'var(--blue)':'var(--muted)';
 
     /* Inverter Details */
     if(d.inverter_on){document.getElementById('invStatus').innerHTML='<span style="width:5px;height:5px;background:var(--green);border-radius:50%;display:inline-block"></span> Working';document.getElementById('invStatus').style.background='rgba(34,197,94,0.1)';document.getElementById('invStatus').style.color='var(--green)';}
@@ -1010,7 +1047,7 @@ function processFirebaseData(data){
     const loadW=Math.round(fl.invToLoad)||1;
     const exportW=Math.round(fl.invToGrid)||0;
     const battW=Math.round(fl.invToBatt)||0;
-    const gridW=Math.round(fl.gridToInv)||0;
+    const gridW=Math.round(d.grid_watts || 0)||0;
     donutChart.data.datasets[0].data=[loadW,exportW,battW,gridW];
     donutChart.update('none');
     document.getElementById('donutHome').textContent=loadW+'W';
@@ -1019,7 +1056,7 @@ function processFirebaseData(data){
     document.getElementById('donutGrid').textContent=gridW+'W';
 
     /* Charts */
-    liveChartData.push({time:new Date(),solar:solar||0,home:home||0,grid:fl.gridToInv||0});
+    liveChartData.push({time:new Date(),solar:solar||0,home:home||0,grid:d.grid_watts||0});
     if(liveChartData.length>120)liveChartData.shift();
     if(chartRange==='live')updateLiveChart();
     battHistoryData.push({time:new Date(),v:bV||0});if(battHistoryData.length>200)battHistoryData.shift();updateBattHistory();
@@ -1029,7 +1066,7 @@ function processFirebaseData(data){
     document.getElementById('rawDataPre').textContent=JSON.stringify(data,null,2);
 
     /* Log */
-    addFbLog('PV:'+Math.round(solar)+'W Load:'+Math.round(home)+'W Batt:'+Math.round(battPct)+'% ('+bV.toFixed(1)+'V) Chg:'+fl.invToBatt+'W Grid:'+fl.gridToInv+'W','data');
+    addFbLog('PV:'+Math.round(solar)+'W Load:'+Math.round(home)+'W Batt:'+Math.round(battPct)+'% ('+bV.toFixed(1)+'V) Chg:'+fl.invToBatt+'W Grid:'+Math.round(d.grid_watts||0)+'W Src:'+ps.toUpperCase(),'data');
 
     /* Alerts */
     if(battPct<=20&&battPct>0)pushAlert('Battery Low','Battery '+Math.round(battPct)+'% — '+bV.toFixed(1)+'V','warning');
