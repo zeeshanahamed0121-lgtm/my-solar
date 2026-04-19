@@ -6,465 +6,206 @@
   <title>Smart Inverter Monitor</title>
   <style>
     :root{
-      --bg:#07111f;
-      --bg2:#0d1b2e;
-      --panel:rgba(15,24,42,.72);
-      --panel2:rgba(20,33,58,.78);
-      --line:rgba(148,163,184,.18);
-      --text:#ecf3ff;
-      --muted:#9eb1cc;
-      --solar:#facc15;
-      --battery:#8b5cf6;
-      --grid:#38bdf8;
-      --load:#fb7185;
-      --good:#22c55e;
-      --warn:#f59e0b;
-      --bad:#ef4444;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --radius:22px;
+      --bg:#eef4fb;--card:#ffffff;--text:#18324b;--muted:#6b86a0;--line:#dce8f5;
+      --blue1:#0d6efd;--blue2:#39a0ff;--solar:#f59e0b;--battery:#10b981;--grid:#3b82f6;--load:#8b5cf6;
+      --good:#16a34a;--warn:#f59e0b;--bad:#ef4444;--shadow:0 14px 30px rgba(16,42,67,.08);
+      --r:22px;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:
-      radial-gradient(circle at top left, rgba(250,204,21,.08), transparent 20%),
-      radial-gradient(circle at top right, rgba(56,189,248,.10), transparent 22%),
-      radial-gradient(circle at bottom center, rgba(139,92,246,.12), transparent 25%),
-      linear-gradient(180deg,var(--bg),var(--bg2));
-      min-height:100%;}
-    .wrap{max-width:1380px;margin:0 auto;padding:18px}
-    .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-    .title h1{margin:0;font-size:clamp(1.6rem,2.8vw,2.6rem);font-weight:900;letter-spacing:.2px}
-    .title p{margin:8px 0 0;color:var(--muted)}
-    .row{display:grid;gap:16px}
-    .hero{grid-template-columns:1.4fr .9fr;margin-bottom:16px}
-    .two{grid-template-columns:1fr 1fr;margin-bottom:16px}
-    .glass{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .panel{padding:18px}
-    .panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-    .panel-title{font-size:1.05rem;font-weight:800}
-    .panel-sub{color:var(--muted);font-size:.9rem;margin-top:4px}
-    .pillbar{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.92rem}
-    .dot{width:10px;height:10px;border-radius:50%;background:var(--warn);box-shadow:0 0 20px currentColor}
-    .dot.good{background:var(--good);color:var(--good)}
-    .dot.bad{background:var(--bad);color:var(--bad)}
-    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-    .card{background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:14px;min-height:100px}
-    .k{font-size:.82rem;color:var(--muted)}
-    .v{margin-top:10px;font-size:clamp(1.05rem,1.8vw,1.55rem);font-weight:850;line-height:1.15}
-    .h{margin-top:8px;color:var(--muted);font-size:.76rem}
-    .solar{color:var(--solar)} .battery{color:#c4b5fd} .gridc{color:var(--grid)} .loadc{color:#fda4af}
-    .badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:.78rem;color:#dce8ff}
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-
-    .flow-wrap{margin-top:8px}
-    .flow-grid{display:grid;grid-template-columns:1fr 70px 1fr 70px 1fr 70px 1fr;gap:10px;align-items:center}
-    .node{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:22px;padding:16px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
-    .node::after{content:"";position:absolute;inset:auto -20% -40% -20%;height:90px;filter:blur(35px);opacity:.18}
-    .node.solar-node::after{background:var(--solar)}
-    .node.battery-node::after{background:var(--battery)}
-    .node.grid-node::after{background:var(--grid)}
-    .node.load-node::after{background:var(--load)}
-    .node-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-    .icon{font-size:1.6rem}
-    .node-title{font-size:1rem;font-weight:800}
-    .node-sub{font-size:.82rem;color:var(--muted);margin-top:4px}
-    .node-main{margin-top:14px}
-    .node-big{font-size:1.7rem;font-weight:900}
-    .node-mini{margin-top:10px;display:grid;gap:6px;font-size:.9rem;color:#d8e7ff}
-    .mini{display:flex;justify-content:space-between;gap:10px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
-    .arrow{height:6px;border-radius:999px;background:rgba(255,255,255,.09);position:relative;overflow:hidden}
-    .arrow::before{content:"";position:absolute;left:-35%;top:0;width:35%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent);opacity:0}
-    .arrow.active::before{animation:move 1.4s linear infinite;opacity:1}
-    .arrow.solarA.active{background:rgba(250,204,21,.25)}
-    .arrow.battA.active{background:rgba(139,92,246,.26)}
-    .arrow.gridA.active{background:rgba(56,189,248,.26)}
-    .arrow.loadA.active{background:rgba(251,113,133,.26)}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1280px;margin:auto;padding:18px}
+    .hero{background:linear-gradient(135deg,var(--blue1),var(--blue2));color:#fff;border-radius:28px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
+    .hero-top{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start}
+    h1{margin:0;font-size:clamp(1.6rem,3vw,2.5rem)} .sub{opacity:.92;margin-top:8px}
+    .pillbar{display:flex;gap:10px;flex-wrap:wrap}.pill{background:rgba(255,255,255,.16);backdrop-filter:blur(8px);padding:10px 14px;border-radius:999px;font-size:.92rem}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;background:#ffd54f}.dot.ok{background:#86efac}.dot.bad{background:#fca5a5}
+    .grid{display:grid;gap:16px}.metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0 0}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+    .m{padding:18px}.k{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.v{font-size:1.7rem;font-weight:800;margin-top:10px}
+    .mini{margin-top:8px;color:var(--muted);font-size:.9rem}
+    .layout{grid-template-columns:1.2fr .8fr}
+    .section{padding:18px}.title{font-weight:800;font-size:1.05rem}.desc{color:var(--muted);font-size:.92rem;margin-top:4px}
+    .flow{margin-top:16px;display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr 40px 1fr;gap:10px;align-items:center}
+    .node{background:#f8fbff;border:1px solid var(--line);border-radius:20px;padding:16px;min-height:150px}
+    .node h3{margin:0;font-size:1rem}.big{font-size:1.6rem;font-weight:800;margin:12px 0 10px}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:.75rem;font-weight:700;background:#e9f3ff;color:#0d6efd}
+    .arrow{height:8px;border-radius:999px;background:#d7e6f7;position:relative;overflow:hidden}.arrow:after{content:'';position:absolute;left:-35%;top:0;width:35%;height:100%;background:linear-gradient(90deg,transparent,#fff,transparent);opacity:0}
+    .arrow.active:after{opacity:1;animation:move 1.5s linear infinite}.arrow.solar.active{background:rgba(245,158,11,.75)} .arrow.battery.active{background:rgba(16,185,129,.75)} .arrow.grid.active{background:rgba(59,130,246,.75)}
     @keyframes move{from{left:-35%}to{left:100%}}
-
-    .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-    .legend .badge span.sw{width:10px;height:10px;border-radius:50%}
-    .sw.s1{background:var(--solar)} .sw.s2{background:var(--battery)} .sw.s3{background:var(--grid)} .sw.s4{background:var(--load)}
-
-    @media (max-width:1150px){
-      .hero,.two{grid-template-columns:1fr}
-      .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .flow-grid{grid-template-columns:1fr;gap:12px}
-      .arrow{height:26px;width:6px;justify-self:center}
-      .arrow::before{width:100%;height:35%;left:0;top:-35%;background:linear-gradient(180deg,transparent,rgba(255,255,255,.95),transparent)}
-      .arrow.active::before{animation:moveY 1.4s linear infinite}
-      @keyframes moveY{from{top:-35%}to{top:100%}}
-    }
-    @media (max-width:700px){
-      .stats{grid-template-columns:1fr}
-      .wrap{padding:12px}
-      .node{min-height:auto}
-    }
+    .status-list,.detail-grid{display:grid;gap:12px;margin-top:16px}.status-box,.detail{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:14px}
+    .detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kv{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed #e4edf8}.kv:last-child{border-bottom:none}
+    .badgebar{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.badge{padding:8px 12px;border-radius:999px;font-size:.82rem;background:#eef6ff;color:#24507a;border:1px solid #d7e6f7}
+    .solar{color:var(--solar)}.battery{color:var(--battery)}.gridc{color:var(--grid)}.loadc{color:var(--load)}
+    @media (max-width:1000px){.metrics,.layout,.detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.flow{grid-template-columns:1fr;}.arrow{width:8px;height:34px;justify-self:center}.arrow:after{width:100%;height:35%;left:0;top:-35%;background:linear-gradient(180deg,transparent,#fff,transparent)}@keyframes move{from{top:-35%}to{top:100%}}}
+    @media (max-width:640px){.metrics,.layout,.detail-grid{grid-template-columns:1fr}.wrap{padding:12px}.hero{padding:18px}}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="title">
-        <h1>Smart Inverter Monitor</h1>
-        <p>Modern live dashboard for your personal solar inverter • Firebase path: <b>/devices/inverter01</b></p>
-      </div>
-      <div class="pillbar">
-        <div class="pill"><span id="connDot" class="dot"></span><span id="connText">Connecting to Firebase...</span></div>
-        <div class="pill">Last Update: <b id="lastUpdated">Waiting...</b></div>
-      </div>
-    </div>
-
-    <section class="row hero">
-      <div class="glass panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Overview</div>
-            <div class="panel-sub">Live key values from inverter and Firebase</div>
-          </div>
-          <div class="badge" id="mainState">No data yet</div>
-        </div>
-        <div class="stats">
-          <div class="card"><div class="k">PV Watts</div><div id="pvWCard" class="v solar">—</div><div class="h">Solar input power</div></div>
-          <div class="card"><div class="k">Battery Watts</div><div id="batteryWCard" class="v battery">—</div><div class="h">Computed from V × A</div></div>
-          <div class="card"><div class="k">Grid Watts</div><div id="gridWCard" class="v gridc">—</div><div class="h">Grid support power</div></div>
-          <div class="card"><div class="k">Load Watts</div><div id="loadWCard" class="v loadc">—</div><div class="h">Current output load</div></div>
-          <div class="card"><div class="k">Power Source</div><div id="powerSourceCard" class="v">—</div><div class="h">solar / battery / grid</div></div>
-          <div class="card"><div class="k">Charging Source</div><div id="chargingCard" class="v">—</div><div class="h">solar / grid / none</div></div>
-        </div>
-        <div class="chips" id="topChips"></div>
-      </div>
-
-      <div class="glass panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">System Status</div>
-            <div class="panel-sub">Connection and thermal health</div>
-          </div>
-        </div>
-        <div class="stats" style="grid-template-columns:1fr;">
-          <div class="card"><div class="k">Firebase Status</div><div id="firebaseState" class="v">Connecting...</div><div class="h">Live database connection</div></div>
-          <div class="card"><div class="k">Inverter Temperature</div><div id="invTempCard" class="v">—</div><div class="h">Current device temperature</div></div>
-          <div class="card"><div class="k">Snapshot Summary</div><div id="summaryCard" class="v" style="font-size:1rem">Waiting for data...</div><div class="h">Available keys at device node</div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="glass panel" style="margin-bottom:16px;">
-      <div class="panel-head">
+    <section class="hero">
+      <div class="hero-top">
         <div>
-          <div class="panel-title">Power Flow Overview</div>
-          <div class="panel-sub">Solar → Battery / Grid → Load in one glance</div>
+          <h1>Smart Inverter Monitor</h1>
+          <div class="sub">Personal live dashboard for Firebase path <b>/devices/inverter01</b></div>
+        </div>
+        <div class="pillbar">
+          <div class="pill"><span id="cDot" class="dot"></span><span id="conn">Connecting...</span></div>
+          <div class="pill">Last Update: <b id="last">Waiting...</b></div>
         </div>
       </div>
+      <div class="grid metrics">
+        <div class="card m"><div class="k">PV Power</div><div id="pvWCard" class="v solar">—</div><div class="mini">Solar input watts</div></div>
+        <div class="card m"><div class="k">Battery Power</div><div id="batWCard" class="v battery">—</div><div class="mini">Calculated from V × A</div></div>
+        <div class="card m"><div class="k">Grid Power</div><div id="gridWCard" class="v gridc">—</div><div class="mini">Grid support watts</div></div>
+        <div class="card m"><div class="k">Load Power</div><div id="loadWCard" class="v loadc">—</div><div class="mini">Current output load</div></div>
+      </div>
+    </section>
 
-      <div class="flow-wrap">
-        <div class="flow-grid">
-          <div class="node solar-node">
-            <div>
-              <div class="node-top"><div><div class="node-title">☀️ Solar</div><div class="node-sub">PV input</div></div><div class="badge">PV</div></div>
-              <div class="node-main"><div id="flowPVW" class="node-big solar">—</div></div>
-            </div>
-            <div class="node-mini">
-              <div class="mini"><span>Volts</span><b id="flowPVV">—</b></div>
-              <div class="mini"><span>Amps</span><b id="flowPVA">—</b></div>
-              <div class="mini"><span>Status</span><b id="solarStatus">Idle</b></div>
-            </div>
+    <section class="grid layout">
+      <div class="card section">
+        <div class="title">Power Flow Overview</div>
+        <div class="desc">Solar → Battery → Grid → Load ko aik nazar mein samajhne ke liye</div>
+        <div class="flow">
+          <div class="node">
+            <span class="tag">Solar</span>
+            <h3>☀️ PV Input</h3>
+            <div id="fPvW" class="big solar">—</div>
+            <div class="row2"><div>V: <b id="fPvV">—</b></div><div>A: <b id="fPvA">—</b></div></div>
           </div>
-
-          <div id="arrowSolarToBattery" class="arrow solarA"></div>
-
-          <div class="node battery-node">
-            <div>
-              <div class="node-top"><div><div class="node-title">🔋 Battery</div><div class="node-sub">Charge / discharge</div></div><div class="badge">BATT</div></div>
-              <div class="node-main"><div id="flowBattW" class="node-big battery">—</div></div>
-            </div>
-            <div class="node-mini">
-              <div class="mini"><span>Volts</span><b id="flowBattV">—</b></div>
-              <div class="mini"><span>Amps</span><b id="flowBattA">—</b></div>
-              <div class="mini"><span>Status</span><b id="batteryStatus">Idle</b></div>
-            </div>
+          <div id="a1" class="arrow solar"></div>
+          <div class="node">
+            <span class="tag">Battery</span>
+            <h3>🔋 Charge / Discharge</h3>
+            <div id="fBatW" class="big battery">—</div>
+            <div class="row2"><div>V: <b id="fBatV">—</b></div><div>A: <b id="fBatA">—</b></div></div>
           </div>
-
-          <div id="arrowBatteryToGrid" class="arrow battA"></div>
-
-          <div class="node grid-node">
-            <div>
-              <div class="node-top"><div><div class="node-title">⚡ Grid</div><div class="node-sub">AC input support</div></div><div class="badge">GRID</div></div>
-              <div class="node-main"><div id="flowGridW" class="node-big gridc">—</div></div>
-            </div>
-            <div class="node-mini">
-              <div class="mini"><span>Input Volts</span><b id="flowGridV">—</b></div>
-              <div class="mini"><span>Frequency</span><b id="flowGridHz">—</b></div>
-              <div class="mini"><span>Status</span><b id="gridStatus">Idle</b></div>
-            </div>
+          <div id="a2" class="arrow battery"></div>
+          <div class="node">
+            <span class="tag">Grid</span>
+            <h3>⚡ AC Input</h3>
+            <div id="fGridW" class="big gridc">—</div>
+            <div class="row2"><div>V: <b id="fAcInV">—</b></div><div>Hz: <b id="fAcInF">—</b></div></div>
           </div>
-
-          <div id="arrowGridToLoad" class="arrow gridA"></div>
-
-          <div class="node load-node">
-            <div>
-              <div class="node-top"><div><div class="node-title">🏠 Load</div><div class="node-sub">AC output / usage</div></div><div class="badge">LOAD</div></div>
-              <div class="node-main"><div id="flowLoadW" class="node-big loadc">—</div></div>
-            </div>
-            <div class="node-mini">
-              <div class="mini"><span>Output Volts</span><b id="flowOutV">—</b></div>
-              <div class="mini"><span>Output Freq</span><b id="flowOutHz">—</b></div>
-              <div class="mini"><span>Status</span><b id="loadStatus">Idle</b></div>
-            </div>
+          <div id="a3" class="arrow grid"></div>
+          <div class="node">
+            <span class="tag">Load</span>
+            <h3>🏠 Output</h3>
+            <div id="fLoadW" class="big loadc">—</div>
+            <div class="row2"><div>V: <b id="fAcOutV">—</b></div><div>Hz: <b id="fAcOutF">—</b></div></div>
           </div>
         </div>
-        <div class="legend">
-          <div class="badge"><span class="sw s1"></span> Solar</div>
-          <div class="badge"><span class="sw s2"></span> Battery</div>
-          <div class="badge"><span class="sw s3"></span> Grid</div>
-          <div class="badge"><span class="sw s4"></span> Load</div>
+        <div class="badgebar" id="chips"></div>
+      </div>
+
+      <div class="card section">
+        <div class="title">System Status</div>
+        <div class="desc">Connection, source, charging aur temperature</div>
+        <div class="status-list">
+          <div class="status-box"><div class="k">Power Source</div><div id="powerSource" class="v">—</div></div>
+          <div class="status-box"><div class="k">Charging Source</div><div id="chargingSrc" class="v">—</div></div>
+          <div class="status-box"><div class="k">Firebase Status</div><div id="firebaseState" class="v">Connecting...</div></div>
+          <div class="status-box"><div class="k">Inverter Temperature</div><div id="invTemp" class="v">—</div></div>
         </div>
       </div>
     </section>
 
-    <section class="row two">
-      <div class="glass panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">PV + Battery Details</div>
-            <div class="panel-sub">Solar generation and battery metrics</div>
-          </div>
+    <section class="card section" style="margin-top:16px">
+      <div class="title">Detailed Readings</div>
+      <div class="desc">PV, Battery, Grid, Output aur Load values</div>
+      <div class="detail-grid">
+        <div class="detail">
+          <div class="k">PV + Battery</div>
+          <div class="kv"><span>PV Volts</span><b id="pvV">—</b></div>
+          <div class="kv"><span>PV Amps</span><b id="pvA">—</b></div>
+          <div class="kv"><span>PV Watts</span><b id="pvW">—</b></div>
+          <div class="kv"><span>Battery Volts</span><b id="batV">—</b></div>
+          <div class="kv"><span>Battery Amps</span><b id="batA">—</b></div>
+          <div class="kv"><span>Battery Watts</span><b id="batW">—</b></div>
         </div>
-        <div class="stats">
-          <div class="card"><div class="k">PV Volts</div><div id="pvV" class="v">—</div></div>
-          <div class="card"><div class="k">PV Amps</div><div id="pvA" class="v">—</div></div>
-          <div class="card"><div class="k">PV Watts</div><div id="pvW2" class="v">—</div></div>
-          <div class="card"><div class="k">Battery Volts</div><div id="batteryV" class="v">—</div></div>
-          <div class="card"><div class="k">Battery Amps</div><div id="batteryA" class="v">—</div></div>
-          <div class="card"><div class="k">Battery Watts</div><div id="batteryW2" class="v">—</div></div>
-        </div>
-      </div>
-
-      <div class="glass panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Grid + Output + Load</div>
-            <div class="panel-sub">Input support and output consumption</div>
-          </div>
-        </div>
-        <div class="stats">
-          <div class="card"><div class="k">Grid Input Volts</div><div id="acInV" class="v">—</div></div>
-          <div class="card"><div class="k">Grid Frequency</div><div id="acInFreq" class="v">—</div></div>
-          <div class="card"><div class="k">Grid Watts</div><div id="gridW2" class="v">—</div></div>
-          <div class="card"><div class="k">AC Output Volts</div><div id="acOutV" class="v">—</div></div>
-          <div class="card"><div class="k">AC Output Frequency</div><div id="acOutFreq" class="v">—</div></div>
-          <div class="card"><div class="k">Load Watts</div><div id="loadW2" class="v">—</div></div>
-          <div class="card"><div class="k">Load VA</div><div id="loadVA" class="v">—</div></div>
-          <div class="card"><div class="k">Load Percent</div><div id="loadPercent" class="v">—</div></div>
+        <div class="detail">
+          <div class="k">Grid + Output + Load</div>
+          <div class="kv"><span>Grid Input Volts</span><b id="acInV">—</b></div>
+          <div class="kv"><span>Grid Frequency</span><b id="acInFreq">—</b></div>
+          <div class="kv"><span>Grid Watts</span><b id="gridW">—</b></div>
+          <div class="kv"><span>AC Output Volts</span><b id="acOutV">—</b></div>
+          <div class="kv"><span>AC Output Frequency</span><b id="acOutFreq">—</b></div>
+          <div class="kv"><span>Load Watts</span><b id="loadW">—</b></div>
+          <div class="kv"><span>Load VA</span><b id="loadVA">—</b></div>
+          <div class="kv"><span>Load Percent</span><b id="loadPercent">—</b></div>
         </div>
       </div>
     </section>
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getDatabase, ref, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const firebaseConfig = {
-      apiKey: "YOUR_FIREBASE_WEB_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: 'YOUR_FIREBASE_WEB_API_KEY',
+      authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
+      projectId: 'YOUR_PROJECT_ID',
+      storageBucket: 'YOUR_PROJECT_ID.firebasestorage.app',
+      messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+      appId: 'YOUR_APP_ID',
+      databaseURL: 'https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app'
     };
 
-    const DEVICE_PATH = "/devices/inverter01";
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const deviceRef = ref(db, '/devices/inverter01');
+    const connRef = ref(db, '.info/connected');
+    const $ = id => document.getElementById(id);
+    const fmt = (v,u='',d=1)=> v===undefined||v===null||v===''||isNaN(Number(v)) ? '—' : `${Number(v).toFixed(d)}${u?` ${u}`:''}`;
+    const fmt0 = (v,u='')=> v===undefined||v===null||v===''||isNaN(Number(v)) ? '—' : `${Math.round(Number(v))}${u?` ${u}`:''}`;
+    const txt = v => (v===undefined||v===null||v==='') ? '—' : String(v);
+    const time = t => { const n=Number(t); const d=new Date(!isNaN(n)?(n<1e12?n*1000:n):Date.now()); return d.toLocaleString(); };
+    const chip=(t)=>{const s=document.createElement('span');s.className='badge';s.textContent=t;return s;};
 
-    const $ = (id) => document.getElementById(id);
+    onValue(connRef,s=>{
+      const ok=s.val()===true; $('conn').textContent=ok?'Firebase Connected':'Firebase Disconnected'; $('firebaseState').textContent=ok?'Connected':'Disconnected'; $('cDot').className='dot '+(ok?'ok':'bad');
+    });
 
-    const els = {
-      connDot: $("connDot"), connText: $("connText"), lastUpdated: $("lastUpdated"),
-      mainState: $("mainState"), firebaseState: $("firebaseState"), invTempCard: $("invTempCard"), summaryCard: $("summaryCard"),
-      pvWCard: $("pvWCard"), batteryWCard: $("batteryWCard"), gridWCard: $("gridWCard"), loadWCard: $("loadWCard"),
-      powerSourceCard: $("powerSourceCard"), chargingCard: $("chargingCard"), topChips: $("topChips"),
-      pvV: $("pvV"), pvA: $("pvA"), pvW2: $("pvW2"), batteryV: $("batteryV"), batteryA: $("batteryA"), batteryW2: $("batteryW2"),
-      acInV: $("acInV"), acInFreq: $("acInFreq"), gridW2: $("gridW2"), acOutV: $("acOutV"), acOutFreq: $("acOutFreq"),
-      loadW2: $("loadW2"), loadVA: $("loadVA"), loadPercent: $("loadPercent"),
-      flowPVW: $("flowPVW"), flowPVV: $("flowPVV"), flowPVA: $("flowPVA"), solarStatus: $("solarStatus"),
-      flowBattW: $("flowBattW"), flowBattV: $("flowBattV"), flowBattA: $("flowBattA"), batteryStatus: $("batteryStatus"),
-      flowGridW: $("flowGridW"), flowGridV: $("flowGridV"), flowGridHz: $("flowGridHz"), gridStatus: $("gridStatus"),
-      flowLoadW: $("flowLoadW"), flowOutV: $("flowOutV"), flowOutHz: $("flowOutHz"), loadStatus: $("loadStatus"),
-      arrowSolarToBattery: $("arrowSolarToBattery"), arrowBatteryToGrid: $("arrowBatteryToGrid"), arrowGridToLoad: $("arrowGridToLoad")
-    };
+    onValue(deviceRef,s=>{
+      const d=s.val()||{};
+      const batteryW = (d.batteryV!=null && d.batteryA!=null) ? Number(d.batteryV)*Number(d.batteryA) : null;
+      const solarActive = Number(d.pvW||0) > 20;
+      const battActive = Math.abs(Number(d.batteryA||0)) > 0.2;
+      const gridActive = Number(d.acInV||0) > 100 && Number(d.gridW||0) > 20;
+      const loadActive = Number(d.loadW||0) > 10;
 
-    function num(v){
-      if (v === null || v === undefined || v === "") return null;
-      const n = Number(v);
-      return Number.isNaN(n) ? null : n;
-    }
-    function fmt(v,u="",d=1){
-      const n = num(v);
-      if (n === null) return "—";
-      return `${n.toLocaleString(undefined,{maximumFractionDigits:d})}${u ? " " + u : ""}`;
-    }
-    function fmtFixed(v,u="",d=0){
-      const n = num(v);
-      if (n === null) return "—";
-      return `${n.toFixed(d)}${u ? " " + u : ""}`;
-    }
-    function txt(v){ return (v === null || v === undefined || v === "") ? "—" : String(v); }
-    function formatTime(ts){
-      if (!ts) return new Date().toLocaleString();
-      const n = Number(ts);
-      if (!Number.isNaN(n)) {
-        const d = new Date(n < 1e12 ? n * 1000 : n);
-        if (!isNaN(d)) return d.toLocaleString();
-      }
-      const d2 = new Date(ts);
-      if (!isNaN(d2)) return d2.toLocaleString();
-      return String(ts);
-    }
-    function setConn(state,text){
-      els.connDot.classList.remove("good","bad");
-      if(state === true){ els.connDot.classList.add("good"); }
-      if(state === false){ els.connDot.classList.add("bad"); }
-      els.connText.textContent = text;
-      els.firebaseState.textContent = text;
-    }
-    function chip(text){
-      const div = document.createElement("div");
-      div.className = "badge";
-      div.textContent = text;
-      return div;
-    }
-    function arrow(el, active){
-      el.classList.toggle("active", !!active);
-    }
+      $('last').textContent = time(d.ts);
+      $('pvWCard').textContent = fmt0(d.pvW,'W');
+      $('batWCard').textContent = fmt0(batteryW,'W');
+      $('gridWCard').textContent = fmt0(d.gridW,'W');
+      $('loadWCard').textContent = fmt0(d.loadW,'W');
 
-    function render(raw){
-      const data = raw || {};
-      const batteryW = num(data.batteryW) ?? ((num(data.batteryV) !== null && num(data.batteryA) !== null) ? (num(data.batteryV) * num(data.batteryA)) : null);
-      const pvW = num(data.pvW);
-      const battA = num(data.batteryA);
-      const battV = num(data.batteryV);
-      const gridW = num(data.gridW);
-      const loadW = num(data.loadW);
-      const acInV = num(data.acInV);
-      const isCharging = data.isCharging === true || battA > 0.2;
-      const isDischarging = battA !== null && battA < -0.2;
-      const solarActive = pvW !== null && pvW > 20;
-      const gridActive = gridW !== null && gridW > 20 && acInV !== null && acInV > 100;
-      const loadActive = loadW !== null && loadW > 10;
+      $('fPvW').textContent = fmt0(d.pvW,'W'); $('fPvV').textContent = fmt(d.pvV,'V'); $('fPvA').textContent = fmt(d.pvA,'A');
+      $('fBatW').textContent = fmt0(batteryW,'W'); $('fBatV').textContent = fmt(d.batteryV,'V'); $('fBatA').textContent = fmt(d.batteryA,'A');
+      $('fGridW').textContent = fmt0(d.gridW,'W'); $('fAcInV').textContent = fmt(d.acInV,'V'); $('fAcInF').textContent = fmt(d.acInFreq,'Hz');
+      $('fLoadW').textContent = fmt0(d.loadW,'W'); $('fAcOutV').textContent = fmt(d.acOutV,'V'); $('fAcOutF').textContent = fmt(d.acOutFreq,'Hz');
 
-      els.lastUpdated.textContent = formatTime(data.ts || Date.now());
-      els.pvWCard.textContent = fmtFixed(data.pvW,"W");
-      els.batteryWCard.textContent = fmtFixed(batteryW,"W");
-      els.gridWCard.textContent = fmtFixed(data.gridW,"W");
-      els.loadWCard.textContent = fmtFixed(data.loadW,"W");
-      els.powerSourceCard.textContent = txt(data.powerSource);
-      els.chargingCard.textContent = txt(data.chargingSrc);
-      els.invTempCard.textContent = fmt(data.invTemp,"°C",1);
+      $('powerSource').textContent = txt(d.powerSource);
+      $('chargingSrc').textContent = txt(d.chargingSrc);
+      $('invTemp').textContent = fmt(d.invTemp,'°C');
 
-      els.pvV.textContent = fmt(data.pvV,"V",1);
-      els.pvA.textContent = fmt(data.pvA,"A",1);
-      els.pvW2.textContent = fmtFixed(data.pvW,"W");
-      els.batteryV.textContent = fmt(data.batteryV,"V",1);
-      els.batteryA.textContent = fmt(data.batteryA,"A",1);
-      els.batteryW2.textContent = fmtFixed(batteryW,"W");
-      els.acInV.textContent = fmt(data.acInV,"V",1);
-      els.acInFreq.textContent = fmt(data.acInFreq,"Hz",1);
-      els.gridW2.textContent = fmtFixed(data.gridW,"W");
-      els.acOutV.textContent = fmt(data.acOutV,"V",1);
-      els.acOutFreq.textContent = fmt(data.acOutFreq,"Hz",1);
-      els.loadW2.textContent = fmtFixed(data.loadW,"W");
-      els.loadVA.textContent = fmtFixed(data.loadVA,"VA");
-      els.loadPercent.textContent = num(data.loadPercent) === null ? "—" : `${num(data.loadPercent).toFixed(0)} %`;
+      $('pvV').textContent = fmt(d.pvV,'V'); $('pvA').textContent = fmt(d.pvA,'A'); $('pvW').textContent = fmt0(d.pvW,'W');
+      $('batV').textContent = fmt(d.batteryV,'V'); $('batA').textContent = fmt(d.batteryA,'A'); $('batW').textContent = fmt0(batteryW,'W');
+      $('acInV').textContent = fmt(d.acInV,'V'); $('acInFreq').textContent = fmt(d.acInFreq,'Hz'); $('gridW').textContent = fmt0(d.gridW,'W');
+      $('acOutV').textContent = fmt(d.acOutV,'V'); $('acOutFreq').textContent = fmt(d.acOutFreq,'Hz'); $('loadW').textContent = fmt0(d.loadW,'W');
+      $('loadVA').textContent = fmt0(d.loadVA,'VA'); $('loadPercent').textContent = fmt0(d.loadPercent,'%');
 
-      els.flowPVW.textContent = fmtFixed(data.pvW,"W");
-      els.flowPVV.textContent = fmt(data.pvV,"V",1);
-      els.flowPVA.textContent = fmt(data.pvA,"A",1);
-      els.flowBattW.textContent = fmtFixed(batteryW,"W");
-      els.flowBattV.textContent = fmt(data.batteryV,"V",1);
-      els.flowBattA.textContent = fmt(data.batteryA,"A",1);
-      els.flowGridW.textContent = fmtFixed(data.gridW,"W");
-      els.flowGridV.textContent = fmt(data.acInV,"V",1);
-      els.flowGridHz.textContent = fmt(data.acInFreq,"Hz",1);
-      els.flowLoadW.textContent = fmtFixed(data.loadW,"W");
-      els.flowOutV.textContent = fmt(data.acOutV,"V",1);
-      els.flowOutHz.textContent = fmt(data.acOutFreq,"Hz",1);
+      $('a1').classList.toggle('active', solarActive);
+      $('a2').classList.toggle('active', battActive || gridActive);
+      $('a3').classList.toggle('active', gridActive || loadActive);
 
-      els.solarStatus.textContent = solarActive ? "Active" : "Idle";
-      els.batteryStatus.textContent = isCharging ? "Charging" : isDischarging ? "Discharging" : "Idle";
-      els.gridStatus.textContent = gridActive ? "Active" : "Idle";
-      els.loadStatus.textContent = loadActive ? "Running" : "Idle";
-
-      arrow(els.arrowSolarToBattery, solarActive && (isCharging || loadActive));
-      arrow(els.arrowBatteryToGrid, isDischarging || (gridActive && isCharging));
-      arrow(els.arrowGridToLoad, gridActive && loadActive);
-
-      const keys = Object.keys(data || {});
-      els.summaryCard.textContent = keys.length ? `${keys.length} keys: ${keys.slice(0,12).join(", ")}${keys.length > 12 ? "..." : ""}` : "No live data found";
-      els.mainState.textContent = keys.length ? "Live data" : "Empty node";
-
-      els.topChips.innerHTML = "";
-      if (solarActive) els.topChips.appendChild(chip(`Solar Active: ${fmtFixed(pvW,"W")}`));
-      if (batteryW !== null) els.topChips.appendChild(chip(`Battery Power: ${fmtFixed(batteryW,"W")}`));
-      if (data.powerSource) els.topChips.appendChild(chip(`Source: ${data.powerSource}`));
-      if (data.chargingSrc) els.topChips.appendChild(chip(`Charging: ${data.chargingSrc}`));
-      if (loadActive) els.topChips.appendChild(chip(`Load: ${fmtFixed(loadW,"W")}`));
-    }
-
-    try {
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
-      const infoRef = ref(db, ".info/connected");
-      const dataRef = ref(db, DEVICE_PATH);
-
-      setConn(null, "Connecting...");
-
-      onValue(infoRef, snap => {
-        if (snap.val() === true) setConn(true, "Connected");
-        else setConn(false, "Disconnected");
-      }, () => setConn(false, "Connection error"));
-
-      onValue(dataRef, snap => {
-        const raw = snap.val() || {};
-        render({
-          acInV: raw.acInV,
-          acInFreq: raw.acInFreq,
-          acOutV: raw.acOutV,
-          acOutFreq: raw.acOutFreq,
-          loadW: raw.loadW,
-          loadVA: raw.loadVA,
-          loadPercent: raw.loadPercent,
-          batteryV: raw.batteryV,
-          batteryA: raw.batteryA,
-          batteryW: raw.batteryW,
-          pvV: raw.pvV,
-          pvA: raw.pvA,
-          pvW: raw.pvW,
-          gridW: raw.gridW,
-          powerSource: raw.powerSource,
-          chargingSrc: raw.chargingSrc,
-          isCharging: raw.isCharging,
-          invTemp: raw.invTemp,
-          ts: raw.ts,
-          raw: raw.raw
-        });
-      }, err => {
-        console.error(err);
-        setConn(false, "Read error");
-        els.mainState.textContent = "Read error";
-        els.summaryCard.textContent = err?.message || "Could not read Firebase data";
-      });
-
-      window.addEventListener("beforeunload", () => {
-        off(infoRef);
-        off(dataRef);
-      });
-    } catch (err) {
-      console.error(err);
-      setConn(false, "Config error");
-      els.mainState.textContent = "Config error";
-      els.summaryCard.textContent = err?.message || "Firebase initialization failed";
-    }
+      const chips=$('chips'); chips.innerHTML='';
+      if(solarActive) chips.appendChild(chip(`Solar Active: ${fmt0(d.pvW,'W')}`));
+      if(battActive) chips.appendChild(chip(`Battery ${Number(d.batteryA)>=0?'Charging':'Discharging'}`));
+      if(gridActive) chips.appendChild(chip(`Grid Active: ${fmt0(d.gridW,'W')}`));
+      if(loadActive) chips.appendChild(chip(`Load Running: ${fmt0(d.loadW,'W')}`));
+      chips.appendChild(chip(`Source: ${txt(d.powerSource)}`));
+      chips.appendChild(chip(`Charging: ${txt(d.chargingSrc)}`));
+    });
   </script>
 </body>
 </html>
