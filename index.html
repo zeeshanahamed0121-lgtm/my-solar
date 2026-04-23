@@ -368,12 +368,34 @@
       </div>
     </div>
 
-    <!-- TAB 3: SETTINGS -->
+        <!-- TAB 3: SETTINGS -->
     <div id="tab-settings" class="tab-content">
+      <div class="card">
+        <h4 style="margin:0; color: var(--text-muted);">⚠️ Danger Zone</h4>
+        <p style="font-size:0.85rem; color:#aaa; margin-top:5px;">
+            Use this button to reset the total energy counters (PV & Load) to zero.
+        </p>
+        
+        <button id="resetBtn" onclick="resetEnergy()" style="
+            width: 100%; 
+            padding: 12px; 
+            background: #d32f2f; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            cursor: pointer;
+            margin-top: 10px;">
+            Reset Energy Units (0)
+        </button>
+      </div>
+      
       <div class="card">
         <h4>Device Configuration</h4>
         <p style="color:var(--text-muted); font-size:0.9rem;">Firebase Path: <b>/devices/inverter01</b></p>
       </div>
+      
       <div class="card">
         <div class="detail-row">
             <span class="detail-label">Notifications</span>
@@ -385,7 +407,6 @@
         </div>
       </div>
     </div>
-
   </main>
 
   <!-- BOTTOM NAVIGATION -->
@@ -505,6 +526,33 @@
       if(loadActive) chips.appendChild(chip(`🏠 ${fmt0(d.loadW,'W')} Load`));
       chips.appendChild(chip(`Src: ${txt(d.powerSource)}`));
     });
+        // --- ADD THIS FUNCTION TO SCRIPT SECTION ---
+    function resetEnergy() {
+      if(confirm("Are you sure? This will erase your total Solar and Load history!")) {
+        const btn = document.getElementById('resetBtn');
+        btn.textContent = "Sending...";
+        btn.style.opacity = "0.7";
+        
+        // Update Firebase Command
+        const db = getDatabase(app);
+        const cmdRef = ref(db, String(FIREBASE_DEVICE_PATH) + "/cmd");
+        
+        set(cmdRef, "RESET_ENERGY").then(() => {
+            // Wait for ESP to process and reset values on DB
+            setTimeout(() => {
+                btn.textContent = "Reset Energy Units (0)";
+                btn.style.opacity = "1";
+                // Manually clear command visually
+                set(cmdRef, ""); 
+            }, 3000);
+        }).catch((err) => {
+            alert("Error: " + err.message);
+            btn.textContent = "Retry";
+            btn.style.opacity = "1";
+        });
+      }
+    }
+    
   </script>
 </body>
 </html>
