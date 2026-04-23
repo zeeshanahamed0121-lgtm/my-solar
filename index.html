@@ -426,7 +426,7 @@
   </nav>
 
   <!-- LOGIC -->
-  <script type="module">
+    <script type="module">
     // --- UI Logic: Tabs ---
     window.switchTab = function(tabId, element) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -437,7 +437,8 @@
 
     // --- Firebase Logic ---
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+    // ★ FIXED: Added 'set' to imports
+    import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const firebaseConfig = {
       apiKey: 'YOUR_FIREBASE_WEB_API_KEY',
@@ -483,7 +484,7 @@
       // Update Time
       $('lastUpdate').textContent = time(d.ts);
 
-      // ★ UPDATE ENERGY MONITOR (NEW)
+      // UPDATE ENERGY MONITOR
       $('uiPvKwh').textContent = fmt(d.pvkWh, '', 3);   // Solar Units
       $('uiLoadKwh').textContent = fmt(d.loadKwh, '', 3); // Load Units
       $('detailPvKwh').textContent = fmt(d.pvkWh, ' kWh', 3);
@@ -526,33 +527,42 @@
       if(loadActive) chips.appendChild(chip(`🏠 ${fmt0(d.loadW,'W')} Load`));
       chips.appendChild(chip(`Src: ${txt(d.powerSource)}`));
     });
-        // --- ADD THIS FUNCTION TO SCRIPT SECTION ---
-    function resetEnergy() {
+
+    // ★ FIXED RESET FUNCTION (Added to window object)
+    window.resetEnergy = function() {
       if(confirm("Are you sure? This will erase your total Solar and Load history!")) {
         const btn = document.getElementById('resetBtn');
         btn.textContent = "Sending...";
         btn.style.opacity = "0.7";
+        btn.disabled = true; // Prevent double click
         
-        // Update Firebase Command
-        const db = getDatabase(app);
-        const cmdRef = ref(db, String(FIREBASE_DEVICE_PATH) + "/cmd");
+        const cmdRef = ref(db, String("/devices/inverter01") + "/cmd");
         
         set(cmdRef, "RESET_ENERGY").then(() => {
+            console.log("Command Sent: RESET_ENERGY");
+            
             // Wait for ESP to process and reset values on DB
             setTimeout(() => {
-                btn.textContent = "Reset Energy Units (0)";
+                btn.textContent = "Reset Done!";
+                btn.style.background = "#2e7d32"; // Green color
                 btn.style.opacity = "1";
-                // Manually clear command visually
-                set(cmdRef, ""); 
+                btn.disabled = false;
+                
+                // Reset button text after 2 seconds
+                setTimeout(() => {
+                    btn.textContent = "Reset Energy Units (0)";
+                    btn.style.background = "#d32f2f"; // Back to red
+                }, 2000);
+                
             }, 3000);
         }).catch((err) => {
             alert("Error: " + err.message);
             btn.textContent = "Retry";
             btn.style.opacity = "1";
+            btn.disabled = false;
         });
       }
     }
-    
   </script>
 </body>
 </html>
