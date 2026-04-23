@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Smart Inverter Pro</title>
-  <!-- Chart.js for History Graph -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
@@ -212,8 +212,25 @@
       <!-- Fault Alert Box -->
       <div id="alertBox">⚠️ <span id="alertMsg">Fault Detected</span></div>
 
-      <!-- Energy Monitor & Savings -->
-      <div class="card" style="border-left: 4px solid var(--warn);">
+      <!-- ★ NEW: WEATHER & SAVINGS BAR -->
+      <div class="card" style="display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--solar);">
+        <!-- Weather Section -->
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span id="weatherIcon" style="font-size:2rem;">☀️</span>
+            <div>
+                <small style="color:var(--text-muted); font-size:0.7rem;">Weather Status</small>
+                <div id="weatherText" style="font-weight:bold; font-size:0.9rem;">Sunny</div>
+            </div>
+        </div>
+        <!-- Savings Section -->
+        <div style="text-align:right;">
+            <small style="color:var(--text-muted); font-size:0.7rem;">Est. Savings</small>
+            <div style="font-weight:800; font-size:1.2rem; color:var(--good);">Rs <span id="moneySaved">0</span></div>
+        </div>
+      </div>
+
+      <!-- Energy Monitor -->
+      <div class="card">
         <h4 style="margin:0 0 10px 0; color:var(--text-muted); font-size:0.9rem;">⚡ Energy Monitor</h4>
         <div class="kpi-grid">
           <div class="kpi-item">
@@ -226,10 +243,6 @@
             <div id="uiLoadKwh" class="kpi-value text-load">—</div>
             <small style="color:var(--text-muted)">kWh</small>
           </div>
-        </div>
-        <div style="text-align:center; margin-top:10px; padding-top:10px; border-top:1px solid #333;">
-            <small style="color:var(--text-muted)">Estimated Savings (Rs)</small>
-            <div id="moneySaved" style="font-size:1.5rem; font-weight:800; color:var(--good)">0</div>
         </div>
       </div>
 
@@ -256,7 +269,7 @@
       <!-- Battery Health Card -->
       <div class="card">
         <h4 style="margin:0; font-size:0.9rem; color:var(--text-muted)">🔋 Battery Health</h4>
-        <div style="display:flex; justify-content:space-between; margin-top:10px;">
+        <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.9rem;">
             <span style="color:var(--text-muted)">Voltage</span>
             <span style="font-weight:bold" id="healthBatV">— V</span>
         </div>
@@ -462,7 +475,6 @@
 
     // --- Firebase Logic ---
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    // Added query, orderByChild, limitToLast for History
     import { getDatabase, ref, onValue, set, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const firebaseConfig = {
@@ -521,17 +533,27 @@
       // Update Time
       $('lastUpdate').textContent = time(d.ts);
 
-      // Calculate Money Locally (So updates instantly when Tariff changes)
+      // ★ WEATHER & MONEY LOGIC
       const tariff = parseFloat(d.tariffRate || 30);
       const savings = (parseFloat(d.pvkWh) || 0) * tariff;
-      
-      $('uiPvKwh').textContent = fmt(d.pvkWh, '', 3);   
-      $('uiLoadKwh').textContent = fmt(d.loadKwh, '', 3); 
       $('moneySaved').textContent = savings.toFixed(0);
+      
+      const isSunny = Number(d.pvW||0) > 200; // Solar > 200W = Sunny
+      if(isSunny) {
+          $('weatherIcon').innerText = '☀️';
+          $('weatherText').innerText = 'Sunny';
+      } else {
+          $('weatherIcon').innerText = '☁️';
+          $('weatherText').innerText = 'Cloudy';
+      }
       
       // Sync Inputs from Firebase
       $('tariffInput').value = tariff;
       $('autoSwitchToggle').checked = (d.autoSwitch === true);
+      
+      // Update Energy Monitor
+      $('uiPvKwh').textContent = fmt(d.pvkWh, '', 3);   
+      $('uiLoadKwh').textContent = fmt(d.loadKwh, '', 3); 
       
       $('detailPvKwh').textContent = fmt(d.pvkWh, ' kWh', 3);
       $('detailLoadKwh').textContent = fmt(d.loadKwh, ' kWh', 3);
@@ -552,11 +574,6 @@
       $('fBatW').textContent = fmt0(batteryW,'W'); $('fBatV').textContent = fmt(d.batteryV,'V'); $('fBatA').textContent = fmt(d.batteryA,'A');
       $('fGridW').textContent = fmt0(d.gridW,'W'); $('fAcInV').textContent = fmt(d.acInV,'V'); $('fAcInF').textContent = fmt(d.acInFreq,'Hz');
       $('fLoadW').textContent = fmt0(d.loadW,'W'); $('fAcOutV').textContent = fmt(d.acOutV,'V'); $('fAcOutF').textContent = fmt(d.acOutFreq,'Hz');
-
-      // Update Status Box
-      $('powerSource').textContent = txt(d.powerSource);
-      $('chargingSrc').textContent = txt(d.chargingSrc);
-      $('invTemp').textContent = fmt(d.invTemp,'°C');
 
       // Update Details Tab
       $('pvV').textContent = fmt(d.pvV,'V'); $('pvA').textContent = fmt(d.pvA,'A'); $('pvW').textContent = fmt0(d.pvW,'W');
