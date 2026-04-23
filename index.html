@@ -3,255 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Power Flow Dashboard</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>Solar Power Monitor Pro</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0b0f19; --surface: #151c2c; --border: #1e293b;
-            --solar: #fbbf24; --load: #ef4444; --grid: #38bdf8; --battery: #4ade80;
-            --text-main: #f8fafc; --text-muted: #94a3b8;
-        }
-
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 20px; overflow-x: hidden; }
-        .container { max-width: 1000px; margin: auto; }
-
-        /* Top Header & Widgets */
-        .top-widgets { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .widget { background: var(--surface); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-        .widget-info h4 { margin: 0; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
-        .widget-info h2 { margin: 5px 0 0; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; }
-        .widget i { font-size: 2rem; opacity: 0.8; }
-
-        /* Flow Diagram Section */
-        .flow-container { position: relative; background: var(--surface); border-radius: 20px; padding: 40px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 40px; }
-
-        /* Nodes */
-        .nodes-row { display: flex; justify-content: space-between; width: 100%; max-width: 800px; position: relative; z-index: 2; }
-        .nodes-center { display: flex; justify-content: center; width: 100%; position: relative; z-index: 2; }
+        :root { --bg: #000000; --panel: #0a0a0a; --green: #00ff88; --blue: #3d5afe; --yellow: #ffea00; --red: #ff1744; --text: #ffffff; }
+        body { font-family: 'Roboto Mono', monospace; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
+        .header { background: var(--green); color: black; padding: 10px; text-align: center; font-weight: bold; border-radius: 8px; margin-bottom: 15px; font-size: 1.2rem; }
         
-        .node { background: var(--bg); border: 2px solid var(--border); border-radius: 50%; width: 120px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(0,0,0,0.5); text-align: center; transition: 0.3s; }
-        .node i { font-size: 2rem; margin-bottom: 5px; }
-        .node .val { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.1rem; }
-        .node .lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card { background: var(--panel); border-radius: 12px; padding: 15px; border: 1px solid #222; }
 
-        .node.solar { border-color: var(--solar); box-shadow: 0 0 15px rgba(251, 191, 36, 0.2); }
-        .node.solar i { color: var(--solar); }
-        .node.grid { border-color: var(--grid); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-        .node.grid i { color: var(--grid); }
-        .node.load { border-color: var(--load); box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
-        .node.load i { color: var(--load); }
-        .node.battery { border-color: var(--battery); box-shadow: 0 0 15px rgba(74, 222, 128, 0.2); }
-        .node.battery i { color: var(--battery); }
-        .node.inverter { width: 150px; height: 150px; border-radius: 20px; border-color: #8b5cf6; }
-        .node.inverter i { color: #8b5cf6; font-size: 2.5rem; }
+        /* Gauge Style */
+        .gauge-box { text-align: center; position: relative; }
+        .gauge-val { font-size: 2.5rem; color: var(--yellow); font-weight: bold; margin-top: 10px; }
+        .gauge-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
 
-        /* Animated Pipes (Lines) */
-        .pipes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        .pipe { position: absolute; background: #1e293b; border-radius: 10px; overflow: hidden; }
-        .pipe-v { width: 6px; }
-        .pipe-h { height: 6px; }
-        
-        /* The glowing moving part */
-        .flow-particle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; }
-        
-        /* Specific Pipe Placements */
-        #pipe-solar { top: 25%; left: 20%; width: 30%; height: 6px; transform: rotate(35deg); transform-origin: left top; }
-        #pipe-grid { top: 25%; right: 20%; width: 30%; height: 6px; transform: rotate(-35deg); transform-origin: right top; }
-        #pipe-load { bottom: 25%; right: 20%; width: 30%; height: 6px; transform: rotate(35deg); transform-origin: right bottom; }
-        #pipe-batt { bottom: 25%; left: 20%; width: 30%; height: 6px; transform: rotate(-35deg); transform-origin: left bottom; }
+        /* Stats List */
+        .stat-item { margin-bottom: 15px; }
+        .stat-label { font-size: 0.7rem; color: #888; display: block; }
+        .stat-val { font-size: 1.4rem; font-weight: bold; }
 
-        /* Animations */
-        @keyframes flowRight { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        @keyframes flowLeft { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        
-        .active-solar .flow-particle { opacity: 1; background: linear-gradient(90deg, transparent, var(--solar), transparent); animation: flowRight 1s linear infinite; }
-        .active-grid .flow-particle { opacity: 1; background: linear-gradient(-90deg, transparent, var(--grid), transparent); animation: flowLeft 1s linear infinite; }
-        .active-load .flow-particle { opacity: 1; background: linear-gradient(90deg, transparent, var(--load), transparent); animation: flowLeft 1s linear infinite; }
-        .active-batt-chg .flow-particle { opacity: 1; background: linear-gradient(-90deg, transparent, var(--battery), transparent); animation: flowLeft 1s linear infinite; }
-        .active-batt-dis .flow-particle { opacity: 1; background: linear-gradient(90deg, transparent, var(--battery), transparent); animation: flowRight 1s linear infinite; }
+        /* Vertical Bars (Exactly like your image) */
+        .bars-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; height: 200px; }
+        .bar-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+        .vertical-bar { width: 100%; background: #111; border-radius: 4px; position: relative; overflow: hidden; height: 160px; border: 1px solid #333; }
+        .bar-fill { position: absolute; bottom: 0; width: 100%; transition: height 0.5s ease; }
+        .bar-label { font-size: 0.6rem; margin-top: 5px; color: #888; }
+        .bar-top-val { font-size: 0.7rem; margin-bottom: 5px; }
 
-        /* Controls */
-        .controls { text-align: center; margin-top: 30px; }
-        button { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #1e293b; }
+        /* Buttons */
+        .btn-status { padding: 8px; border-radius: 20px; font-size: 0.8rem; border: none; font-weight: bold; width: 80px; }
+        .btn-on { background: var(--green); color: black; box-shadow: 0 0 10px var(--green); }
+        .btn-off { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
 
-        @media (max-width: 768px) {
-            .node { width: 90px; height: 90px; }
-            .node .val { font-size: 0.9rem; }
-            .node i { font-size: 1.5rem; }
-            .node.inverter { width: 110px; height: 110px; }
-            #pipe-solar, #pipe-grid, #pipe-load, #pipe-batt { display: none; } /* Hide complex lines on very small mobile for cleaner look */
-        }
+        #chart { margin-top: 20px; background: var(--panel); border-radius: 12px; padding: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <div class="top-widgets">
-        <div class="widget">
-            <div class="widget-info">
-                <h4>Local Weather</h4>
-                <h2 id="weatherTemp">--°C</h2>
-                <small id="weatherDesc" style="color:var(--text-muted);">Fetching...</small>
-            </div>
-            <i class="fa-solid fa-cloud-sun" style="color: #38bdf8;"></i>
+    <div class="header">Solar Power Monitor</div>
+
+    <div class="main-grid">
+        <div class="card gauge-box">
+            <div class="gauge-label">Solar Panel</div>
+            <div class="gauge-val" id="pvV">0.0<span style="font-size: 1rem; color: var(--yellow);">V</span></div>
+            <div id="pvW" style="color: #888;">0.00 W</div>
         </div>
 
-        <div class="widget">
-            <div class="widget-info">
-                <h4>Today's Savings</h4>
-                <h2 style="color: #4ade80;">Rs <span id="estSavings">0</span></h2>
-                <small style="color:var(--text-muted);">@ Rs 50/Unit</small>
+        <div class="card">
+            <div class="stat-item">
+                <span class="stat-label">OUTSIDE</span>
+                <span class="stat-val" style="color: var(--green);" id="outsideTemp">5.4 °C</span>
             </div>
-            <i class="fa-solid fa-sack-dollar" style="color: #4ade80;"></i>
-        </div>
-
-        <div class="widget">
-            <div class="widget-info">
-                <h4>Solar Yield</h4>
-                <h2 style="color: var(--solar);"><span id="pvkWh">0.0</span> kWh</h2>
+            <div class="stat-item">
+                <span class="stat-label">CHARGE CURRENT</span>
+                <span class="stat-val" style="color: var(--red);" id="pvA">0.00 A</span>
             </div>
-            <i class="fa-solid fa-leaf" style="color: var(--solar);"></i>
-        </div>
-    </div>
-
-    <div class="flow-container">
-        <div class="pipes">
-            <div class="pipe pipe-h" id="pipe-solar"><div class="flow-particle"></div></div>
-            <div class="pipe pipe-h" id="pipe-grid"><div class="flow-particle"></div></div>
-            <div class="pipe pipe-h" id="pipe-load"><div class="flow-particle"></div></div>
-            <div class="pipe pipe-h" id="pipe-batt"><div class="flow-particle"></div></div>
-        </div>
-
-        <div class="nodes-row">
-            <div class="node solar">
-                <i class="fa-solid fa-sun"></i>
-                <div class="val" id="node-pv">0 W</div>
-                <div class="lbl">Solar</div>
-            </div>
-            <div class="node grid">
-                <i class="fa-solid fa-tower-observation"></i>
-                <div class="val" id="node-grid">0 W</div>
-                <div class="lbl">Grid IN</div>
-            </div>
-        </div>
-
-        <div class="nodes-center">
-            <div class="node inverter">
-                <i class="fa-solid fa-microchip"></i>
-                <div class="val">INV-01</div>
-                <div class="lbl" id="powerSource" style="color:#8b5cf6;">Waiting...</div>
-            </div>
-        </div>
-
-        <div class="nodes-row">
-            <div class="node battery">
-                <i class="fa-solid fa-car-battery"></i>
-                <div class="val" id="node-battV">0 V</div>
-                <div class="lbl" id="node-battPct">0%</div>
-            </div>
-            <div class="node load">
-                <i class="fa-solid fa-house-chimney"></i>
-                <div class="val" id="node-load">0 W</div>
-                <div class="lbl">Home Load</div>
+            <div class="stat-item">
+                <span class="stat-label">LOAD CURRENT</span>
+                <span class="stat-val" style="color: var(--blue);" id="loadA">0.00 A</span>
             </div>
         </div>
     </div>
 
-    <div class="controls">
-        <button onclick="sendCommand('RESET_ENERGY')"><i class="fa-solid fa-rotate"></i> Reset Daily Savings</button>
+    <div class="main-grid" style="margin-top: 10px;">
+        <div class="card bars-container">
+            <div class="bar-wrapper">
+                <span class="bar-top-val" id="batt1V">13.98</span>
+                <div class="vertical-bar"><div id="fill1" class="bar-fill" style="height: 80%; background: var(--green);"></div></div>
+                <span class="bar-label">BATT 1</span>
+            </div>
+            <div class="bar-wrapper" style="justify-content: center; gap: 10px;">
+                <button class="btn-status btn-on">ON</button>
+                <button class="btn-status btn-off">OFF</button>
+                <span class="bar-label">SWITCHES</span>
+            </div>
+            <div class="bar-wrapper">
+                <span class="bar-top-val" id="batt2V">12.2</span>
+                <div class="vertical-bar"><div id="fill2" class="bar-fill" style="height: 60%; background: var(--blue); opacity: 0.6;"></div></div>
+                <span class="bar-label">BATT 2</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="stat-item">
+                <span class="stat-label">TEMPERATURE</span>
+                <span class="stat-val" style="color: var(--green);" id="invTemp">8.3 °C</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">HUMIDITY</span>
+                <span class="stat-val" style="color: var(--green);">68 %</span>
+            </div>
+        </div>
     </div>
 
-</div>
+    <div id="chart"></div>
 
-<script>
-    // --- 1. CONFIGURATIONS ---
-    const RATE_PER_UNIT = 50; // Yahan aap apna per unit rate (Rs) set kar sakte hain
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0sHa0fI8K8_jSzyORXPEdKKDIM1HbCaU",
+            databaseURL: "https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smart-inverter-dbb6a",
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyA0sHa0fI8K8_jSzyORXPEdKKDIM1HbCaU",
-        databaseURL: "https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "smart-inverter-dbb6a",
-    };
+        // Sync Data
+        db.ref("devices/inverter01").on('value', (s) => {
+            const d = s.val();
+            if(!d) return;
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const devicePath = "devices/inverter01";
+            document.getElementById('pvV').childNodes[0].nodeValue = d.pvV.toFixed(1);
+            document.getElementById('pvW').innerText = d.pvW + " W";
+            document.getElementById('pvA').innerText = d.pvA + " A";
+            document.getElementById('loadA').innerText = d.loadA || "0.00 A";
+            document.getElementById('invTemp').innerText = d.invTemp + " °C";
+            document.getElementById('outsideTemp').innerText = (d.invTemp - 2) + " °C";
+            
+            // Battery Bars
+            document.getElementById('batt1V').innerText = d.batteryV.toFixed(2);
+            document.getElementById('fill1').style.height = d.batteryPercent + "%";
+            
+            document.getElementById('batt2V').innerText = (d.batteryV - 0.5).toFixed(2);
+            document.getElementById('fill2').style.height = (d.batteryPercent - 10) + "%";
+        });
 
-    // --- 2. WEATHER API (Free Open-Meteo) ---
-    function fetchWeather() {
-        // Lahore ke default coordinates hain, aap change kar sakte hain
-        fetch("https://api.open-meteo.com/v1/forecast?latitude=31.5204&longitude=74.3587&current_weather=true")
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('weatherTemp').innerText = Math.round(data.current_weather.temperature) + "°C";
-                document.getElementById('weatherDesc').innerText = "Wind: " + data.current_weather.windspeed + " km/h";
-            })
-            .catch(err => console.log("Weather error", err));
-    }
-    fetchWeather(); // Call once on load
-
-    // --- 3. FIREBASE REALTIME SYNC & FLOW ANIMATION ---
-    db.ref(devicePath).on('value', (snapshot) => {
-        const d = snapshot.val();
-        if(!d) return;
-
-        // Update Text Values
-        document.getElementById('node-pv').innerText = Math.round(d.pvW) + " W";
-        document.getElementById('node-grid').innerText = Math.round(d.gridW || 0) + " W";
-        document.getElementById('node-load').innerText = Math.round(d.loadW) + " W";
-        document.getElementById('node-battV').innerText = d.batteryV.toFixed(1) + " V";
-        document.getElementById('node-battPct').innerText = d.batteryPercent + "%";
-        
-        document.getElementById('pvkWh').innerText = d.pvkWh.toFixed(2);
-        document.getElementById('powerSource').innerText = d.powerSource.toUpperCase();
-
-        // Calculate Savings
-        let savedPkr = d.pvkWh * RATE_PER_UNIT;
-        document.getElementById('estSavings').innerText = savedPkr.toLocaleString('en-PK', {maximumFractionDigits: 0});
-
-        // --- FLOW ANIMATION LOGIC ---
-        const pipeSolar = document.getElementById('pipe-solar');
-        const pipeGrid = document.getElementById('pipe-grid');
-        const pipeLoad = document.getElementById('pipe-load');
-        const pipeBatt = document.getElementById('pipe-batt');
-
-        // Solar Flow (If Watts > 20, animate flow)
-        if (d.pvW > 20) pipeSolar.className = "pipe pipe-h active-solar";
-        else pipeSolar.className = "pipe pipe-h";
-
-        // Grid Flow
-        if (d.gridW > 20 || d.acInV > 150) pipeGrid.className = "pipe pipe-h active-grid";
-        else pipeGrid.className = "pipe pipe-h";
-
-        // Load Flow
-        if (d.loadW > 20) pipeLoad.className = "pipe pipe-h active-load";
-        else pipeLoad.className = "pipe pipe-h";
-
-        // Battery Flow (Check charging status or negative amps)
-        if (d.isCharging) {
-            pipeBatt.className = "pipe pipe-h active-batt-chg"; // Flow towards battery
-        } else if (d.batteryA < -0.5) {
-            pipeBatt.className = "pipe pipe-h active-batt-dis"; // Flow away from battery
-        } else {
-            pipeBatt.className = "pipe pipe-h"; // Idle
-        }
-    });
-
-    // --- 4. COMMANDS ---
-    function sendCommand(cmd) {
-        if(confirm("Are you sure?")) {
-            db.ref(devicePath + "/cmd").set(cmd);
-        }
-    }
-</script>
-
+        // Chart Setup
+        var options = {
+            series: [{name: 'Battery', data: []}, {name: 'Solar', data: []}],
+            chart: { height: 200, type: 'line', toolbar: {show: false}, foreColor: '#555' },
+            colors: [ '#00ff88', '#ffea00'],
+            stroke: { curve: 'smooth', width: 2 },
+            xaxis: { type: 'datetime' },
+            grid: { borderColor: '#111' }
+        };
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+    </script>
 </body>
 </html>
