@@ -328,6 +328,7 @@
     </div>
 
     <!-- TAB 2: DETAILS -->
+        <!-- TAB 2: DETAILS (RESTORED) -->
     <div id="tab-details" class="tab-content">
       <div class="card">
         <h4 style="margin-top:0;">Energy History</h4>
@@ -367,6 +368,19 @@
       </div>
     </div>
 
+    <!-- TAB 3: ANALYTICS (RESTORED) -->
+    <div id="tab-analytics" class="tab-content">
+      <div class="card">
+        <h4 style="margin-top:0;">Performance (Last 24h)</h4>
+        <div class="chart-wrapper">
+            <canvas id="historyChart"></canvas>
+        </div>
+        <small style="color:#666; display:block; margin-top:5px; text-align:center;">Agar history data nahi hai to chart khali rahega.</small>
+      </div>
+      <div class="card">
+         <div class="detail-row"><span class="detail-label">Data Source</span><span class="detail-val">Firebase History</span></div>
+      </div>
+    </div>
     <!-- TAB 3: ANALYTICS (NEW) -->
     <div id="tab-analytics" class="tab-content">
       <div class="card">
@@ -462,6 +476,7 @@
   <!-- FINAL LOGIC: Firebase Connection + Manual Calculation -->
     <!-- FINAL CORRECTED SCRIPT (Status Logic Fixed) -->
     <!-- SMART LOGIC: Battery Priority over Grid -->
+    <!-- SUPER SAFE SCRIPT: Fixes Grid Logic & Details Empty Issue -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
     import { getDatabase, ref, onValue, set, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
@@ -479,101 +494,152 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const deviceRef = ref(db, '/devices/inverter01');
-    const $ = id => document.getElementById(id);
     let myChart = null;
+
+    // --- SAFE HELPER (Agar ID nahi hai to error nahi dega) ---
+    const setTxt = (id, txt) => { 
+      const el = document.getElementById(id); 
+      if(el) el.textContent = txt; 
+    };
+    const fmt = (v,u='',d=1)=> (v==null||v=='') ? '—' : `${Number(v).toFixed(d)} ${u}`;
+    const fmt0 = (v,u='')=> (v==null||v=='') ? '—' : `${Math.round(Number(v))} ${u}`;
 
     onValue(deviceRef, (snapshot) => {
       const d = snapshot.val();
-      if (!d) { $('connText').textContent = "Offline"; return; }
+      
+      // Status Update
+      setTxt('connText', d ? "Online" : "Offline");
+      const dot = document.getElementById('cDot');
+      if(dot) dot.className = d ? 'dot ok' : 'dot bad';
+      setTxt('lastUpdate', d ? new Date().toLocaleTimeString() : "No Signal");
+      
+      if(!d) return; // Stop if no data
 
-      $('connText').textContent = "Online";
-      $('cDot').className = 'dot ok';
-      $('lastUpdate').textContent = new Date().toLocaleTimeString();
-
-      // --- CORE CALCULATIONS ---
+      // --- 1. CALCULATIONS ---
       const batteryW = (d.batteryV && d.batteryA) ? Number(d.batteryV)*Number(d.batteryA) : 0;
       const solarW = Number(d.pvW || 0);
-      const loadW = Number(d.loadW || 0);
       const gridW = Number(d.gridW || 0);
+      const loadW = Number(d.loadW || 0);
       const batteryA = Number(d.batteryA || 0);
 
-      const fmt = (v,u='',d=1)=> (v==null||v=='') ? '—' : `${Number(v).toFixed(d)} ${u}`;
-      const fmt0 = (v,u='')=> (v==null||v=='') ? '—' : `${Math.round(Number(v))} ${u}`;
+      // --- 2. DASHBOARD CARDS ---
+      setTxt('uiPvKwh', fmt(d.pvkWh, 'kWh', 3));
+      setTxt('uiLoadKwh', fmt(d.loadKwh, 'kWh', 3));
+      setTxt('pvWCard', fmt0(solarW, 'W'));
+      setTxt('batWCard', fmt0(batteryW, 'W'));
+      setTxt('gridWCard', fmt0(gridW, 'W'));
+      setTxt('loadWCard', fmt0(loadW, 'W'));
 
-      // --- 1. CARDS UPDATE ---
-      $('pvWCard').textContent = fmt0(solarW, 'W');
-      $('batWCard').textContent = fmt0(batteryW, 'W');
-      $('gridWCard').textContent = fmt0(gridW, 'W'); // Grid value dikhaenge, but logic ignore karega
-      $('loadWCard').textContent = fmt0(loadW, 'W');
-
-      $('uiPvKwh').textContent = fmt(d.pvkWh, 'kWh', 3);
-      $('uiLoadKwh').textContent = fmt(d.loadKwh, 'kWh', 3);
-
-      // --- 2. HEALTH & FLOW ---
-      $('healthBatV').textContent = fmt(d.batteryV, 1) + ' V';
-      $('healthBatT').textContent = fmt(d.invTemp, 0) + ' °C';
+      // --- 3. HEALTH & FLOW ---
+      setTxt('healthBatV', fmt(d.batteryV, 1) + ' V');
+      setTxt('healthBatT', fmt(d.invTemp, 0) + ' °C');
       
-      // Status Text Logic
-      if(batteryW < -50) $('healthStatus').textContent = "Discharging ⬇️";
-      else if(batteryW > 50) $('healthStatus').textContent = "Charging ⬆️";
-      else $('healthStatus').textContent = "Idle";
+      // Status Logic
+      if(batteryW < -50) setTxt('healthStatus', "Discharging ⬇️");
+      else if(batteryW > 50) setTxt('healthStatus', "Charging ⬆️");
+      else setTxt('healthStatus', "Idle");
 
-      // Flow Values
-      $('fPvW').textContent = fmt0(solarW,'W'); $('fPvV').textContent = fmt(d.pvV,'V'); $('fPvA').textContent = fmt(d.pvA,'A');
-      $('fBatW').textContent = fmt0(batteryW,'W'); $('fBatV').textContent = fmt(d.batteryV,'V'); $('fBatA').textContent = fmt(d.batteryA,'A');
-      $('fGridW').textContent = fmt0(gridW,'W'); $('fAcInV').textContent = fmt(d.acInV,'V'); $('fAcInF').textContent = fmt(d.acInFreq,'Hz');
-      $('fLoadW').textContent = fmt0(loadW,'W'); $('fAcOutV').textContent = fmt(d.acOutV,'V'); $('fAcOutF').textContent = fmt(d.acOutFreq,'Hz');
+      // Flow Nodes (Null Safe)
+      setTxt('fPvW', fmt0(solarW,'W')); setTxt('fPvV', fmt(d.pvV,'V')); setTxt('fPvA', fmt(d.pvA,'A'));
+      setTxt('fBatW', fmt0(batteryW,'W')); setTxt('fBatV', fmt(d.batteryV,'V')); setTxt('fBatA', fmt(d.batteryA,'A'));
+      setTxt('fGridW', fmt0(gridW,'W')); setTxt('fAcInV', fmt(d.acInV,'V')); setTxt('fAcInF', fmt(d.acInFreq,'Hz'));
+      setTxt('fLoadW', fmt0(loadW,'W')); setTxt('fAcOutV', fmt(d.acOutV,'V')); setTxt('fAcOutF', fmt(d.acOutFreq,'Hz'));
 
-      // Arrows Animation
-      $('a1').classList.toggle('active', solarW > 20);
-      $('a2').classList.toggle('active', Math.abs(batteryA) > 0.2);
-      $('a3').classList.toggle('active', gridW > 20);
+      // --- 4. DETAILS TAB (Restored) ---
+      setTxt('detailPvKwh', fmt(d.pvkWh, ' kWh', 3));
+      setTxt('detailLoadKwh', fmt(d.loadKwh, ' kWh', 3));
+      
+      setTxt('pvV', fmt(d.pvV,'V')); setTxt('pvA', fmt(d.pvA,'A')); setTxt('pvW', fmt0(d.pvW,'W'));
+      setTxt('batV', fmt(d.batteryV,'V')); setTxt('batA', fmt(d.batteryA,'A')); setTxt('batW', fmt0(batteryW,'W'));
+      setTxt('acInV', fmt(d.acInV,'V')); setTxt('acInFreq', fmt(d.acInFreq,'Hz')); setTxt('gridW', fmt0(d.gridW,'W'));
+      setTxt('acOutV', fmt(d.acOutV,'V')); setTxt('acOutFreq', fmt(d.acOutFreq,'Hz')); setTxt('loadW', fmt0(d.loadW,'W'));
+      setTxt('loadVA', fmt0(d.loadVA,'VA')); setTxt('loadPercent', fmt0(d.loadPercent,'%'));
 
-      // --- 3. SMART SOURCE LOGIC (FIXED) ---
-      const chips = $('chips');
-      chips.innerHTML = '';
+      // --- 5. CHIPS & PRIORITY LOGIC ---
+      const chips = document.getElementById('chips');
+      if(chips) chips.innerHTML = '';
+      
       const addChip = (txt, color='white') => { 
-          const s=document.createElement('span');s.className='chip';s.style.borderColor=color; s.textContent=txt;chips.appendChild(s); 
+        if(!chips) return;
+        const s=document.createElement('span');
+        s.className='chip'; s.style.borderColor=color; s.textContent=txt; chips.appendChild(s); 
       };
 
       if(loadW > 10) addChip(`🏠 Load: ${fmt0(loadW)}`, '#8b5cf6');
-
       if(solarW > 10) addChip(`☀️ Solar: ${fmt0(solarW)}`, '#f59e0b');
 
-      // ★★ BATTERY PRIORITY LOGIC ★★
-      // Agar Battery Discharge kar rahi hai (Amps Negative), to Grid ko Ignore karein
-      if(batteryA < -0.1) {
-          addChip(`🔋 BAT DISCHARGING (${fmt0(batteryW)})`, '#10b981');
-          // Hum Grid chip nahi dikhayenge yahan, chahe Grid Watts mein kyu na ho
-      } else if(gridW > 20) {
-          // Sirf tab Grid dikhayenge agar Battery discharge NA ho rahi ho
+      // ★★ BATTERY PRIORITY LOGIC (REVISED) ★★
+      // Agar Battery Watts Negative ho (Discharging), to Grid hide karo
+      if(batteryW < -20) { 
+          // Battery Discharge mode
+          addChip(`🔋 BAT DISCHARGING`, '#10b981');
+      } else if (gridW > 20) {
+          // Grid Active
           addChip(`⚡ GRID (${fmt0(gridW)})`, '#ff5252');
-      } else if(batteryA > 0.1) {
-          addChip(`🔋 BAT CHARGING (${fmt0(batteryW)})`, '#10b981');
+      } else if (batteryW > 50) {
+          // Charging
+          addChip(`🔋 CHARGING`, '#10b981');
       }
 
-      // 4. MANUAL CALC
+      // 6. MANUAL CALC
       calculateSavings(d.pvkWh);
     });
 
     // --- FUNCTIONS ---
     window.calculateSavings = function(kwh) {
-        const rate = parseFloat($('manualTariffInput')?.value || 30);
+        const rate = parseFloat(document.getElementById('manualTariffInput')?.value || 30);
         const savings = (parseFloat(kwh)||0) * rate;
-        if($('moneySaved')) $('moneySaved').innerText = savings.toFixed(0);
-        if($('settingsPvDisplay')) $('settingsPvDisplay').innerText = (parseFloat(kwh)||0).toFixed(3);
+        setTxt('moneySaved', savings.toFixed(0));
+        setTxt('settingsPvDisplay', (parseFloat(kwh)||0).toFixed(3));
+        setTxt('settingsSavingsDisplay', savings.toFixed(0));
     }
 
     window.switchTab = function(tabId, element) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
+      const tab = document.getElementById(tabId);
+      if(tab) tab.classList.add('active');
       element.classList.add('active');
       if(tabId === 'tab-analytics') loadChart();
     }
 
     window.resetEnergy = function() { set(ref(db, '/devices/inverter01/cmd'), "RESET_ENERGY").then(() => alert("Done")); }
     
-    function loadChart() { /* Same as previous */ }
+    function loadChart() {
+        if(myChart) myChart.destroy();
+        const ctx = document.getElementById('historyChart');
+        if(!ctx) return;
+
+        const historyRef = query(ref(db, '/devices/inverter01/history'), orderByChild('ts'), limitToLast(24)); 
+        onValue(historyRef, (snapshot) => {
+            const data = snapshot.val();
+            if(!data) return;
+            
+            const labels = []; const pvData = []; const loadData = [];
+            const sortedKeys = Object.keys(data).sort((a,b) => data[a].ts - data[b].ts);
+            
+            sortedKeys.forEach(key => {
+                const val = data[key];
+                const d = new Date(val.ts * 1000);
+                labels.push(`${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`);
+                pvData.push(val.pvW);
+                loadData.push(val.loadW);
+            });
+            
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: { labels: labels, datasets: [
+                    { label: 'Solar', data: pvData, borderColor: '#f59e0b', tension: 0.4, pointRadius: 0 },
+                    { label: 'Load', data: loadData, borderColor: '#8b5cf6', tension: 0.4, pointRadius: 0 }
+                ]},
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#fff' } } },
+                    scales: { x: { ticks: { color: '#aaa' }, grid: { color: '#333' } }, y: { ticks: { color: '#aaa' }, grid: { color: '#333' } } }
+                }
+            });
+        });
+    }
   </script>
 </html>
