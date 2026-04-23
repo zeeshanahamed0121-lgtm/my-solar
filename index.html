@@ -3,150 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Inverter Live Dashboard</title>
+    <title>Advanced Inverter Pro Dashboard</title>
     
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #0b0e14;
-            --card: #161b22;
-            --solar: #38bdf8;
-            --load: #fbbf24;
-            --battery: #4ade80;
-            --text: #c9d1d9;
+            --bg: #0b0f19;
+            --surface: #151c2c;
+            --primary: #38bdf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
-            padding: 15px;
+            padding: 20px;
         }
 
-        .container { max-width: 1100px; margin: auto; }
+        .container { max-width: 1200px; margin: auto; }
 
-        /* Header & Status */
+        /* Top Header & Status Bar */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: var(--card);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #30363d;
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+            background: var(--surface); padding: 15px 25px; border-radius: 12px;
+            border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        .status-dot {
-            height: 10px; width: 10px;
-            background-color: #ef4444;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-        }
-        .online .status-dot { background-color: #4ade80; box-shadow: 0 0 8px #4ade80; }
+        .sys-status { display: flex; gap: 20px; flex-wrap: wrap; }
+        .badge { background: #1e293b; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .badge i { color: var(--primary); }
 
-        /* Metrics Grid */
+        /* Grid Layout */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
+        /* Value Cards */
         .card {
-            background: var(--card);
+            background: var(--surface);
             padding: 20px;
-            border-radius: 15px;
-            border-bottom: 4px solid #30363d;
-            text-align: center;
+            border-radius: 16px;
+            border: 1px solid var(--border);
             position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
+        .card:hover { transform: translateY(-3px); }
+        
+        .card-header { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-bottom: 15px; }
+        .card-header i { font-size: 1.2rem; }
+        
+        .main-value { font-family: 'Rajdhani', sans-serif; font-size: 3rem; font-weight: 700; line-height: 1; margin-bottom: 10px; }
+        .unit { font-size: 1.2rem; color: var(--text-muted); }
+        
+        .sub-values { display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 12px; font-size: 0.9rem; }
+        .sub-values div { display: flex; flex-direction: column; }
+        .sub-values span { color: var(--text-muted); font-size: 0.75rem; }
 
-        .card h3 { font-size: 0.75rem; margin: 0; text-transform: uppercase; color: #8b949e; letter-spacing: 1px; }
-        .card .value { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin: 10px 0; font-weight: 700; }
-        .card .sub { font-size: 0.85rem; color: #8b949e; }
+        /* Color Variations */
+        .solar .main-value, .solar .card-header i { color: var(--warning); }
+        .battery .main-value, .battery .card-header i { color: var(--success); }
+        .load .main-value, .load .card-header i { color: var(--danger); }
+        .grid-ac .main-value, .grid-ac .card-header i { color: var(--primary); }
 
-        /* Charts */
-        .chart-box {
-            background: var(--card);
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid #30363d;
-        }
+        /* Chart Section */
+        .chart-section { background: var(--surface); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
 
         /* Buttons */
-        .actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .btn-reset { background: #238636; color: white; }
-        .btn-clear { background: #da3633; color: white; }
-        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+        .controls { display: flex; gap: 15px; justify-content: flex-end; }
+        button { padding: 10px 20px; border: none; border-radius: 8px; font-family: 'Poppins'; font-weight: 600; cursor: pointer; color: #fff; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-reset { background: #3b82f6; }
+        .btn-clear { background: var(--danger); }
+        button:hover { filter: brightness(1.2); }
 
-        @media (max-width: 600px) {
-            .card .value { font-size: 1.5rem; }
+        /* Animations */
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .live-dot { height: 10px; width: 10px; background: var(--success); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; box-shadow: 0 0 10px var(--success); }
+
+        @media (max-width: 768px) {
+            .header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .sys-status { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header" id="header-status">
-        <h2 style="margin:0; font-size: 1.2rem;">⚡ Inverter01 Live</h2>
-        <div id="connection-status">
-            <span class="status-dot"></span> <span id="status-text">Connecting...</span>
+    <div class="header">
+        <h2 style="margin:0;"><i class="fa-solid fa-bolt" style="color:var(--warning);"></i> Smart Inverter Pro</h2>
+        <div class="sys-status">
+            <div class="badge"><i class="fa-solid fa-plug"></i> Source: <span id="powerSource" style="color:#fff; text-transform:uppercase;">...</span></div>
+            <div class="badge"><i class="fa-solid fa-temperature-half"></i> Temp: <span id="invTemp" style="color:#fff;">0°C</span></div>
+            <div class="badge"><i class="fa-solid fa-wifi"></i> <span class="live-dot"></span> <span id="lastUpdate">Live</span></div>
         </div>
     </div>
 
     <div class="grid">
-        <div class="card" style="border-color: var(--solar);">
-            <h3>Solar Power</h3>
-            <div class="value" id="pvW" style="color: var(--solar);">0W</div>
-            <div class="sub" id="pvDetail">0V | 0A</div>
+        
+        <div class="card solar">
+            <div class="card-header">
+                <span>Solar Array</span>
+                <i class="fa-solid fa-solar-panel"></i>
+            </div>
+            <div class="main-value" id="pvW">0<span class="unit">W</span></div>
+            <div class="sub-values">
+                <div><span>Voltage</span><b id="pvV">0 V</b></div>
+                <div><span>Current</span><b id="pvA">0 A</b></div>
+                <div><span>Today Yield</span><b id="pvkWh">0.00 kWh</b></div>
+            </div>
         </div>
 
-        <div class="card" style="border-color: var(--load);">
-            <h3>House Load</h3>
-            <div class="value" id="loadW" style="color: var(--load);">0W</div>
-            <div class="sub" id="loadPercent">0% Usage</div>
+        <div class="card battery">
+            <div class="card-header">
+                <span>Battery Bank</span>
+                <i class="fa-solid fa-car-battery"></i>
+            </div>
+            <div class="main-value" id="battW">0<span class="unit">W</span></div>
+            <div class="sub-values">
+                <div><span>Voltage</span><b id="battV">0 V</b></div>
+                <div><span>Amps <span id="battDir">(Idle)</span></span><b id="battA">0 A</b></div>
+                <div><span>Capacity</span><b id="battPercent">0%</b></div>
+            </div>
         </div>
 
-        <div class="card" style="border-color: var(--battery);">
-            <h3>Battery</h3>
-            <div class="value" id="batteryV" style="color: var(--battery);">0.0V</div>
-            <div class="sub" id="batteryPercent">0% Charge</div>
+        <div class="card load">
+            <div class="card-header">
+                <span>House Load</span>
+                <i class="fa-solid fa-house-chimney"></i>
+            </div>
+            <div class="main-value" id="loadW">0<span class="unit">W</span></div>
+            <div class="sub-values">
+                <div><span>AC Out V</span><b id="acOutV">0 V</b></div>
+                <div><span>Apparent Power</span><b id="loadVA">0 VA</b></div>
+                <div><span>Usage</span><b id="loadPercent">0%</b></div>
+            </div>
         </div>
 
-        <div class="card" style="border-color: #f472b6;">
-            <h3>Today's Yield</h3>
-            <div class="value" id="pvkWh" style="color: #f472b6;">0.00</div>
-            <div class="sub">Total kWh</div>
+        <div class="card grid-ac">
+            <div class="card-header">
+                <span>WAPDA / Grid In</span>
+                <i class="fa-solid fa-tower-observation"></i>
+            </div>
+            <div class="main-value" id="gridW">0<span class="unit">W</span></div>
+            <div class="sub-values">
+                <div><span>AC In V</span><b id="acInV">0 V</b></div>
+                <div><span>Frequency</span><b id="acInFreq">0 Hz</b></div>
+                <div><span>Chg Source</span><b id="chargingSrc" style="text-transform:capitalize;">...</b></div>
+            </div>
         </div>
     </div>
 
-    <div class="chart-box">
-        <div id="mainChart"></div>
+    <div class="chart-section">
+        <h3 style="margin-top:0; color:var(--text-muted);"><i class="fa-solid fa-chart-area"></i> Power Flow History (24 Hours)</h3>
+        <div id="apexChart"></div>
     </div>
 
-    <div class="actions">
-        <button class="btn btn-reset" onclick="handleCmd('RESET_ENERGY')">Reset Energy</button>
-        <button class="btn btn-clear" onclick="handleCmd('CLEAR_HISTORY')">Format History</button>
+    <div class="controls">
+        <button class="btn-reset" onclick="sendCmd('RESET_ENERGY')"><i class="fa-solid fa-rotate-right"></i> Reset Energy</button>
+        <button class="btn-clear" onclick="sendCmd('CLEAR_HISTORY')"><i class="fa-solid fa-trash-can"></i> Format History</button>
     </div>
 </div>
 
 <script>
-    // --- FIREBASE CONFIG ---
+    // --- FIREBASE CONFIGURATION ---
     const firebaseConfig = {
         apiKey: "AIzaSyA0sHa0fI8K8_jSzyORXPEdKKDIM1HbCaU",
         databaseURL: "https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -157,72 +193,94 @@
     const db = firebase.database();
     const devicePath = "devices/inverter01";
 
-    // --- CHART CONFIG ---
-    const chartOptions = {
+    // --- APEX CHARTS SETUP ---
+    const options = {
         series: [
             { name: 'Solar (W)', data: [] },
-            { name: 'Load (W)', data: [] }
+            { name: 'Load (W)', data: [] },
+            { name: 'Grid (W)', data: [] }
         ],
-        chart: { 
-            type: 'area', 
-            height: 350, 
-            toolbar: { show: false },
-            foreColor: '#8b949e',
-            background: 'transparent'
-        },
-        colors: ['#38bdf8', '#fbbf24'],
+        chart: { type: 'area', height: 350, toolbar: { show: false }, background: 'transparent', animations: { enabled: false } },
+        colors: ['#f59e0b', '#ef4444', '#38bdf8'],
+        dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 2 },
-        fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0 } },
-        xaxis: { type: 'datetime' },
-        grid: { borderColor: '#30363d' },
-        theme: { mode: 'dark' }
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0, stops: [0, 100] } },
+        xaxis: { type: 'datetime', labels: { style: { colors: '#94a3b8' } } },
+        yaxis: { labels: { style: { colors: '#94a3b8' } } },
+        grid: { borderColor: '#1e293b', strokeDashArray: 4 },
+        theme: { mode: 'dark' },
+        legend: { position: 'top', horizontalAlign: 'left' }
     };
-    const chart = new ApexCharts(document.querySelector("#mainChart"), chartOptions);
+    const chart = new ApexCharts(document.querySelector("#apexChart"), options);
     chart.render();
 
-    // --- DATA HANDLING ---
+    // --- REALTIME DATA SYNC ---
     db.ref(devicePath).on('value', (snapshot) => {
         const d = snapshot.val();
-        if (!d) return;
+        if(!d) return;
 
-        // Update Text
-        document.getElementById('pvW').innerText = Math.round(d.pvW) + "W";
-        document.getElementById('pvDetail').innerText = d.pvV + "V | " + d.pvA + "A";
-        document.getElementById('loadW').innerText = Math.round(d.loadW) + "W";
-        document.getElementById('loadPercent').innerText = "Load: " + d.loadPercent + "%";
-        document.getElementById('batteryV').innerText = d.batteryV.toFixed(1) + "V";
-        document.getElementById('batteryPercent').innerText = d.batteryPercent + "% Capacity";
-        document.getElementById('pvkWh').innerText = d.pvkWh.toFixed(2);
+        // Status Bar
+        document.getElementById('powerSource').innerText = d.powerSource;
+        document.getElementById('invTemp').innerText = d.invTemp + "°C";
+        document.getElementById('chargingSrc').innerText = d.chargingSrc;
 
-        // Update Online Status
-        const header = document.getElementById('header-status');
-        header.className = "header online";
-        document.getElementById('status-text').innerText = "Live Syncing";
+        // Solar
+        document.getElementById('pvW').innerHTML = Math.round(d.pvW) + '<span class="unit">W</span>';
+        document.getElementById('pvV').innerText = d.pvV + " V";
+        document.getElementById('pvA').innerText = d.pvA + " A";
+        document.getElementById('pvkWh').innerText = d.pvkWh.toFixed(2) + " kWh";
+
+        // Battery Logic (Calculating Watts = V * A)
+        let battAmpsRaw = d.batteryA;
+        let battWatts = Math.abs(d.batteryV * battAmpsRaw);
+        document.getElementById('battW').innerHTML = Math.round(battWatts) + '<span class="unit">W</span>';
+        document.getElementById('battV').innerText = d.batteryV.toFixed(1) + " V";
+        document.getElementById('battPercent').innerText = d.batteryPercent + "%";
+        document.getElementById('battA').innerText = Math.abs(battAmpsRaw).toFixed(1) + " A";
+        
+        let bDir = document.getElementById('battDir');
+        if(d.isCharging) { bDir.innerText = "(Charging)"; bDir.style.color = "var(--success)"; }
+        else if (battAmpsRaw < 0) { bDir.innerText = "(Discharging)"; bDir.style.color = "var(--danger)"; }
+        else { bDir.innerText = "(Idle)"; bDir.style.color = "var(--text-muted)"; }
+
+        // Load
+        document.getElementById('loadW').innerHTML = Math.round(d.loadW) + '<span class="unit">W</span>';
+        document.getElementById('acOutV').innerText = d.acOutV + " V";
+        document.getElementById('loadVA').innerText = d.loadVA + " VA";
+        document.getElementById('loadPercent').innerText = d.loadPercent + "%";
+
+        // Grid
+        document.getElementById('gridW').innerHTML = Math.round(d.gridW || 0) + '<span class="unit">W</span>';
+        document.getElementById('acInV').innerText = d.acInV + " V";
+        document.getElementById('acInFreq').innerText = d.acInFreq + " Hz";
+
+        // Timestamp
+        let now = new Date();
+        document.getElementById('lastUpdate').innerText = "Live: " + now.toLocaleTimeString();
     });
 
-    // --- HISTORY HANDLING ---
-    db.ref(devicePath + "/history").limitToLast(100).on('value', (snapshot) => {
-        let pvPoints = [];
-        let loadPoints = [];
+    // --- HISTORY CHART SYNC ---
+    db.ref(devicePath + "/history").limitToLast(96).on('value', (snapshot) => {
+        let pv = [], load = [], grid = [];
         snapshot.forEach((child) => {
             const v = child.val();
             const ts = v.ts * 1000;
-            pvPoints.push([ts, v.pvW]);
-            loadPoints.push([ts, v.loadW]);
+            pv.push([ts, v.pvW]);
+            load.push([ts, v.loadW]);
+            grid.push([ts, v.gridW || 0]);
         });
-        chart.updateSeries([
-            { name: 'Solar (W)', data: pvPoints },
-            { name: 'Load (W)', data: loadPoints }
-        ]);
+        chart.updateSeries([ { name: 'Solar (W)', data: pv }, { name: 'Load (W)', data: load }, { name: 'Grid (W)', data: grid } ]);
     });
 
-    // --- COMMAND HANDLING ---
-    function handleCmd(cmd) {
-        if(confirm(`Confirm: ${cmd}?`)) {
-            db.ref(devicePath + "/cmd").set(cmd);
-            alert("Command sent to Inverter!");
+    // --- COMMAND SYSTEM ---
+    function sendCmd(cmd) {
+        if(confirm("Confirm action: " + cmd)) {
+            db.ref(devicePath + "/cmd").set(cmd).then(() => {
+                alert("Command processing via Cloud...");
+            });
         }
     }
 </script>
+
 </body>
 </html>
