@@ -10,16 +10,21 @@
   <style>
     /* --- APP THEME VARIABLES (Dark Mode) --- */
     :root {
-      --bg-dark: #121212;
-      --bg-card: #1e1e1e;
-      --text-main: #ffffff;
-      --text-muted: #a0a0a0;
+      --bg-dark: #0d1117;
+      --bg-card: #161b22;
+      --bg-card2: #1c2333;
+      --text-main: #e6edf3;
+      --text-muted: #8b949e;
       
       /* Status Colors */
-      --solar: #f59e0b;  /* Orange */
-      --battery: #10b981; /* Green */
-      --grid: #3b82f6;   /* Blue */
-      --load: #8b5cf6;   /* Purple */
+      --solar: #f59e0b;
+      --solar-dim: rgba(245, 158, 11, 0.15);
+      --battery: #10b981;
+      --battery-dim: rgba(16, 185, 129, 0.15);
+      --grid: #3b82f6;
+      --grid-dim: rgba(59, 130, 246, 0.15);
+      --load: #8b5cf6;
+      --load-dim: rgba(139, 92, 246, 0.15);
       --good: #00e676;
       --warn: #ffd600;
       --bad: #ff5252;
@@ -28,10 +33,9 @@
       --radius: 16px;
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
     
     body {
-      margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-main);
@@ -41,69 +45,83 @@
       overflow: hidden;
     }
 
+    /* --- SCROLLBAR --- */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
     /* --- HEADER --- */
     header {
-      background-color: var(--bg-card);
-      padding: 15px 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #161b22 0%, #1c2333 100%);
+      padding: 12px 20px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.4);
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 10;
+      border-bottom: 1px solid #21262d;
     }
 
-    .header-title h2 { margin: 0; font-size: 1.2rem; font-weight: 700; }
-    .header-title small { color: var(--text-muted); font-size: 0.75rem; }
+    .header-title h2 { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.3px; }
+    .header-title small { color: var(--text-muted); font-size: 0.72rem; }
 
     .status-badge {
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 12px;
-      background: #333;
+      font-size: 0.72rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: #21262d;
       display: flex;
       align-items: center;
       gap: 6px;
+      border: 1px solid #30363d;
     }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
-    .dot.ok { background: var(--good); box-shadow: 0 0 8px var(--good); }
-    .dot.bad { background: var(--bad); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: all 0.3s; }
+    .dot.ok { background: var(--good); box-shadow: 0 0 10px var(--good); animation: pulse 2s infinite; }
+    .dot.bad { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
     /* --- MAIN CONTENT --- */
     main {
       flex: 1;
       overflow-y: auto;
-      padding: 15px;
-      padding-bottom: 80px; /* Space for bottom nav */
+      padding: 12px 15px;
+      padding-bottom: calc(var(--nav-height) + 15px);
     }
 
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     /* --- CARDS & GRID --- */
     .card {
       background-color: var(--bg-card);
       border-radius: var(--radius);
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border: 1px solid #21262d;
     }
+    .card h4 { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
     .kpi-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .kpi-item {
-      background: #252525;
-      padding: 12px;
+      background: var(--bg-card2);
+      padding: 14px 12px;
       border-radius: 12px;
       text-align: center;
+      border: 1px solid #21262d;
+      transition: transform 0.2s, border-color 0.3s;
     }
+    .kpi-item:active { transform: scale(0.97); }
 
-    .kpi-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; }
-    .kpi-value { font-size: 1.4rem; font-weight: 800; }
+    .kpi-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.3px; }
+    .kpi-value { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+    .kpi-unit { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
     
     .text-solar { color: var(--solar); }
     .text-bat { color: var(--battery); }
@@ -113,80 +131,142 @@
     /* --- ALERT BOX --- */
     #alertBox {
       display: none;
-      background: var(--bad);
+      background: linear-gradient(135deg, #b71c1c, #d32f2f);
       color: white;
-      padding: 12px;
+      padding: 14px 16px;
       border-radius: var(--radius);
-      margin-bottom: 15px;
-      font-weight: bold;
-      font-size: 0.9rem;
+      margin-bottom: 12px;
+      font-weight: 600;
+      font-size: 0.85rem;
       border: 1px solid #ff1744;
       animation: flash 1s infinite;
     }
-    @keyframes flash { 50% { opacity: 0.7; } }
+    @keyframes flash { 50% { opacity: 0.8; } }
 
-    /* --- VERTICAL POWER FLOW --- */
-    .flow-container { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-top: 10px; }
+    /* --- WEATHER & SAVINGS BAR --- */
+    .info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid var(--solar);
+    }
+    .info-bar .weather { display: flex; align-items: center; gap: 10px; }
+    .info-bar .weather-icon { font-size: 2rem; }
+    .info-bar .weather-label { font-size: 0.68rem; color: var(--text-muted); }
+    .info-bar .weather-text { font-weight: 700; font-size: 0.9rem; }
+    .info-bar .savings { text-align: right; }
+    .info-bar .savings-label { font-size: 0.68rem; color: var(--text-muted); }
+    .info-bar .savings-value { font-weight: 800; font-size: 1.2rem; color: var(--good); }
+
+    /* --- POWER FLOW --- */
+    .flow-container { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 12px; }
     .flow-node {
-      width: 100%; background: #252525; padding: 12px; border-radius: 12px;
-      display: flex; justify-content: space-between; align-items: center; border-left: 4px solid transparent;
+      width: 100%; background: var(--bg-card2); padding: 14px; border-radius: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-left: 4px solid transparent; transition: border-color 0.3s;
     }
     .flow-node.solar { border-color: var(--solar); }
     .flow-node.battery { border-color: var(--battery); }
     .flow-node.grid { border-color: var(--grid); }
     .flow-node.load { border-color: var(--load); }
-    .flow-info h4 { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
-    .flow-info .val { font-size: 1.1rem; font-weight: bold; }
-    .flow-info .sub { font-size: 0.75rem; color: var(--text-muted); }
+    .flow-info h4 { margin: 0; font-size: 0.85rem; color: var(--text-main); font-weight: 600; }
+    .flow-info .sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .flow-val { font-size: 1.15rem; font-weight: 800; }
     .flow-arrow {
-      height: 20px; width: 100%; display: flex; justify-content: center; align-items: center;
-      color: #444; font-size: 1.2rem; transition: color 0.3s;
+      height: 22px; width: 100%; display: flex; justify-content: center; align-items: center;
+      color: #333; font-size: 1rem; transition: all 0.5s;
     }
-    .flow-arrow.active { color: #fff; text-shadow: 0 0 5px currentColor; }
+    .flow-arrow.active { color: #fff; text-shadow: 0 0 8px currentColor; font-size: 1.1rem; }
 
-    /* --- CHIPS/BADGES --- */
-    .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .chip { font-size: 0.75rem; padding: 6px 12px; border-radius: 20px; background: #333; color: #ddd; border: 1px solid #444; }
-    .chip span { font-weight: bold; }
+    /* --- CHIPS --- */
+    .chip-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .chip { 
+      font-size: 0.7rem; padding: 5px 10px; border-radius: 20px; 
+      background: var(--bg-card2); color: #ccc; border: 1px solid #30363d;
+      font-weight: 500;
+    }
+
+    /* --- BATTERY HEALTH --- */
+    .health-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; }
+    .health-label { color: var(--text-muted); }
+    .health-val { font-weight: 700; }
+    .health-bar { width: 100%; height: 8px; background: #21262d; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+    .health-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s, background 0.5s; }
 
     /* --- DETAILS TABLE --- */
-    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #333; font-size: 0.9rem; }
+    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #21262d; font-size: 0.88rem; }
     .detail-row:last-child { border-bottom: none; }
     .detail-label { color: var(--text-muted); }
     .detail-val { font-weight: 600; }
+    .section-title { margin-top: 16px; margin-bottom: 4px; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
     /* --- BOTTOM NAV --- */
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; height: var(--nav-height);
       background: var(--bg-card); display: flex; justify-content: space-around; align-items: center;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.5); z-index: 20;
+      box-shadow: 0 -2px 15px rgba(0,0,0,0.4); z-index: 20;
+      border-top: 1px solid #21262d;
     }
-    .nav-item { text-align: center; color: var(--text-muted); font-size: 0.65rem; cursor: pointer; flex: 1; }
-    .nav-item svg { width: 24px; height: 24px; fill: currentColor; display: block; margin: 0 auto 4px auto; }
+    .nav-item { text-align: center; color: var(--text-muted); font-size: 0.62rem; cursor: pointer; flex: 1; transition: color 0.2s; padding: 8px 0; }
+    .nav-item svg { width: 22px; height: 22px; fill: currentColor; display: block; margin: 0 auto 3px auto; transition: transform 0.2s; }
     .nav-item.active { color: var(--text-main); }
+    .nav-item.active svg { transform: scale(1.1); }
 
-    /* --- NEW STYLES: Input & Toggle --- */
-    .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+    /* --- FORM ELEMENTS --- */
+    .input-group { margin-bottom: 16px; }
+    .input-group label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
     .form-input {
-      width: 100%; padding: 10px; background: #252525; color: white;
-      border: 1px solid #444; border-radius: 8px; font-size: 1rem;
+      width: 100%; padding: 11px 14px; background: var(--bg-card2); color: white;
+      border: 1px solid #30363d; border-radius: 10px; font-size: 1rem; outline: none;
+      transition: border-color 0.2s;
     }
-    .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+    .form-input:focus { border-color: var(--solar); }
+    
+    .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
       position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #333; transition: .4s; border-radius: 34px;
+      background-color: #30363d; transition: .3s; border-radius: 34px;
     }
     .slider:before {
-      position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px;
-      background-color: white; transition: .4s; border-radius: 50%;
+      position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px;
+      background-color: white; transition: .3s; border-radius: 50%;
     }
     input:checked + .slider { background-color: var(--good); }
     input:checked + .slider:before { transform: translateX(22px); }
     
+    .btn {
+      width: 100%; padding: 12px; color: white; border: none; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-danger { background: linear-gradient(135deg, #b71c1c, #d32f2f); }
+    .btn-secondary { background: #30363d; margin-top: 8px; }
+    
     /* Chart Container */
-    .chart-wrapper { background: #252525; padding: 10px; border-radius: 12px; }
+    .chart-wrapper { background: var(--bg-card2); padding: 12px; border-radius: 12px; border: 1px solid #21262d; }
+
+    /* --- STATS ROW (Analytics) --- */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .stat-item {
+      background: var(--bg-card2);
+      padding: 12px 8px;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid #21262d;
+    }
+    .stat-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px; }
+    .stat-value { font-size: 1rem; font-weight: 800; }
+
+    /* --- EMPTY STATE --- */
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 10px; }
+    .empty-state p { font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -206,42 +286,40 @@
   <!-- MAIN CONTENT -->
   <main>
     
-    <!-- TAB 1: DASHBOARD (HOME) -->
+    <!-- ===== TAB 1: DASHBOARD (HOME) ===== -->
     <div id="tab-home" class="tab-content active">
       
       <!-- Fault Alert Box -->
-      <div id="alertBox">⚠️ <span id="alertMsg">Fault Detected</span></div>
+      <div id="alertBox"><span id="alertMsg">Fault Detected</span></div>
 
-      <!-- ★ NEW: WEATHER & SAVINGS BAR -->
-      <div class="card" style="display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--solar);">
-        <!-- Weather Section -->
-        <div style="display:flex; align-items:center; gap:10px;">
-            <span id="weatherIcon" style="font-size:2rem;">☀️</span>
+      <!-- Weather & Savings Bar -->
+      <div class="card info-bar">
+        <div class="weather">
+            <span class="weather-icon" id="weatherIcon">&#9728;&#65039;</span>
             <div>
-                <small style="color:var(--text-muted); font-size:0.7rem;">Weather Status</small>
-                <div id="weatherText" style="font-weight:bold; font-size:0.9rem;">Sunny</div>
+                <div class="weather-label">Weather Status</div>
+                <div class="weather-text" id="weatherText">Sunny</div>
             </div>
         </div>
-        <!-- Savings Section -->
-        <div style="text-align:right;">
-            <small style="color:var(--text-muted); font-size:0.7rem;">Est. Savings</small>
-            <div style="font-weight:800; font-size:1.2rem; color:var(--good);">Rs <span id="moneySaved">0</span></div>
+        <div class="savings">
+            <div class="savings-label">Est. Savings</div>
+            <div class="savings-value">Rs <span id="moneySaved">0</span></div>
         </div>
       </div>
 
       <!-- Energy Monitor -->
       <div class="card">
-        <h4 style="margin:0 0 10px 0; color:var(--text-muted); font-size:0.9rem;">⚡ Energy Monitor</h4>
-        <div class="kpi-grid">
-          <div class="kpi-item">
+        <h4>Energy Monitor</h4>
+        <div class="kpi-grid" style="margin-top:12px;">
+          <div class="kpi-item" style="background:var(--solar-dim); border-color:rgba(245,158,11,0.3);">
             <div class="kpi-label">Solar Generated</div>
-            <div id="uiPvKwh" class="kpi-value text-solar">—</div>
-            <small style="color:var(--text-muted)">kWh</small>
+            <div id="uiPvKwh" class="kpi-value text-solar">&mdash;</div>
+            <div class="kpi-unit">kWh</div>
           </div>
-          <div class="kpi-item">
+          <div class="kpi-item" style="background:var(--load-dim); border-color:rgba(139,92,246,0.3);">
             <div class="kpi-label">Load Consumed</div>
-            <div id="uiLoadKwh" class="kpi-value text-load">—</div>
-            <small style="color:var(--text-muted)">kWh</small>
+            <div id="uiLoadKwh" class="kpi-value text-load">&mdash;</div>
+            <div class="kpi-unit">kWh</div>
           </div>
         </div>
       </div>
@@ -250,211 +328,257 @@
       <div class="kpi-grid">
         <div class="kpi-item">
           <div class="kpi-label">PV Solar</div>
-          <div id="pvWCard" class="kpi-value text-solar">—</div>
+          <div id="pvWCard" class="kpi-value text-solar">&mdash;</div>
+          <div class="kpi-unit">Watts</div>
         </div>
         <div class="kpi-item">
           <div class="kpi-label">Load</div>
-          <div id="loadWCard" class="kpi-value text-load">—</div>
+          <div id="loadWCard" class="kpi-value text-load">&mdash;</div>
+          <div class="kpi-unit">Watts</div>
         </div>
         <div class="kpi-item">
           <div class="kpi-label">Battery</div>
-          <div id="batWCard" class="kpi-value text-bat">—</div>
+          <div id="batWCard" class="kpi-value text-bat">&mdash;</div>
+          <div class="kpi-unit">Watts</div>
         </div>
         <div class="kpi-item">
           <div class="kpi-label">Grid</div>
-          <div id="gridWCard" class="kpi-value text-grid">—</div>
+          <div id="gridWCard" class="kpi-value text-grid">&mdash;</div>
+          <div class="kpi-unit">Watts</div>
         </div>
       </div>
 
       <!-- Battery Health Card -->
       <div class="card">
-        <h4 style="margin:0; font-size:0.9rem; color:var(--text-muted)">🔋 Battery Health</h4>
-        <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.9rem;">
-            <span style="color:var(--text-muted)">Voltage</span>
-            <span style="font-weight:bold" id="healthBatV">— V</span>
+        <h4>Battery Health</h4>
+        <div class="health-row" style="margin-top:10px;">
+            <span class="health-label">Voltage</span>
+            <span class="health-val" id="healthBatV">&mdash; V</span>
         </div>
-        <div style="display:flex; justify-content:space-between;">
-            <span style="color:var(--text-muted)">Temp</span>
-            <span style="font-weight:bold" id="healthBatT">— °C</span>
+        <div class="health-bar">
+            <div class="health-bar-fill" id="batBar" style="width:0%; background:var(--battery);"></div>
         </div>
-        <div style="display:flex; justify-content:space-between;">
-            <span style="color:var(--text-muted)">Status</span>
-            <span style="font-weight:bold" id="healthStatus">—</span>
+        <div class="health-row">
+            <span class="health-label">Charge Level</span>
+            <span class="health-val" id="healthBatPercent">&mdash; %</span>
+        </div>
+        <div class="health-row">
+            <span class="health-label">Temp</span>
+            <span class="health-val" id="healthBatT">&mdash; C</span>
+        </div>
+        <div class="health-row">
+            <span class="health-label">Status</span>
+            <span class="health-val" id="healthStatus">&mdash;</span>
         </div>
       </div>
 
-      <!-- Power Flow (Vertical for Mobile) -->
+      <!-- Power Flow -->
       <div class="card">
-        <h4 style="margin-top:0; color:var(--text-muted); font-size:0.9rem;">Power Flow</h4>
+        <h4>Power Flow</h4>
         <div class="flow-container">
-          <!-- Solar -->
           <div class="flow-node solar">
             <div class="flow-info">
-              <h4>☀️ Solar Input</h4>
-              <div class="sub"><span id="fPvV">—</span>V | <span id="fPvA">—</span>A</div>
+              <h4>&#9728;&#65039; Solar Input</h4>
+              <div class="sub"><span id="fPvV">&mdash;</span>V &bull; <span id="fPvA">&mdash;</span>A</div>
             </div>
-            <div class="val text-solar" id="fPvW">—</div>
+            <div class="flow-val text-solar" id="fPvW">&mdash;</div>
           </div>
-          <div id="a1" class="flow-arrow">▼</div>
-          <!-- Battery -->
+          <div id="a1" class="flow-arrow">&#9660;</div>
           <div class="flow-node battery">
             <div class="flow-info">
-              <h4>🔋 Battery</h4>
-              <div class="sub"><span id="fBatV">—</span>V | <span id="fBatA">—</span>A</div>
+              <h4>&#128267; Battery</h4>
+              <div class="sub"><span id="fBatV">&mdash;</span>V &bull; <span id="fBatA">&mdash;</span>A</div>
             </div>
-            <div class="val text-bat" id="fBatW">—</div>
+            <div class="flow-val text-bat" id="fBatW">&mdash;</div>
           </div>
-          <div id="a2" class="flow-arrow">▼</div>
-          <!-- Grid -->
+          <div id="a2" class="flow-arrow">&#9660;</div>
           <div class="flow-node grid">
             <div class="flow-info">
-              <h4>⚡ Grid Input</h4>
-              <div class="sub"><span id="fAcInV">—</span>V | <span id="fAcInF">—</span>Hz</div>
+              <h4>&#9889; Grid Input</h4>
+              <div class="sub"><span id="fAcInV">&mdash;</span>V &bull; <span id="fAcInF">&mdash;</span>Hz</div>
             </div>
-            <div class="val text-grid" id="fGridW">—</div>
+            <div class="flow-val text-grid" id="fGridW">&mdash;</div>
           </div>
-          <div id="a3" class="flow-arrow">▼</div>
-          <!-- Load -->
+          <div id="a3" class="flow-arrow">&#9660;</div>
           <div class="flow-node load">
             <div class="flow-info">
-              <h4>🏠 Home Load</h4>
-              <div class="sub"><span id="fAcOutV">—</span>V | <span id="fAcOutF">—</span>Hz</div>
+              <h4>&#127968; Home Load</h4>
+              <div class="sub"><span id="fAcOutV">&mdash;</span>V &bull; <span id="fAcOutF">&mdash;</span>Hz</div>
             </div>
-            <div class="val text-load" id="fLoadW">—</div>
+            <div class="flow-val text-load" id="fLoadW">&mdash;</div>
           </div>
         </div>
         <div class="chip-container" id="chips"></div>
       </div>
     </div>
 
-    <!-- TAB 2: DETAILS -->
-        <!-- TAB 2: DETAILS (RESTORED) -->
+    <!-- ===== TAB 2: DETAILS ===== -->
     <div id="tab-details" class="tab-content">
       <div class="card">
-        <h4 style="margin-top:0;">Energy History</h4>
-        <div class="detail-row">
+        <h4>Energy Totals</h4>
+        <div class="detail-row" style="margin-top:10px;">
             <span class="detail-label">Total Solar</span>
-            <span class="detail-val text-solar" id="detailPvKwh">—</span>
+            <span class="detail-val text-solar" id="detailPvKwh">&mdash;</span>
         </div>
         <div class="detail-row">
             <span class="detail-label">Total Load</span>
-            <span class="detail-val text-load" id="detailLoadKwh">—</span>
+            <span class="detail-val text-load" id="detailLoadKwh">&mdash;</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Est. Savings</span>
+            <span class="detail-val text-bat" id="detailSavings">Rs &mdash;</span>
         </div>
       </div>
       
       <div class="card">
-        <h4 style="margin-top:0;">Detailed Readings</h4>
-        <h5 class="text-solar" style="margin-top:15px; font-size:0.8rem;">PV Array</h5>
-        <div class="detail-row"><span class="detail-label">Volts</span><span class="detail-val" id="pvV">—</span></div>
-        <div class="detail-row"><span class="detail-label">Amps</span><span class="detail-val" id="pvA">—</span></div>
-        <div class="detail-row"><span class="detail-label">Watts</span><span class="detail-val" id="pvW">—</span></div>
+        <h4>Detailed Readings</h4>
+        
+        <div class="section-title text-solar">PV Array</div>
+        <div class="detail-row"><span class="detail-label">Volts</span><span class="detail-val" id="pvV">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Amps</span><span class="detail-val" id="pvA">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Watts</span><span class="detail-val" id="pvW">&mdash;</span></div>
 
-        <h5 class="text-bat" style="margin-top:15px; font-size:0.8rem;">Battery Bank</h5>
-        <div class="detail-row"><span class="detail-label">Volts</span><span class="detail-val" id="batV">—</span></div>
-        <div class="detail-row"><span class="detail-label">Amps</span><span class="detail-val" id="batA">—</span></div>
-        <div class="detail-row"><span class="detail-label">Watts</span><span class="detail-val" id="batW">—</span></div>
+        <div class="section-title text-bat">Battery Bank</div>
+        <div class="detail-row"><span class="detail-label">Volts</span><span class="detail-val" id="batV">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Amps</span><span class="detail-val" id="batA">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Watts</span><span class="detail-val" id="batW">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">SOC %</span><span class="detail-val" id="batPercent">&mdash;</span></div>
 
-        <h5 class="text-grid" style="margin-top:15px; font-size:0.8rem;">Grid / AC Input</h5>
-        <div class="detail-row"><span class="detail-label">Grid Volts</span><span class="detail-val" id="acInV">—</span></div>
-        <div class="detail-row"><span class="detail-label">Frequency</span><span class="detail-val" id="acInFreq">—</span></div>
-        <div class="detail-row"><span class="detail-label">Grid Watts</span><span class="detail-val" id="gridW">—</span></div>
+        <div class="section-title text-grid">Grid / AC Input</div>
+        <div class="detail-row"><span class="detail-label">Grid Volts</span><span class="detail-val" id="acInV">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Frequency</span><span class="detail-val" id="acInFreq">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Grid Watts</span><span class="detail-val" id="gridW">&mdash;</span></div>
 
-        <h5 class="text-load" style="margin-top:15px; font-size:0.8rem;">AC Output / Load</h5>
-        <div class="detail-row"><span class="detail-label">Output Volts</span><span class="detail-val" id="acOutV">—</span></div>
-        <div class="detail-row"><span class="detail-label">Frequency</span><span class="detail-val" id="acOutFreq">—</span></div>
-        <div class="detail-row"><span class="detail-label">Load Watts</span><span class="detail-val" id="loadW">—</span></div>
-        <div class="detail-row"><span class="detail-label">Load VA</span><span class="detail-val" id="loadVA">—</span></div>
-        <div class="detail-row"><span class="detail-label">Load %</span><span class="detail-val" id="loadPercent">—</span></div>
+        <div class="section-title text-load">AC Output / Load</div>
+        <div class="detail-row"><span class="detail-label">Output Volts</span><span class="detail-val" id="acOutV">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Frequency</span><span class="detail-val" id="acOutFreq">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Load Watts</span><span class="detail-val" id="loadW">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Load VA</span><span class="detail-val" id="loadVA">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Load %</span><span class="detail-val" id="loadPercent">&mdash;</span></div>
+
+        <div class="section-title" style="color:var(--text-muted);">System</div>
+        <div class="detail-row"><span class="detail-label">Bus Voltage</span><span class="detail-val" id="busV">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Inverter Temp</span><span class="detail-val" id="invTemp">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Fan Level</span><span class="detail-val" id="fanLevel">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Power Source</span><span class="detail-val" id="powerSource">&mdash;</span></div>
+        <div class="detail-row"><span class="detail-label">Charging Source</span><span class="detail-val" id="chargingSrc">&mdash;</span></div>
       </div>
     </div>
 
-    <!-- TAB 3: ANALYTICS (RESTORED) -->
+    <!-- ===== TAB 3: ANALYTICS ===== -->
     <div id="tab-analytics" class="tab-content">
+      <!-- Quick Stats -->
+      <div class="stats-row" id="statsRow">
+        <div class="stat-item">
+          <div class="stat-label">Peak Solar</div>
+          <div class="stat-value text-solar" id="peakSolar">&mdash;</div>
+          <div class="kpi-unit">W</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Peak Load</div>
+          <div class="stat-value text-load" id="peakLoad">&mdash;</div>
+          <div class="kpi-unit">W</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Avg Solar</div>
+          <div class="stat-value text-solar" id="avgSolar">&mdash;</div>
+          <div class="kpi-unit">W</div>
+        </div>
+      </div>
+      
+      <!-- 24h Chart -->
       <div class="card">
-        <h4 style="margin-top:0;">Performance (Last 24h)</h4>
-        <div class="chart-wrapper">
+        <h4>Performance (24 Hours)</h4>
+        <div class="chart-wrapper" style="margin-top:12px;">
             <canvas id="historyChart"></canvas>
         </div>
-        <small style="color:#666; display:block; margin-top:5px; text-align:center;">Agar history data nahi hai to chart khali rahega.</small>
-      </div>
-      <div class="card">
-         <div class="detail-row"><span class="detail-label">Data Source</span><span class="detail-val">Firebase History</span></div>
-      </div>
-    </div>
-    <!-- TAB 3: ANALYTICS (NEW) -->
-    <div id="tab-analytics" class="tab-content">
-      <div class="card">
-        <h4 style="margin-top:0;">Performance (Last 24h)</h4>
-        <div class="chart-wrapper">
-            <canvas id="historyChart"></canvas>
+        <div id="chartEmpty" class="empty-state" style="display:none;">
+          <div class="icon">&#128200;</div>
+          <p>History data will appear here once your ESP8266 starts logging (every 15 min).</p>
         </div>
       </div>
+
+      <!-- Battery Voltage Chart -->
       <div class="card">
-         <div class="detail-row"><span class="detail-label">Data Source</span><span class="detail-val">Firebase Realtime</span></div>
-         <div class="detail-row"><span class="detail-label">Interval</span><span class="detail-val">15 Minutes</span></div>
+        <h4>Battery Voltage (24 Hours)</h4>
+        <div class="chart-wrapper" style="margin-top:12px;">
+            <canvas id="batteryChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="detail-row"><span class="detail-label">Data Source</span><span class="detail-val">Firebase History</span></div>
+        <div class="detail-row"><span class="detail-label">Interval</span><span class="detail-val">15 Minutes</span></div>
+        <div class="detail-row"><span class="detail-label">Retention</span><span class="detail-val">24 Hours (96 entries)</span></div>
       </div>
     </div>
 
-    <!-- TAB 4: SETTINGS (UPDATED) -->
+    <!-- ===== TAB 4: SETTINGS ===== -->
     <div id="tab-settings" class="tab-content">
       <div class="card">
-        <h4 style="margin:0; color: var(--text-muted);">⚙️ Configuration</h4>
+        <h4>Configuration</h4>
         
-        <!-- Manual Tariff Input -->
-        <div class="input-group" style="margin-top:15px;">
-            <label>Tariff Rate (Per Unit)</label>
-            <input type="number" id="tariffInput" class="form-input" value="30" onchange="updateTariff()">
-            <small style="color:var(--text-muted); display:block; margin-top:5px;">Set your electricity rate to calculate savings.</small>
+        <!-- Tariff Rate -->
+        <div class="input-group" style="margin-top:14px;">
+            <label>Tariff Rate (Per Unit / kWh)</label>
+            <input type="number" id="tariffInput" class="form-input" value="30" min="0" step="1">
+            <small style="color:var(--text-muted); display:block; margin-top:5px; font-size:0.72rem;">Set your electricity rate to calculate estimated savings.</small>
         </div>
 
-        <!-- Auto Switch Mode Toggle -->
-        <div class="detail-row" style="align-items:center;">
+        <!-- Auto Switch Mode -->
+        <div class="detail-row" style="align-items:center; padding-top:12px; border-top:1px solid #21262d;">
             <div>
-                <span class="detail-label" style="display:block; font-size:1rem;">Auto Switch Mode</span>
-                <small style="color:var(--text-muted)">Relay control based on battery</small>
+                <span style="display:block; font-size:0.9rem; font-weight:600;">Auto Switch Mode</span>
+                <small style="color:var(--text-muted); font-size:0.72rem;">Relay control based on battery level</small>
             </div>
             <label class="switch">
-              <input type="checkbox" id="autoSwitchToggle" onchange="updateAutoSwitch()">
+              <input type="checkbox" id="autoSwitchToggle">
               <span class="slider"></span>
             </label>
         </div>
       </div>
       
-      <div class="card">
-        <h4 style="margin:0; color: var(--text-muted);">⚠️ Danger Zone</h4>
-        <p style="font-size:0.85rem; color:#aaa; margin-top:5px;">
-            Use this button to reset total energy counters (PV & Load) to zero.
-        </p>
-        <button id="resetBtn" onclick="resetEnergy()" style="
-            width: 100%; 
-            padding: 12px; 
-            background: #d32f2f; 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 1rem; 
-            font-weight: bold; 
-            cursor: pointer;
-            margin-top: 10px;">
-            Reset Energy Units (0)
-        </button>
-      </div>
-      
+      <!-- Device Stats -->
       <div class="card">
         <h4>Device Info</h4>
+        <div class="detail-row" style="margin-top:10px;">
+            <span class="detail-label">Solar Generated</span>
+            <span class="detail-val text-solar" id="settingsPvDisplay">&mdash;</span>
+        </div>
         <div class="detail-row">
-            <span class="detail-label">Notifications</span>
-            <span class="detail-val">ON</span>
+            <span class="detail-label">Total Savings</span>
+            <span class="detail-val text-bat" id="settingsSavingsDisplay">Rs &mdash;</span>
         </div>
         <div class="detail-row">
             <span class="detail-label">Refresh Rate</span>
             <span class="detail-val">Realtime</span>
         </div>
+        <div class="detail-row">
+            <span class="detail-label">History Interval</span>
+            <span class="detail-val">15 min</span>
+        </div>
+      </div>
+      
+      <!-- Danger Zone -->
+      <div class="card" style="border-color:rgba(211,47,47,0.3);">
+        <h4 style="color:var(--bad);">Danger Zone</h4>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:6px; line-height:1.5;">
+            Reset energy counters (PV & Load kWh) to zero. This action cannot be undone.
+        </p>
+        <button id="resetBtn" class="btn btn-danger" style="margin-top:12px;">
+            Reset Energy Counters
+        </button>
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:14px; line-height:1.5;">
+            Clear all 24-hour history data from Firebase.
+        </p>
+        <button id="clearHistoryBtn" class="btn btn-danger" style="margin-top:8px;">
+            Clear History Data
+        </button>
       </div>
     </div>
   </main>
 
-  <!-- BOTTOM NAVIGATION (Updated for 4 Tabs) -->
+  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('tab-home', this)">
       <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -473,18 +597,16 @@
       Settings
     </div>
   </nav>
-  <!-- FINAL LOGIC: Firebase Connection + Manual Calculation -->
-    <!-- FINAL CORRECTED SCRIPT (Status Logic Fixed) -->
-    <!-- SMART LOGIC: Battery Priority over Grid -->
-    <!-- SUPER SAFE SCRIPT: Fixes Grid Logic & Details Empty Issue -->
+
+  <!-- ===== MAIN SCRIPT ===== -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getDatabase, ref, onValue, set, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+    import { getDatabase, ref, onValue, set, query, orderByChild, limitToLast, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY_YAHAN_LIKHEN",
       authDomain: "PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app", 
+      databaseURL: "https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "PROJECT_ID_YAHAN_LIKHEN",
       storageBucket: "PROJECT_ID.appspot.com",
       messagingSenderId: "SENDER_ID_YAHAN_LIKHEN",
@@ -494,152 +616,348 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const deviceRef = ref(db, '/devices/inverter01');
-    let myChart = null;
+    const historyRef = query(ref(db, '/devices/inverter01/history'), orderByChild('ts'), limitToLast(96));
 
-    // --- SAFE HELPER (Agar ID nahi hai to error nahi dega) ---
-    const setTxt = (id, txt) => { 
-      const el = document.getElementById(id); 
-      if(el) el.textContent = txt; 
-    };
-    const fmt = (v,u='',d=1)=> (v==null||v=='') ? '—' : `${Number(v).toFixed(d)} ${u}`;
-    const fmt0 = (v,u='')=> (v==null||v=='') ? '—' : `${Math.round(Number(v))} ${u}`;
+    let powerChart = null;
+    let battChart = null;
+    let cachedHistoryData = null;
 
+    // --- HELPERS ---
+    const $ = (id) => document.getElementById(id);
+    const setTxt = (id, txt) => { const el = $(id); if(el) el.textContent = txt; };
+    const fmt = (v, d=1) => (v == null || v === '' || isNaN(v)) ? '\u2014' : `${Number(v).toFixed(d)}`;
+    const fmt0 = (v) => (v == null || v === '' || isNaN(v)) ? '\u2014' : `${Math.round(Number(v))}`;
+
+    // --- TARIFF ---
+    function getTariff() {
+      return parseFloat($('tariffInput')?.value || 30);
+    }
+
+    function calculateSavings(kwh) {
+      const rate = getTariff();
+      const savings = (parseFloat(kwh) || 0) * rate;
+      setTxt('moneySaved', savings.toFixed(0));
+      setTxt('detailSavings', `Rs ${savings.toFixed(0)}`);
+      setTxt('settingsSavingsDisplay', `Rs ${savings.toFixed(0)}`);
+    }
+
+    // --- WEATHER ---
+    function updateWeather(pvW, ts) {
+      const solar = Number(pvW) || 0;
+      let icon = '\u2600\uFE0F'; // sun
+      let text = 'Sunny';
+      
+      if (solar > 500) { icon = '\u2600\uFE0F'; text = 'Full Sun'; }
+      else if (solar > 200) { icon = '\uD83C\uDF24\uFE0F'; text = 'Partly Cloudy'; }
+      else if (solar > 50) { icon = '\u26C5'; text = 'Cloudy'; }
+      else if (solar > 10) { icon = '\uD83C\uDF27\uFE0F'; text = 'Overcast'; }
+      else { icon = '\uD83C\uDF19'; text = 'Night / No Sun'; }
+      
+      setTxt('weatherIcon', icon);
+      setTxt('weatherText', text);
+    }
+
+    // --- FLOW ARROWS ---
+    function updateFlowArrows(solarW, battW, gridW, loadW) {
+      const s = Number(solarW) || 0;
+      const b = Number(battW) || 0;
+      const g = Number(gridW) || 0;
+      const l = Number(loadW) || 0;
+      
+      $('a1').className = s > 10 ? 'flow-arrow active' : 'flow-arrow';
+      $('a2').className = Math.abs(b) > 10 ? 'flow-arrow active' : 'flow-arrow';
+      $('a3').className = g > 10 ? 'flow-arrow active' : 'flow-arrow';
+    }
+
+    // --- BATTERY BAR ---
+    function updateBatteryBar(percent) {
+      const p = Math.max(0, Math.min(100, Number(percent) || 0));
+      const bar = $('batBar');
+      if (bar) {
+        bar.style.width = p + '%';
+        if (p > 50) bar.style.background = 'var(--good)';
+        else if (p > 20) bar.style.background = 'var(--warn)';
+        else bar.style.background = 'var(--bad)';
+      }
+    }
+
+    // ===== MAIN REALTIME LISTENER =====
     onValue(deviceRef, (snapshot) => {
       const d = snapshot.val();
       
-      // Status Update
-      setTxt('connText', d ? "Online" : "Offline");
-      const dot = document.getElementById('cDot');
+      // Connection Status
+      setTxt('connText', d ? 'Online' : 'Offline');
+      const dot = $('cDot');
       if(dot) dot.className = d ? 'dot ok' : 'dot bad';
-      setTxt('lastUpdate', d ? new Date().toLocaleTimeString() : "No Signal");
+      setTxt('lastUpdate', d ? new Date().toLocaleTimeString() : 'No Signal');
       
-      if(!d) return; // Stop if no data
+      if(!d) return;
 
-      // --- 1. CALCULATIONS ---
-      const batteryW = (d.batteryV && d.batteryA) ? Number(d.batteryV)*Number(d.batteryA) : 0;
+      // --- CALCULATIONS ---
+      const batteryW = (d.batteryV && d.batteryA) ? Number(d.batteryV) * Number(d.batteryA) : 0;
       const solarW = Number(d.pvW || 0);
       const gridW = Number(d.gridW || 0);
       const loadW = Number(d.loadW || 0);
-      const batteryA = Number(d.batteryA || 0);
+      const battPercent = Number(d.batteryPercent || 0);
 
-      // --- 2. DASHBOARD CARDS ---
-      setTxt('uiPvKwh', fmt(d.pvkWh, 'kWh', 3));
-      setTxt('uiLoadKwh', fmt(d.loadKwh, 'kWh', 3));
-      setTxt('pvWCard', fmt0(solarW, 'W'));
-      setTxt('batWCard', fmt0(batteryW, 'W'));
-      setTxt('gridWCard', fmt0(gridW, 'W'));
-      setTxt('loadWCard', fmt0(loadW, 'W'));
+      // --- DASHBOARD CARDS ---
+      setTxt('uiPvKwh', fmt(d.pvkWh, 3));
+      setTxt('uiLoadKwh', fmt(d.loadKwh, 3));
+      setTxt('pvWCard', fmt0(solarW));
+      setTxt('batWCard', fmt0(batteryW));
+      setTxt('gridWCard', fmt0(gridW));
+      setTxt('loadWCard', fmt0(loadW));
 
-      // --- 3. HEALTH & FLOW ---
-      setTxt('healthBatV', fmt(d.batteryV, 1) + ' V');
-      setTxt('healthBatT', fmt(d.invTemp, 0) + ' °C');
+      // --- BATTERY HEALTH ---
+      setTxt('healthBatV', fmt(d.batteryV) + ' V');
+      setTxt('healthBatT', fmt(d.invTemp, 0) + ' \u00B0C');
+      setTxt('healthBatPercent', fmt0(battPercent) + ' %');
+      updateBatteryBar(battPercent);
+
+      if(batteryW < -50) setTxt('healthStatus', 'Discharging \u2B07\uFE0F');
+      else if(batteryW > 50) setTxt('healthStatus', 'Charging \u2B06\uFE0F');
+      else setTxt('healthStatus', 'Idle \u23F8\uFE0F');
+
+      // --- POWER FLOW ---
+      setTxt('fPvW', fmt0(solarW) + 'W'); setTxt('fPvV', fmt(d.pvV) + 'V'); setTxt('fPvA', fmt(d.pvA) + 'A');
+      setTxt('fBatW', fmt0(batteryW) + 'W'); setTxt('fBatV', fmt(d.batteryV) + 'V'); setTxt('fBatA', fmt(d.batteryA) + 'A');
+      setTxt('fGridW', fmt0(gridW) + 'W'); setTxt('fAcInV', fmt(d.acInV) + 'V'); setTxt('fAcInF', fmt(d.acInFreq) + 'Hz');
+      setTxt('fLoadW', fmt0(loadW) + 'W'); setTxt('fAcOutV', fmt(d.acOutV) + 'V'); setTxt('fAcOutF', fmt(d.acOutFreq) + 'Hz');
+
+      updateFlowArrows(solarW, batteryW, gridW, loadW);
+
+      // --- DETAILS TAB ---
+      setTxt('detailPvKwh', fmt(d.pvkWh, 3) + ' kWh');
+      setTxt('detailLoadKwh', fmt(d.loadKwh, 3) + ' kWh');
       
-      // Status Logic
-      if(batteryW < -50) setTxt('healthStatus', "Discharging ⬇️");
-      else if(batteryW > 50) setTxt('healthStatus', "Charging ⬆️");
-      else setTxt('healthStatus', "Idle");
+      setTxt('pvV', fmt(d.pvV) + ' V'); setTxt('pvA', fmt(d.pvA) + ' A'); setTxt('pvW', fmt0(d.pvW) + ' W');
+      setTxt('batV', fmt(d.batteryV) + ' V'); setTxt('batA', fmt(d.batteryA) + ' A'); setTxt('batW', fmt0(batteryW) + ' W');
+      setTxt('batPercent', fmt0(d.batteryPercent) + ' %');
+      setTxt('acInV', fmt(d.acInV) + ' V'); setTxt('acInFreq', fmt(d.acInFreq) + ' Hz'); setTxt('gridW', fmt0(d.gridW) + ' W');
+      setTxt('acOutV', fmt(d.acOutV) + ' V'); setTxt('acOutFreq', fmt(d.acOutFreq) + ' Hz'); 
+      setTxt('loadW', fmt0(d.loadW) + ' W'); setTxt('loadVA', fmt0(d.loadVA) + ' VA'); setTxt('loadPercent', fmt0(d.loadPercent) + ' %');
+      setTxt('busV', fmt(d.busV, 0) + ' V'); setTxt('invTemp', fmt(d.invTemp, 0) + ' \u00B0C');
+      setTxt('fanLevel', fmt0(d.fanLevel)); 
+      setTxt('powerSource', String(d.powerSource || 'none'));
+      setTxt('chargingSrc', String(d.chargingSrc || 'none'));
 
-      // Flow Nodes (Null Safe)
-      setTxt('fPvW', fmt0(solarW,'W')); setTxt('fPvV', fmt(d.pvV,'V')); setTxt('fPvA', fmt(d.pvA,'A'));
-      setTxt('fBatW', fmt0(batteryW,'W')); setTxt('fBatV', fmt(d.batteryV,'V')); setTxt('fBatA', fmt(d.batteryA,'A'));
-      setTxt('fGridW', fmt0(gridW,'W')); setTxt('fAcInV', fmt(d.acInV,'V')); setTxt('fAcInF', fmt(d.acInFreq,'Hz'));
-      setTxt('fLoadW', fmt0(loadW,'W')); setTxt('fAcOutV', fmt(d.acOutV,'V')); setTxt('fAcOutF', fmt(d.acOutFreq,'Hz'));
-
-      // --- 4. DETAILS TAB (Restored) ---
-      setTxt('detailPvKwh', fmt(d.pvkWh, ' kWh', 3));
-      setTxt('detailLoadKwh', fmt(d.loadKwh, ' kWh', 3));
-      
-      setTxt('pvV', fmt(d.pvV,'V')); setTxt('pvA', fmt(d.pvA,'A')); setTxt('pvW', fmt0(d.pvW,'W'));
-      setTxt('batV', fmt(d.batteryV,'V')); setTxt('batA', fmt(d.batteryA,'A')); setTxt('batW', fmt0(batteryW,'W'));
-      setTxt('acInV', fmt(d.acInV,'V')); setTxt('acInFreq', fmt(d.acInFreq,'Hz')); setTxt('gridW', fmt0(d.gridW,'W'));
-      setTxt('acOutV', fmt(d.acOutV,'V')); setTxt('acOutFreq', fmt(d.acOutFreq,'Hz')); setTxt('loadW', fmt0(d.loadW,'W'));
-      setTxt('loadVA', fmt0(d.loadVA,'VA')); setTxt('loadPercent', fmt0(d.loadPercent,'%'));
-
-      // --- 5. CHIPS & PRIORITY LOGIC ---
-      const chips = document.getElementById('chips');
+      // --- CHIPS ---
+      const chips = $('chips');
       if(chips) chips.innerHTML = '';
       
-      const addChip = (txt, color='white') => { 
+      const addChip = (txt, color='#30363d') => { 
         if(!chips) return;
-        const s=document.createElement('span');
-        s.className='chip'; s.style.borderColor=color; s.textContent=txt; chips.appendChild(s); 
+        const s = document.createElement('span');
+        s.className = 'chip'; s.style.borderColor = color; s.textContent = txt; chips.appendChild(s); 
       };
 
-      if(loadW > 10) addChip(`🏠 Load: ${fmt0(loadW)}`, '#8b5cf6');
-      if(solarW > 10) addChip(`☀️ Solar: ${fmt0(solarW)}`, '#f59e0b');
+      if(loadW > 10) addChip(`Home: ${fmt0(loadW)}W`, '#8b5cf6');
+      if(solarW > 10) addChip(`Solar: ${fmt0(solarW)}W`, '#f59e0b');
+      if(batteryW > 50) addChip(`Charging: ${fmt0(batteryW)}W`, '#10b981');
+      else if(batteryW < -50) addChip(`Discharging: ${fmt0(Math.abs(batteryW))}W`, '#ff5252');
+      if(gridW > 20) addChip(`Grid: ${fmt0(gridW)}W`, '#3b82f6');
 
-      // ★★ BATTERY PRIORITY LOGIC (REVISED) ★★
-      // Agar Battery Watts Negative ho (Discharging), to Grid hide karo
-      if(batteryW < -20) { 
-          // Battery Discharge mode
-          addChip(`🔋 BAT DISCHARGING`, '#10b981');
-      } else if (gridW > 20) {
-          // Grid Active
-          addChip(`⚡ GRID (${fmt0(gridW)})`, '#ff5252');
-      } else if (batteryW > 50) {
-          // Charging
-          addChip(`🔋 CHARGING`, '#10b981');
-      }
-
-      // 6. MANUAL CALC
+      // --- WEATHER & SAVINGS ---
+      updateWeather(solarW);
       calculateSavings(d.pvkWh);
+      setTxt('settingsPvDisplay', fmt(d.pvkWh, 3) + ' kWh');
     });
 
-    // --- FUNCTIONS ---
-    window.calculateSavings = function(kwh) {
-        const rate = parseFloat(document.getElementById('manualTariffInput')?.value || 30);
-        const savings = (parseFloat(kwh)||0) * rate;
-        setTxt('moneySaved', savings.toFixed(0));
-        setTxt('settingsPvDisplay', (parseFloat(kwh)||0).toFixed(3));
-        setTxt('settingsSavingsDisplay', savings.toFixed(0));
+    // ===== HISTORY LISTENER (for Analytics tab) =====
+    onValue(historyRef, (snapshot) => {
+      const data = snapshot.val();
+      if(!data) {
+        cachedHistoryData = null;
+        return;
+      }
+      
+      const entries = [];
+      const sortedKeys = Object.keys(data).sort((a,b) => data[a].ts - data[b].ts);
+      
+      sortedKeys.forEach(key => {
+        const val = data[key];
+        if(val && val.ts) {
+          const d = new Date(val.ts * 1000);
+          entries.push({
+            time: `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`,
+            pvW: Number(val.pvW || 0),
+            loadW: Number(val.loadW || 0),
+            batteryV: Number(val.batteryV || 0),
+            gridW: Number(val.gridW || 0),
+            batteryPercent: Number(val.batteryPercent || 0)
+          });
+        }
+      });
+      
+      cachedHistoryData = entries;
+      
+      // Calculate stats
+      if(entries.length > 0) {
+        const solarValues = entries.map(e => e.pvW);
+        const loadValues = entries.map(e => e.loadW);
+        const peakSolar = Math.max(...solarValues);
+        const peakLoad = Math.max(...loadValues);
+        const avgSolar = Math.round(solarValues.reduce((a,b) => a+b, 0) / solarValues.length);
+        
+        setTxt('peakSolar', fmt0(peakSolar));
+        setTxt('peakLoad', fmt0(peakLoad));
+        setTxt('avgSolar', fmt0(avgSolar));
+      }
+
+      // Agar analytics tab active hai toh chart redraw karo
+      if($('tab-analytics')?.classList.contains('active')) {
+        renderCharts(entries);
+      }
+    });
+
+    // ===== CHART RENDERING =====
+    function renderCharts(entries) {
+      if(!entries || entries.length === 0) {
+        $('chartEmpty').style.display = 'block';
+        return;
+      }
+      $('chartEmpty').style.display = 'none';
+
+      const labels = entries.map(e => e.time);
+      const chartDefaults = {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { labels: { color: '#8b949e', font: { size: 11 }, usePointStyle: true, pointStyle: 'circle' } },
+          tooltip: {
+            backgroundColor: '#1c2333',
+            borderColor: '#30363d',
+            borderWidth: 1,
+            titleColor: '#e6edf3',
+            bodyColor: '#8b949e',
+            padding: 10,
+            cornerRadius: 8
+          }
+        },
+        scales: {
+          x: { 
+            ticks: { color: '#8b949e', font: { size: 10 }, maxTicksLimit: 12 }, 
+            grid: { color: '#21262d', drawBorder: false } 
+          },
+          y: { 
+            ticks: { color: '#8b949e', font: { size: 10 } }, 
+            grid: { color: '#21262d', drawBorder: false },
+            beginAtZero: true
+          }
+        }
+      };
+
+      // --- Power Chart (Solar + Load + Grid) ---
+      if(powerChart) powerChart.destroy();
+      const ctx1 = $('historyChart')?.getContext('2d');
+      if(ctx1) {
+        powerChart = new Chart(ctx1, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              { 
+                label: 'Solar (W)', data: entries.map(e => e.pvW), 
+                borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)',
+                fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 
+              },
+              { 
+                label: 'Load (W)', data: entries.map(e => e.loadW), 
+                borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)',
+                fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 
+              },
+              { 
+                label: 'Grid (W)', data: entries.map(e => e.gridW), 
+                borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.05)',
+                fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1.5, borderDash: [5, 3] 
+              }
+            ]
+          },
+          options: chartDefaults
+        });
+      }
+
+      // --- Battery Voltage Chart ---
+      if(battChart) battChart.destroy();
+      const ctx2 = $('batteryChart')?.getContext('2d');
+      if(ctx2) {
+        battChart = new Chart(ctx2, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Battery (V)', 
+              data: entries.map(e => e.batteryV), 
+              borderColor: '#10b981', 
+              backgroundColor: 'rgba(16,185,129,0.1)',
+              fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 
+            }]
+          },
+          options: {
+            ...chartDefaults,
+            scales: {
+              ...chartDefaults.scales,
+              y: {
+                ...chartDefaults.scales.y,
+                beginAtZero: false,
+                suggestedMin: 22,
+                suggestedMax: 30
+              }
+            }
+          }
+        });
+      }
     }
 
+    // ===== TAB SWITCHING =====
     window.switchTab = function(tabId, element) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      const tab = document.getElementById(tabId);
+      const tab = $(tabId);
       if(tab) tab.classList.add('active');
-      element.classList.add('active');
-      if(tabId === 'tab-analytics') loadChart();
+      if(element) element.classList.add('active');
+      
+      // Agar analytics tab hai aur cached data hai toh chart draw karo
+      if(tabId === 'tab-analytics' && cachedHistoryData) {
+        renderCharts(cachedHistoryData);
+      } else if(tabId === 'tab-analytics' && !cachedHistoryData) {
+        // Chart bana do empty state ke liye
+        $('chartEmpty').style.display = 'block';
+      }
     }
 
-    window.resetEnergy = function() { set(ref(db, '/devices/inverter01/cmd'), "RESET_ENERGY").then(() => alert("Done")); }
-    
-    function loadChart() {
-        if(myChart) myChart.destroy();
-        const ctx = document.getElementById('historyChart');
-        if(!ctx) return;
-
-        const historyRef = query(ref(db, '/devices/inverter01/history'), orderByChild('ts'), limitToLast(24)); 
-        onValue(historyRef, (snapshot) => {
-            const data = snapshot.val();
-            if(!data) return;
-            
-            const labels = []; const pvData = []; const loadData = [];
-            const sortedKeys = Object.keys(data).sort((a,b) => data[a].ts - data[b].ts);
-            
-            sortedKeys.forEach(key => {
-                const val = data[key];
-                const d = new Date(val.ts * 1000);
-                labels.push(`${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`);
-                pvData.push(val.pvW);
-                loadData.push(val.loadW);
-            });
-            
-            if(myChart) myChart.destroy();
-            myChart = new Chart(ctx.getContext('2d'), {
-                type: 'line',
-                data: { labels: labels, datasets: [
-                    { label: 'Solar', data: pvData, borderColor: '#f59e0b', tension: 0.4, pointRadius: 0 },
-                    { label: 'Load', data: loadData, borderColor: '#8b5cf6', tension: 0.4, pointRadius: 0 }
-                ]},
-                options: {
-                    responsive: true,
-                    plugins: { legend: { labels: { color: '#fff' } } },
-                    scales: { x: { ticks: { color: '#aaa' }, grid: { color: '#333' } }, y: { ticks: { color: '#aaa' }, grid: { color: '#333' } } }
-                }
-            });
+    // ===== SETTINGS ACTIONS =====
+    window.resetEnergy = function() {
+      if(confirm('Are you sure? This will reset all energy counters to zero.')) {
+        set(ref(db, '/devices/inverter01/cmd'), 'RESET_ENERGY').then(() => {
+          alert('Energy reset command sent!');
+        }).catch(err => {
+          alert('Error: ' + err.message);
         });
+      }
     }
+
+    window.clearHistory = function() {
+      if(confirm('Clear all 24-hour history data? This cannot be undone.')) {
+        set(ref(db, '/devices/inverter01/cmd'), 'CLEAR_HISTORY').then(() => {
+          alert('History clear command sent!');
+        }).catch(err => {
+          alert('Error: ' + err.message);
+        });
+      }
+    }
+
+    // Tariff input change listener
+    $('tariffInput')?.addEventListener('input', () => {
+      // Savings automatic recalculate hoga next data update par
+      const currentKwh = $('uiPvKwh')?.textContent || '0';
+      calculateSavings(currentKwh);
+    });
+
+    // Button event listeners
+    $('resetBtn')?.addEventListener('click', window.resetEnergy);
+    $('clearHistoryBtn')?.addEventListener('click', window.clearHistory);
+
   </script>
+</body>
 </html>
