@@ -4,19 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Smart Inverter Pro</title>
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
-    /* --- APP THEME VARIABLES (Dark Mode) --- */
     :root {
       --bg-dark: #0d1117;
       --bg-card: #161b22;
       --bg-card2: #1c2333;
       --text-main: #e6edf3;
       --text-muted: #8b949e;
-      
-      /* Status Colors */
       --solar: #f59e0b;
       --solar-dim: rgba(245, 158, 11, 0.15);
       --battery: #10b981;
@@ -28,7 +24,6 @@
       --good: #00e676;
       --warn: #ffd600;
       --bad: #ff5252;
-      
       --nav-height: 60px;
       --radius: 16px;
     }
@@ -45,12 +40,10 @@
       overflow: hidden;
     }
 
-    /* --- SCROLLBAR --- */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
-    /* --- HEADER --- */
     header {
       background: linear-gradient(135deg, #161b22 0%, #1c2333 100%);
       padding: 12px 20px;
@@ -78,9 +71,22 @@
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: all 0.3s; }
     .dot.ok { background: var(--good); box-shadow: 0 0 10px var(--good); animation: pulse 2s infinite; }
     .dot.bad { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
+    .dot.stale { background: var(--warn); box-shadow: 0 0 6px var(--warn); animation: pulse 1s infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-    /* --- MAIN CONTENT --- */
+    /* STALE WARNING BAR */
+    #staleBar {
+      display: none;
+      background: linear-gradient(135deg, #e65100, #f57c00);
+      color: white;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: center;
+      animation: flash 1.5s infinite;
+    }
+    @keyframes flash { 50% { opacity: 0.75; } }
+
     main {
       flex: 1;
       overflow-y: auto;
@@ -92,7 +98,6 @@
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* --- CARDS & GRID --- */
     .card {
       background-color: var(--bg-card);
       border-radius: var(--radius);
@@ -116,8 +121,22 @@
       text-align: center;
       border: 1px solid #21262d;
       transition: transform 0.2s, border-color 0.3s;
+      position: relative;
     }
     .kpi-item:active { transform: scale(0.97); }
+    
+    /* Stale indicator on individual card */
+    .kpi-item.stale-val::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--warn);
+      animation: pulse 1s infinite;
+    }
 
     .kpi-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.3px; }
     .kpi-value { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
@@ -127,8 +146,8 @@
     .text-bat { color: var(--battery); }
     .text-grid { color: var(--grid); }
     .text-load { color: var(--load); }
+    .text-stale { color: var(--warn) !important; opacity: 0.8; }
 
-    /* --- ALERT BOX --- */
     #alertBox {
       display: none;
       background: linear-gradient(135deg, #b71c1c, #d32f2f);
@@ -141,9 +160,7 @@
       border: 1px solid #ff1744;
       animation: flash 1s infinite;
     }
-    @keyframes flash { 50% { opacity: 0.8; } }
 
-    /* --- WEATHER & SAVINGS BAR --- */
     .info-bar {
       display: flex;
       justify-content: space-between;
@@ -158,7 +175,6 @@
     .info-bar .savings-label { font-size: 0.68rem; color: var(--text-muted); }
     .info-bar .savings-value { font-weight: 800; font-size: 1.2rem; color: var(--good); }
 
-    /* --- POWER FLOW --- */
     .flow-container { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 12px; }
     .flow-node {
       width: 100%; background: var(--bg-card2); padding: 14px; border-radius: 12px;
@@ -178,7 +194,6 @@
     }
     .flow-arrow.active { color: #fff; text-shadow: 0 0 8px currentColor; font-size: 1.1rem; }
 
-    /* --- CHIPS --- */
     .chip-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
     .chip { 
       font-size: 0.7rem; padding: 5px 10px; border-radius: 20px; 
@@ -186,21 +201,18 @@
       font-weight: 500;
     }
 
-    /* --- BATTERY HEALTH --- */
     .health-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; }
     .health-label { color: var(--text-muted); }
     .health-val { font-weight: 700; }
     .health-bar { width: 100%; height: 8px; background: #21262d; border-radius: 4px; margin-top: 10px; overflow: hidden; }
     .health-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s, background 0.5s; }
 
-    /* --- DETAILS TABLE --- */
     .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #21262d; font-size: 0.88rem; }
     .detail-row:last-child { border-bottom: none; }
     .detail-label { color: var(--text-muted); }
-    .detail-val { font-weight: 600; }
+    .detail-val { font-weight: 600; transition: color 0.3s; }
     .section-title { margin-top: 16px; margin-bottom: 4px; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* --- BOTTOM NAV --- */
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; height: var(--nav-height);
       background: var(--bg-card); display: flex; justify-content: space-around; align-items: center;
@@ -212,7 +224,6 @@
     .nav-item.active { color: var(--text-main); }
     .nav-item.active svg { transform: scale(1.1); }
 
-    /* --- FORM ELEMENTS --- */
     .input-group { margin-bottom: 16px; }
     .input-group label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
     .form-input {
@@ -243,10 +254,8 @@
     .btn-danger { background: linear-gradient(135deg, #b71c1c, #d32f2f); }
     .btn-secondary { background: #30363d; margin-top: 8px; }
     
-    /* Chart Container */
     .chart-wrapper { background: var(--bg-card2); padding: 12px; border-radius: 12px; border: 1px solid #21262d; }
 
-    /* --- STATS ROW (Analytics) --- */
     .stats-row {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -263,13 +272,39 @@
     .stat-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 4px; }
     .stat-value { font-size: 1rem; font-weight: 800; }
 
-    /* --- EMPTY STATE --- */
     .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
     .empty-state .icon { font-size: 3rem; margin-bottom: 10px; }
     .empty-state p { font-size: 0.85rem; }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #1c2333;
+      color: var(--text-main);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid #30363d;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   </style>
 </head>
 <body>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
 
   <!-- HEADER -->
   <header>
@@ -283,16 +318,17 @@
     </div>
   </header>
 
+  <!-- STALE DATA WARNING -->
+  <div id="staleBar">&#9888;&#65039; Data may be outdated — device not responding</div>
+
   <!-- MAIN CONTENT -->
   <main>
     
-    <!-- ===== TAB 1: DASHBOARD (HOME) ===== -->
+    <!-- ===== TAB 1: DASHBOARD ===== -->
     <div id="tab-home" class="tab-content active">
       
-      <!-- Fault Alert Box -->
       <div id="alertBox"><span id="alertMsg">Fault Detected</span></div>
 
-      <!-- Weather & Savings Bar -->
       <div class="card info-bar">
         <div class="weather">
             <span class="weather-icon" id="weatherIcon">&#9728;&#65039;</span>
@@ -307,7 +343,6 @@
         </div>
       </div>
 
-      <!-- Energy Monitor -->
       <div class="card">
         <h4>Energy Monitor</h4>
         <div class="kpi-grid" style="margin-top:12px;">
@@ -324,31 +359,29 @@
         </div>
       </div>
 
-      <!-- Realtime Power Cards -->
       <div class="kpi-grid">
-        <div class="kpi-item">
+        <div class="kpi-item" id="pvCard">
           <div class="kpi-label">PV Solar</div>
           <div id="pvWCard" class="kpi-value text-solar">&mdash;</div>
           <div class="kpi-unit">Watts</div>
         </div>
-        <div class="kpi-item">
+        <div class="kpi-item" id="loadCard">
           <div class="kpi-label">Load</div>
           <div id="loadWCard" class="kpi-value text-load">&mdash;</div>
           <div class="kpi-unit">Watts</div>
         </div>
-        <div class="kpi-item">
+        <div class="kpi-item" id="batCard">
           <div class="kpi-label">Battery</div>
           <div id="batWCard" class="kpi-value text-bat">&mdash;</div>
           <div class="kpi-unit">Watts</div>
         </div>
-        <div class="kpi-item">
+        <div class="kpi-item" id="gridCard">
           <div class="kpi-label">Grid</div>
           <div id="gridWCard" class="kpi-value text-grid">&mdash;</div>
           <div class="kpi-unit">Watts</div>
         </div>
       </div>
 
-      <!-- Battery Health Card -->
       <div class="card">
         <h4>Battery Health</h4>
         <div class="health-row" style="margin-top:10px;">
@@ -372,7 +405,6 @@
         </div>
       </div>
 
-      <!-- Power Flow -->
       <div class="card">
         <h4>Power Flow</h4>
         <div class="flow-container">
@@ -467,8 +499,7 @@
 
     <!-- ===== TAB 3: ANALYTICS ===== -->
     <div id="tab-analytics" class="tab-content">
-      <!-- Quick Stats -->
-      <div class="stats-row" id="statsRow">
+      <div class="stats-row">
         <div class="stat-item">
           <div class="stat-label">Peak Solar</div>
           <div class="stat-value text-solar" id="peakSolar">&mdash;</div>
@@ -486,7 +517,6 @@
         </div>
       </div>
       
-      <!-- 24h Chart -->
       <div class="card">
         <h4>Performance (24 Hours)</h4>
         <div class="chart-wrapper" style="margin-top:12px;">
@@ -498,7 +528,6 @@
         </div>
       </div>
 
-      <!-- Battery Voltage Chart -->
       <div class="card">
         <h4>Battery Voltage (24 Hours)</h4>
         <div class="chart-wrapper" style="margin-top:12px;">
@@ -518,14 +547,12 @@
       <div class="card">
         <h4>Configuration</h4>
         
-        <!-- Tariff Rate -->
         <div class="input-group" style="margin-top:14px;">
             <label>Tariff Rate (Per Unit / kWh)</label>
             <input type="number" id="tariffInput" class="form-input" value="30" min="0" step="1">
             <small style="color:var(--text-muted); display:block; margin-top:5px; font-size:0.72rem;">Set your electricity rate to calculate estimated savings.</small>
         </div>
 
-        <!-- Auto Switch Mode -->
         <div class="detail-row" style="align-items:center; padding-top:12px; border-top:1px solid #21262d;">
             <div>
                 <span style="display:block; font-size:0.9rem; font-weight:600;">Auto Switch Mode</span>
@@ -536,9 +563,19 @@
               <span class="slider"></span>
             </label>
         </div>
+
+        <div class="detail-row" style="align-items:center; padding-top:12px; border-top:1px solid #21262d;">
+            <div>
+                <span style="display:block; font-size:0.9rem; font-weight:600;">Hold Last Values</span>
+                <small style="color:var(--text-muted); font-size:0.72rem;">Keep showing last reading when data drops (prevents dashes)</small>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="holdToggle" checked>
+              <span class="slider"></span>
+            </label>
+        </div>
       </div>
       
-      <!-- Device Stats -->
       <div class="card">
         <h4>Device Info</h4>
         <div class="detail-row" style="margin-top:10px;">
@@ -550,6 +587,10 @@
             <span class="detail-val text-bat" id="settingsSavingsDisplay">Rs &mdash;</span>
         </div>
         <div class="detail-row">
+            <span class="detail-label">Data Age</span>
+            <span class="detail-val" id="dataAge">&mdash;</span>
+        </div>
+        <div class="detail-row">
             <span class="detail-label">Refresh Rate</span>
             <span class="detail-val">Realtime</span>
         </div>
@@ -559,7 +600,6 @@
         </div>
       </div>
       
-      <!-- Danger Zone -->
       <div class="card" style="border-color:rgba(211,47,47,0.3);">
         <h4 style="color:var(--bad);">Danger Zone</h4>
         <p style="font-size:0.82rem; color:var(--text-muted); margin-top:6px; line-height:1.5;">
@@ -601,7 +641,7 @@
   <!-- ===== MAIN SCRIPT ===== -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getDatabase, ref, onValue, set, query, orderByChild, limitToLast, remove } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
+    import { getDatabase, ref, onValue, set, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js';
 
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY_YAHAN_LIKHEN",
@@ -622,13 +662,59 @@
     let battChart = null;
     let cachedHistoryData = null;
 
+    // ============================================
+    // LAST KNOWN VALUE CACHE — Yahi fix hai
+    // ============================================
+    let lastData = {};           // Pura last data object
+    let lastDataTime = 0;        // Kab last valid data aaya (timestamp ms)
+    let isStale = false;         // Kya data stale hai
+    const STALE_THRESHOLD = 10000; // 10 seconds — isse zyada gap = stale
+
+    // Fields jo real-time power ke liye zaroori hain
+    const POWER_FIELDS = ['pvV', 'pvA', 'pvW', 'batteryV', 'batteryA', 'batteryPercent', 
+                          'gridW', 'loadW', 'loadVA', 'loadPercent',
+                          'acInV', 'acInFreq', 'acOutV', 'acOutFreq',
+                          'busV', 'invTemp', 'fanLevel', 'powerSource', 'chargingSrc',
+                          'pvkWh', 'loadKwh'];
+
     // --- HELPERS ---
     const $ = (id) => document.getElementById(id);
     const setTxt = (id, txt) => { const el = $(id); if(el) el.textContent = txt; };
-    const fmt = (v, d=1) => (v == null || v === '' || isNaN(v)) ? '\u2014' : `${Number(v).toFixed(d)}`;
-    const fmt0 = (v) => (v == null || v === '' || isNaN(v)) ? '\u2014' : `${Math.round(Number(v))}`;
 
-    // --- TARIFF ---
+    /**
+     * Smart format: agar value invalid ho AUR hold mode ON ho AUR lastData mein value ho
+     * toh purani value return karo (dash nahi dikhega)
+     */
+    function smartVal(currentVal, fieldKey, decimals = 1) {
+      const holdEnabled = $('holdToggle')?.checked !== false; // default ON
+      
+      // Check if current value is valid
+      const isValid = currentVal != null && currentVal !== '' && !isNaN(currentVal);
+      
+      if (isValid) {
+        return Number(currentVal).toFixed(decimals);
+      }
+      
+      // Current value invalid — check if we should hold
+      if (holdEnabled && lastData[fieldKey] != null && lastData[fieldKey] !== '' && !isNaN(lastData[fieldKey])) {
+        return Number(lastData[fieldKey]).toFixed(decimals);
+      }
+      
+      return '\u2014'; // dash
+    }
+
+    function smartVal0(currentVal, fieldKey) {
+      return smartVal(currentVal, fieldKey, 0);
+    }
+
+    /**
+     * Check karta hai ki current value fresh hai ya held (cached) hai
+     */
+    function isHeld(currentVal, fieldKey) {
+      const isValid = currentVal != null && currentVal !== '' && !isNaN(currentVal);
+      return !isValid && lastData[fieldKey] != null && lastData[fieldKey] !== '' && !isNaN(lastData[fieldKey]);
+    }
+
     function getTariff() {
       return parseFloat($('tariffInput')?.value || 30);
     }
@@ -641,35 +727,36 @@
       setTxt('settingsSavingsDisplay', `Rs ${savings.toFixed(0)}`);
     }
 
-    // --- WEATHER ---
-    function updateWeather(pvW, ts) {
+    function showToast(msg) {
+      const t = $('toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function updateWeather(pvW) {
       const solar = Number(pvW) || 0;
-      let icon = '\u2600\uFE0F'; // sun
+      let icon = '\u2600\uFE0F';
       let text = 'Sunny';
-      
       if (solar > 500) { icon = '\u2600\uFE0F'; text = 'Full Sun'; }
       else if (solar > 200) { icon = '\uD83C\uDF24\uFE0F'; text = 'Partly Cloudy'; }
       else if (solar > 50) { icon = '\u26C5'; text = 'Cloudy'; }
       else if (solar > 10) { icon = '\uD83C\uDF27\uFE0F'; text = 'Overcast'; }
       else { icon = '\uD83C\uDF19'; text = 'Night / No Sun'; }
-      
       setTxt('weatherIcon', icon);
       setTxt('weatherText', text);
     }
 
-    // --- FLOW ARROWS ---
-    function updateFlowArrows(solarW, battW, gridW, loadW) {
+    function updateFlowArrows(solarW, battW, gridW) {
       const s = Number(solarW) || 0;
       const b = Number(battW) || 0;
       const g = Number(gridW) || 0;
-      const l = Number(loadW) || 0;
-      
       $('a1').className = s > 10 ? 'flow-arrow active' : 'flow-arrow';
       $('a2').className = Math.abs(b) > 10 ? 'flow-arrow active' : 'flow-arrow';
       $('a3').className = g > 10 ? 'flow-arrow active' : 'flow-arrow';
     }
 
-    // --- BATTERY BAR ---
     function updateBatteryBar(percent) {
       const p = Math.max(0, Math.min(100, Number(percent) || 0));
       const bar = $('batBar');
@@ -681,105 +768,216 @@
       }
     }
 
-    // ===== MAIN REALTIME LISTENER =====
+    /**
+     * Stale check — har second run hoga
+     */
+    function startStaleChecker() {
+      setInterval(() => {
+        if (lastDataTime === 0) return;
+        const elapsed = Date.now() - lastDataTime;
+        const wasStale = isStale;
+        isStale = elapsed > STALE_THRESHOLD;
+
+        // Stale bar show/hide
+        const bar = $('staleBar');
+        if (bar) bar.style.display = isStale ? 'block' : 'none';
+
+        // Connection dot update
+        const dot = $('cDot');
+        if (dot) {
+          if (isStale) dot.className = 'dot stale';
+          // ok/bad status onValue listener handle karega
+        }
+
+        // Data age display
+        if (elapsed < 60000) {
+          setTxt('dataAge', Math.round(elapsed / 1000) + 's ago');
+        } else {
+          setTxt('dataAge', Math.round(elapsed / 60000) + 'm ago');
+        }
+
+        // Stale hone par cards par yellow dot lagao
+        updateStaleIndicators();
+
+      }, 1000);
+    }
+
+    /**
+     * Agar data stale hai toh power cards par yellow indicator lagao
+     */
+    function updateStaleIndicators() {
+      const cards = ['pvCard', 'loadCard', 'batCard', 'gridCard'];
+      cards.forEach(id => {
+        const el = $(id);
+        if (el) {
+          if (isStale) el.classList.add('stale-val');
+          else el.classList.remove('stale-val');
+        }
+      });
+    }
+
+    /**
+     * Check karta hai ki naye data mein kaun se fields missing ya invalid hain
+     * (ESP ne incomplete bheja hai)
+     */
+    function countMissingFields(d) {
+      let missing = 0;
+      POWER_FIELDS.forEach(f => {
+        if (d[f] == null || d[f] === '' || isNaN(d[f])) missing++;
+      });
+      return missing;
+    }
+
+    // ============================================
+    // MAIN REALTIME LISTENER
+    // ============================================
     onValue(deviceRef, (snapshot) => {
       const d = snapshot.val();
-      
-      // Connection Status
-      setTxt('connText', d ? 'Online' : 'Offline');
-      const dot = $('cDot');
-      if(dot) dot.className = d ? 'dot ok' : 'dot bad';
-      setTxt('lastUpdate', d ? new Date().toLocaleTimeString() : 'No Signal');
-      
-      if(!d) return;
+      const now = Date.now();
 
-      // --- CALCULATIONS ---
-      const batteryW = (d.batteryV && d.batteryA) ? Number(d.batteryV) * Number(d.batteryA) : 0;
-      const solarW = Number(d.pvW || 0);
-      const gridW = Number(d.gridW || 0);
-      const loadW = Number(d.loadW || 0);
-      const battPercent = Number(d.batteryPercent || 0);
+      // --- Device online/offline ---
+      if (!d) {
+        // Device offline — lekin hold mode mein purana data rahega
+        $('cDot').className = 'dot bad';
+        setTxt('connText', 'Offline');
+        // lastData aur lastDataTime change mat karo, stale checker handle karega
+        return;
+      }
+
+      // Device online
+      lastDataTime = now;
+      isStale = false;
+      $('staleBar').style.display = 'none';
+      $('cDot').className = 'dot ok';
+      setTxt('connText', 'Online');
+      setTxt('lastUpdate', new Date().toLocaleTimeString());
+
+      // --- DEBUG: Check incomplete data ---
+      const missingCount = countMissingFields(d);
+      if (missingCount > 0 && missingCount < POWER_FIELDS.length) {
+        // Kuch fields missing hain (partial write from ESP)
+        console.warn(`[Partial Data] ${missingCount}/${POWER_FIELDS.length} fields missing/invalid`);
+      }
+
+      // --- MERGE: lastData mein naye valid values update karo ---
+      // Invalid fields ko overwrite NAHI karenge — purani value rahegi
+      POWER_FIELDS.forEach(f => {
+        if (d[f] != null && d[f] !== '' && !isNaN(d[f])) {
+          lastData[f] = d[f];
+        }
+        // else: lastData[f] purani value hi rahegi (THIS IS THE FIX)
+      });
+
+      // --- Ab lastData se sab display karo ---
+      const L = lastData; // short reference
+
+      // --- CALCULATIONS (always from lastData) ---
+      const batteryW = (L.batteryV && L.batteryA) ? Number(L.batteryV) * Number(L.batteryA) : 0;
+      const solarW = Number(L.pvW || 0);
+      const gridW = Number(L.gridW || 0);
+      const loadW = Number(L.loadW || 0);
+      const battPercent = Number(L.batteryPercent || 0);
 
       // --- DASHBOARD CARDS ---
-      setTxt('uiPvKwh', fmt(d.pvkWh, 3));
-      setTxt('uiLoadKwh', fmt(d.loadKwh, 3));
-      setTxt('pvWCard', fmt0(solarW));
-      setTxt('batWCard', fmt0(batteryW));
-      setTxt('gridWCard', fmt0(gridW));
-      setTxt('loadWCard', fmt0(loadW));
+      setTxt('uiPvKwh', smartVal(L.pvkWh, 'pvkWh', 3));
+      setTxt('uiLoadKwh', smartVal(L.loadKwh, 'loadKwh', 3));
+      setTxt('pvWCard', smartVal0(L.pvW, 'pvW'));
+      setTxt('batWCard', smartVal0(batteryW, null)); // calculated, no fallback needed
+      setTxt('gridWCard', smartVal0(L.gridW, 'gridW'));
+      setTxt('loadWCard', smartVal0(L.loadW, 'loadW'));
 
       // --- BATTERY HEALTH ---
-      setTxt('healthBatV', fmt(d.batteryV) + ' V');
-      setTxt('healthBatT', fmt(d.invTemp, 0) + ' \u00B0C');
-      setTxt('healthBatPercent', fmt0(battPercent) + ' %');
+      setTxt('healthBatV', smartVal(L.batteryV, 'batteryV') + ' V');
+      setTxt('healthBatT', smartVal0(L.invTemp, 'invTemp') + ' \u00B0C');
+      setTxt('healthBatPercent', smartVal0(L.batteryPercent, 'batteryPercent') + ' %');
       updateBatteryBar(battPercent);
 
-      if(batteryW < -50) setTxt('healthStatus', 'Discharging \u2B07\uFE0F');
-      else if(batteryW > 50) setTxt('healthStatus', 'Charging \u2B06\uFE0F');
+      if (batteryW < -50) setTxt('healthStatus', 'Discharging \u2B07\uFE0F');
+      else if (batteryW > 50) setTxt('healthStatus', 'Charging \u2B06\uFE0F');
       else setTxt('healthStatus', 'Idle \u23F8\uFE0F');
 
       // --- POWER FLOW ---
-      setTxt('fPvW', fmt0(solarW) + 'W'); setTxt('fPvV', fmt(d.pvV) + 'V'); setTxt('fPvA', fmt(d.pvA) + 'A');
-      setTxt('fBatW', fmt0(batteryW) + 'W'); setTxt('fBatV', fmt(d.batteryV) + 'V'); setTxt('fBatA', fmt(d.batteryA) + 'A');
-      setTxt('fGridW', fmt0(gridW) + 'W'); setTxt('fAcInV', fmt(d.acInV) + 'V'); setTxt('fAcInF', fmt(d.acInFreq) + 'Hz');
-      setTxt('fLoadW', fmt0(loadW) + 'W'); setTxt('fAcOutV', fmt(d.acOutV) + 'V'); setTxt('fAcOutF', fmt(d.acOutFreq) + 'Hz');
+      setTxt('fPvW', smartVal0(L.pvW, 'pvW') + 'W');
+      setTxt('fPvV', smartVal(L.pvV, 'pvV') + 'V');
+      setTxt('fPvA', smartVal(L.pvA, 'pvA') + 'A');
+      setTxt('fBatW', smartVal0(batteryW, null) + 'W');
+      setTxt('fBatV', smartVal(L.batteryV, 'batteryV') + 'V');
+      setTxt('fBatA', smartVal(L.batteryA, 'batteryA') + 'A');
+      setTxt('fGridW', smartVal0(L.gridW, 'gridW') + 'W');
+      setTxt('fAcInV', smartVal(L.acInV, 'acInV') + 'V');
+      setTxt('fAcInF', smartVal(L.acInFreq, 'acInFreq') + 'Hz');
+      setTxt('fLoadW', smartVal0(L.loadW, 'loadW') + 'W');
+      setTxt('fAcOutV', smartVal(L.acOutV, 'acOutV') + 'V');
+      setTxt('fAcOutF', smartVal(L.acOutFreq, 'acOutFreq') + 'Hz');
 
-      updateFlowArrows(solarW, batteryW, gridW, loadW);
+      updateFlowArrows(solarW, batteryW, gridW);
 
       // --- DETAILS TAB ---
-      setTxt('detailPvKwh', fmt(d.pvkWh, 3) + ' kWh');
-      setTxt('detailLoadKwh', fmt(d.loadKwh, 3) + ' kWh');
-      
-      setTxt('pvV', fmt(d.pvV) + ' V'); setTxt('pvA', fmt(d.pvA) + ' A'); setTxt('pvW', fmt0(d.pvW) + ' W');
-      setTxt('batV', fmt(d.batteryV) + ' V'); setTxt('batA', fmt(d.batteryA) + ' A'); setTxt('batW', fmt0(batteryW) + ' W');
-      setTxt('batPercent', fmt0(d.batteryPercent) + ' %');
-      setTxt('acInV', fmt(d.acInV) + ' V'); setTxt('acInFreq', fmt(d.acInFreq) + ' Hz'); setTxt('gridW', fmt0(d.gridW) + ' W');
-      setTxt('acOutV', fmt(d.acOutV) + ' V'); setTxt('acOutFreq', fmt(d.acOutFreq) + ' Hz'); 
-      setTxt('loadW', fmt0(d.loadW) + ' W'); setTxt('loadVA', fmt0(d.loadVA) + ' VA'); setTxt('loadPercent', fmt0(d.loadPercent) + ' %');
-      setTxt('busV', fmt(d.busV, 0) + ' V'); setTxt('invTemp', fmt(d.invTemp, 0) + ' \u00B0C');
-      setTxt('fanLevel', fmt0(d.fanLevel)); 
-      setTxt('powerSource', String(d.powerSource || 'none'));
-      setTxt('chargingSrc', String(d.chargingSrc || 'none'));
+      setTxt('detailPvKwh', smartVal(L.pvkWh, 'pvkWh', 3) + ' kWh');
+      setTxt('detailLoadKwh', smartVal(L.loadKwh, 'loadKwh', 3) + ' kWh');
+
+      setTxt('pvV', smartVal(L.pvV, 'pvV') + ' V');
+      setTxt('pvA', smartVal(L.pvA, 'pvA') + ' A');
+      setTxt('pvW', smartVal0(L.pvW, 'pvW') + ' W');
+
+      setTxt('batV', smartVal(L.batteryV, 'batteryV') + ' V');
+      setTxt('batA', smartVal(L.batteryA, 'batteryA') + ' A');
+      setTxt('batW', smartVal0(batteryW, null) + ' W');
+      setTxt('batPercent', smartVal0(L.batteryPercent, 'batteryPercent') + ' %');
+
+      setTxt('acInV', smartVal(L.acInV, 'acInV') + ' V');
+      setTxt('acInFreq', smartVal(L.acInFreq, 'acInFreq') + ' Hz');
+      setTxt('gridW', smartVal0(L.gridW, 'gridW') + ' W');
+
+      setTxt('acOutV', smartVal(L.acOutV, 'acOutV') + ' V');
+      setTxt('acOutFreq', smartVal(L.acOutFreq, 'acOutFreq') + ' Hz');
+      setTxt('loadW', smartVal0(L.loadW, 'loadW') + ' W');
+      setTxt('loadVA', smartVal0(L.loadVA, 'loadVA') + ' VA');
+      setTxt('loadPercent', smartVal0(L.loadPercent, 'loadPercent') + ' %');
+
+      setTxt('busV', smartVal0(L.busV, 'busV') + ' V');
+      setTxt('invTemp', smartVal0(L.invTemp, 'invTemp') + ' \u00B0C');
+      setTxt('fanLevel', smartVal0(L.fanLevel, 'fanLevel'));
+      setTxt('powerSource', String(L.powerSource || 'none'));
+      setTxt('chargingSrc', String(L.chargingSrc || 'none'));
 
       // --- CHIPS ---
       const chips = $('chips');
-      if(chips) chips.innerHTML = '';
-      
-      const addChip = (txt, color='#30363d') => { 
-        if(!chips) return;
+      if (chips) chips.innerHTML = '';
+      const addChip = (txt, color = '#30363d') => {
+        if (!chips) return;
         const s = document.createElement('span');
-        s.className = 'chip'; s.style.borderColor = color; s.textContent = txt; chips.appendChild(s); 
+        s.className = 'chip';
+        s.style.borderColor = color;
+        s.textContent = txt;
+        chips.appendChild(s);
       };
-
-      if(loadW > 10) addChip(`Home: ${fmt0(loadW)}W`, '#8b5cf6');
-      if(solarW > 10) addChip(`Solar: ${fmt0(solarW)}W`, '#f59e0b');
-      if(batteryW > 50) addChip(`Charging: ${fmt0(batteryW)}W`, '#10b981');
-      else if(batteryW < -50) addChip(`Discharging: ${fmt0(Math.abs(batteryW))}W`, '#ff5252');
-      if(gridW > 20) addChip(`Grid: ${fmt0(gridW)}W`, '#3b82f6');
+      if (loadW > 10) addChip(`Home: ${smartVal0(L.loadW, 'loadW')}W`, '#8b5cf6');
+      if (solarW > 10) addChip(`Solar: ${smartVal0(L.pvW, 'pvW')}W`, '#f59e0b');
+      if (batteryW > 50) addChip(`Charging: ${smartVal0(batteryW, null)}W`, '#10b981');
+      else if (batteryW < -50) addChip(`Discharging: ${smartVal0(Math.abs(batteryW), null)}W`, '#ff5252');
+      if (gridW > 20) addChip(`Grid: ${smartVal0(L.gridW, 'gridW')}W`, '#3b82f6');
 
       // --- WEATHER & SAVINGS ---
       updateWeather(solarW);
-      calculateSavings(d.pvkWh);
-      setTxt('settingsPvDisplay', fmt(d.pvkWh, 3) + ' kWh');
+      calculateSavings(L.pvkWh);
+      setTxt('settingsPvDisplay', smartVal(L.pvkWh, 'pvkWh', 3) + ' kWh');
     });
 
-    // ===== HISTORY LISTENER (for Analytics tab) =====
+    // ===== HISTORY LISTENER =====
     onValue(historyRef, (snapshot) => {
       const data = snapshot.val();
-      if(!data) {
-        cachedHistoryData = null;
-        return;
-      }
-      
+      if (!data) { cachedHistoryData = null; return; }
+
       const entries = [];
-      const sortedKeys = Object.keys(data).sort((a,b) => data[a].ts - data[b].ts);
-      
+      const sortedKeys = Object.keys(data).sort((a, b) => data[a].ts - data[b].ts);
+
       sortedKeys.forEach(key => {
         const val = data[key];
-        if(val && val.ts) {
+        if (val && val.ts) {
           const d = new Date(val.ts * 1000);
           entries.push({
-            time: `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`,
+            time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
             pvW: Number(val.pvW || 0),
             loadW: Number(val.loadW || 0),
             batteryV: Number(val.batteryV || 0),
@@ -788,31 +986,27 @@
           });
         }
       });
-      
+
       cachedHistoryData = entries;
-      
-      // Calculate stats
-      if(entries.length > 0) {
+
+      if (entries.length > 0) {
         const solarValues = entries.map(e => e.pvW);
         const loadValues = entries.map(e => e.loadW);
-        const peakSolar = Math.max(...solarValues);
-        const peakLoad = Math.max(...loadValues);
-        const avgSolar = Math.round(solarValues.reduce((a,b) => a+b, 0) / solarValues.length);
-        
-        setTxt('peakSolar', fmt0(peakSolar));
-        setTxt('peakLoad', fmt0(peakLoad));
-        setTxt('avgSolar', fmt0(avgSolar));
+        setTxt('peakSolar', fmt0(Math.max(...solarValues)));
+        setTxt('peakLoad', fmt0(Math.max(...loadValues)));
+        setTxt('avgSolar', fmt0(Math.round(solarValues.reduce((a, b) => a + b, 0) / solarValues.length)));
       }
 
-      // Agar analytics tab active hai toh chart redraw karo
-      if($('tab-analytics')?.classList.contains('active')) {
+      if ($('tab-analytics')?.classList.contains('active')) {
         renderCharts(entries);
       }
     });
 
+    const fmt0 = (v) => (v == null || v === '' || isNaN(v)) ? '\u2014' : `${Math.round(Number(v))}`;
+
     // ===== CHART RENDERING =====
     function renderCharts(entries) {
-      if(!entries || entries.length === 0) {
+      if (!entries || entries.length === 0) {
         $('chartEmpty').style.display = 'block';
         return;
       }
@@ -825,84 +1019,51 @@
         plugins: {
           legend: { labels: { color: '#8b949e', font: { size: 11 }, usePointStyle: true, pointStyle: 'circle' } },
           tooltip: {
-            backgroundColor: '#1c2333',
-            borderColor: '#30363d',
-            borderWidth: 1,
-            titleColor: '#e6edf3',
-            bodyColor: '#8b949e',
-            padding: 10,
-            cornerRadius: 8
+            backgroundColor: '#1c2333', borderColor: '#30363d', borderWidth: 1,
+            titleColor: '#e6edf3', bodyColor: '#8b949e', padding: 10, cornerRadius: 8
           }
         },
         scales: {
-          x: { 
-            ticks: { color: '#8b949e', font: { size: 10 }, maxTicksLimit: 12 }, 
-            grid: { color: '#21262d', drawBorder: false } 
-          },
-          y: { 
-            ticks: { color: '#8b949e', font: { size: 10 } }, 
-            grid: { color: '#21262d', drawBorder: false },
-            beginAtZero: true
-          }
+          x: { ticks: { color: '#8b949e', font: { size: 10 }, maxTicksLimit: 12 }, grid: { color: '#21262d', drawBorder: false } },
+          y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d', drawBorder: false }, beginAtZero: true }
         }
       };
 
-      // --- Power Chart (Solar + Load + Grid) ---
-      if(powerChart) powerChart.destroy();
+      if (powerChart) powerChart.destroy();
       const ctx1 = $('historyChart')?.getContext('2d');
-      if(ctx1) {
+      if (ctx1) {
         powerChart = new Chart(ctx1, {
           type: 'line',
           data: {
-            labels: labels,
+            labels,
             datasets: [
-              { 
-                label: 'Solar (W)', data: entries.map(e => e.pvW), 
-                borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)',
-                fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 
-              },
-              { 
-                label: 'Load (W)', data: entries.map(e => e.loadW), 
-                borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)',
-                fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 
-              },
-              { 
-                label: 'Grid (W)', data: entries.map(e => e.gridW), 
-                borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.05)',
-                fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1.5, borderDash: [5, 3] 
-              }
+              { label: 'Solar (W)', data: entries.map(e => e.pvW), borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+              { label: 'Load (W)', data: entries.map(e => e.loadW), borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+              { label: 'Grid (W)', data: entries.map(e => e.gridW), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.05)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1.5, borderDash: [5, 3] }
             ]
           },
           options: chartDefaults
         });
       }
 
-      // --- Battery Voltage Chart ---
-      if(battChart) battChart.destroy();
+      if (battChart) battChart.destroy();
       const ctx2 = $('batteryChart')?.getContext('2d');
-      if(ctx2) {
+      if (ctx2) {
         battChart = new Chart(ctx2, {
           type: 'line',
           data: {
-            labels: labels,
+            labels,
             datasets: [{
-              label: 'Battery (V)', 
-              data: entries.map(e => e.batteryV), 
-              borderColor: '#10b981', 
-              backgroundColor: 'rgba(16,185,129,0.1)',
-              fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 
+              label: 'Battery (V)', data: entries.map(e => e.batteryV),
+              borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)',
+              fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2
             }]
           },
           options: {
             ...chartDefaults,
             scales: {
               ...chartDefaults.scales,
-              y: {
-                ...chartDefaults.scales.y,
-                beginAtZero: false,
-                suggestedMin: 22,
-                suggestedMax: 30
-              }
+              y: { ...chartDefaults.scales.y, beginAtZero: false, suggestedMin: 22, suggestedMax: 30 }
             }
           }
         });
@@ -914,49 +1075,42 @@
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       const tab = $(tabId);
-      if(tab) tab.classList.add('active');
-      if(element) element.classList.add('active');
-      
-      // Agar analytics tab hai aur cached data hai toh chart draw karo
-      if(tabId === 'tab-analytics' && cachedHistoryData) {
-        renderCharts(cachedHistoryData);
-      } else if(tabId === 'tab-analytics' && !cachedHistoryData) {
-        // Chart bana do empty state ke liye
-        $('chartEmpty').style.display = 'block';
-      }
+      if (tab) tab.classList.add('active');
+      if (element) element.classList.add('active');
+      if (tabId === 'tab-analytics' && cachedHistoryData) renderCharts(cachedHistoryData);
+      else if (tabId === 'tab-analytics' && !cachedHistoryData) $('chartEmpty').style.display = 'block';
     }
 
     // ===== SETTINGS ACTIONS =====
     window.resetEnergy = function() {
-      if(confirm('Are you sure? This will reset all energy counters to zero.')) {
+      if (confirm('Are you sure? This will reset all energy counters to zero.')) {
         set(ref(db, '/devices/inverter01/cmd'), 'RESET_ENERGY').then(() => {
-          alert('Energy reset command sent!');
+          showToast('Energy reset command sent!');
         }).catch(err => {
-          alert('Error: ' + err.message);
+          showToast('Error: ' + err.message);
         });
       }
     }
 
     window.clearHistory = function() {
-      if(confirm('Clear all 24-hour history data? This cannot be undone.')) {
+      if (confirm('Clear all 24-hour history data? This cannot be undone.')) {
         set(ref(db, '/devices/inverter01/cmd'), 'CLEAR_HISTORY').then(() => {
-          alert('History clear command sent!');
+          showToast('History clear command sent!');
         }).catch(err => {
-          alert('Error: ' + err.message);
+          showToast('Error: ' + err.message);
         });
       }
     }
 
-    // Tariff input change listener
     $('tariffInput')?.addEventListener('input', () => {
-      // Savings automatic recalculate hoga next data update par
-      const currentKwh = $('uiPvKwh')?.textContent || '0';
-      calculateSavings(currentKwh);
+      calculateSavings(lastData.pvkWh);
     });
 
-    // Button event listeners
     $('resetBtn')?.addEventListener('click', window.resetEnergy);
     $('clearHistoryBtn')?.addEventListener('click', window.clearHistory);
+
+    // ===== START STALE CHECKER =====
+    startStaleChecker();
 
   </script>
 </body>
