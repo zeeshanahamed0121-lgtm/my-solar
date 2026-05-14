@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Firebase Connect Manual</title>
+<style>
+:root{--bg:#071018;--card:rgba(255,255,255,.08);--line:rgba(255,255,255,.13);--txt:#f8fafc;--mut:#9aa9ba;--g:#22e58f;--b:#5cc8ff;--y:#ffd166;--r:#ff5571}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,rgba(92,200,255,.22),transparent 35%),linear-gradient(160deg,#061019,#081827 55%,#030711);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--txt);line-height:1.55}.wrap{width:min(760px,100%);margin:auto;padding:22px 15px 60px}.hero,.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.06));border-radius:26px;padding:20px;backdrop-filter:blur(18px);box-shadow:0 20px 55px rgba(0,0,0,.25);margin-bottom:14px}.hero h1{margin:0 0 6px;font-size:28px;letter-spacing:-.04em}.hero p,.mut{color:var(--mut);margin:0}.tag{display:inline-block;margin-top:14px;padding:7px 11px;border-radius:999px;background:rgba(34,229,143,.13);border:1px solid rgba(34,229,143,.35);color:var(--g);font-weight:800;font-size:12px}.card h2{margin:0 0 10px;font-size:18px}.step{display:flex;gap:12px;margin:13px 0}.num{min-width:30px;height:30px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--g),var(--b));color:#031018;font-weight:900}.box{flex:1}.box b{display:block;margin-bottom:3px}code,pre{background:#06111c;border:1px solid var(--line);border-radius:14px;color:#d8f7ff}code{padding:2px 6px}pre{padding:14px;overflow:auto;font-size:13px}.warn{border-left:4px solid var(--y);padding:12px;border-radius:14px;background:rgba(255,209,102,.09);color:#fff}.bad{border-left:4px solid var(--r);padding:12px;border-radius:14px;background:rgba(255,85,113,.09)}.ok{border-left:4px solid var(--g);padding:12px;border-radius:14px;background:rgba(34,229,143,.09)}a{color:var(--b);font-weight:800}.btn{display:block;text-align:center;text-decoration:none;margin-top:10px;padding:13px 14px;border-radius:16px;background:linear-gradient(135deg,var(--g),var(--b));color:#031018;font-weight:900}.small{font-size:13px;color:var(--mut)}ul{padding-left:20px}li{margin:7px 0}</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>Firebase Connect Manual</h1>
+    <p>Smart Inverter web app ko Firebase Realtime Database se connect karne ka simple guide.</p>
+    <span class="tag">For modern.html</span>
+    <a class="btn" href="modern.html">Open Modern App</a>
+  </section>
+
+  <section class="card">
+    <h2>1) Firebase Web Config kahan se leni hai</h2>
+    <div class="step"><div class="num">1</div><div class="box"><b>Firebase Console open karo</b><span class="mut">Project <code>smart-inverter-dbb6a</code> select karo.</span></div></div>
+    <div class="step"><div class="num">2</div><div class="box"><b>Project Settings me jao</b><span class="mut">Left top gear icon ⚙️ → Project settings.</span></div></div>
+    <div class="step"><div class="num">3</div><div class="box"><b>Web App add/select karo</b><span class="mut">General tab me “Your apps” ke andar web icon <code>&lt;/&gt;</code> select karo. Android appId nahi, Web appId chahiye.</span></div></div>
+    <div class="step"><div class="num">4</div><div class="box"><b>SDK setup and configuration copy karo</b><span class="mut">Config object me se <code>apiKey</code>, <code>messagingSenderId</code>, aur <code>appId</code> copy karo.</span></div></div>
+    <div class="warn">Note: Web appId aam tor par <code>:web:</code> wala hota hai. Agar appId me <code>:android:</code> hai to wo Android app ke liye hai.</div>
+  </section>
+
+  <section class="card">
+    <h2>2) modern.html me config kaise paste karni hai</h2>
+    <p class="mut">GitHub repo me <code>modern.html</code> open karo, edit pencil press karo, aur ye line find karo:</p>
+    <pre>const firebaseConfig={apiKey:'YOUR_API_KEY_YAHAN_LIKHEN'</pre>
+    <p class="mut">Is config ko apni Firebase Web config se replace karo:</p>
+    <pre>const firebaseConfig = {
+  apiKey: 'PASTE_YOUR_API_KEY',
+  authDomain: 'smart-inverter-dbb6a.firebaseapp.com',
+  databaseURL: 'https://smart-inverter-dbb6a-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'smart-inverter-dbb6a',
+  storageBucket: 'smart-inverter-dbb6a.appspot.com',
+  messagingSenderId: 'PASTE_SENDER_ID',
+  appId: 'PASTE_WEB_APP_ID'
+};</pre>
+    <div class="ok">Paste karne ke baad GitHub me <b>Commit changes</b> press karo. 1–2 minutes baad GitHub Pages update ho jata hai.</div>
+  </section>
+
+  <section class="card">
+    <h2>3) Database paths jo app read karta hai</h2>
+    <p class="mut">Modern app pehle <code>/device</code> path read karta hai. Agar data wahan nahi milta to <code>/inverter</code> path bhi check karta hai.</p>
+    <pre>{
+  "device": {
+    "batteryV": 12.7,
+    "batteryPercent": 86,
+    "pvV": 37.5,
+    "pvA": 7.3,
+    "pvW": 274,
+    "loadW": 60,
+    "grid": 1,
+    "charging": 1,
+    "invTemp": 38,
+    "error": "NONE",
+    "fanMode": "AUTO"
+  }
+}</pre>
+    <p class="small">Agar tumhare ESP8266 keys different hain to app me aliases already diye gaye hain: <code>solarV</code>, <code>solarA</code>, <code>solarPower</code>, <code>batteryVoltage</code>, <code>loadPower</code>, <code>temperature</code> bhi support hain.</p>
+  </section>
+
+  <section class="card">
+    <h2>4) Firebase Rules test ke liye</h2>
+    <div class="bad">Public rules sirf testing ke liye hain. Permanent use ke liye secure rules lagani chahiye.</div>
+    <p class="mut">Testing ke liye Realtime Database → Rules me ye laga sakte ho:</p>
+    <pre>{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}</pre>
+    <p class="mut">Zyada safe version:</p>
+    <pre>{
+  "rules": {
+    "device": { ".read": true, ".write": true },
+    "inverter": { ".read": true, ".write": true },
+    "control": { ".read": true, ".write": true }
+  }
+}</pre>
+  </section>
+
+  <section class="card">
+    <h2>5) Connect hua ya nahi kaise check karo</h2>
+    <ul>
+      <li>Modern app open karo: <code>modern.html</code></li>
+      <li>Top right status <b>Online</b> hona chahiye.</li>
+      <li>Firebase me koi value change karo, app me live update aana chahiye.</li>
+      <li>Agar Offline aaye to config, databaseURL, rules aur path check karo.</li>
+    </ul>
+    <a class="btn" href="modern.html">Test Modern App</a>
+  </section>
+
+  <section class="card">
+    <h2>6) Common errors</h2>
+    <div class="step"><div class="num">!</div><div class="box"><b>Offline aa raha hai</b><span class="mut">API key/appId wrong, rules blocked, ya database path empty.</span></div></div>
+    <div class="step"><div class="num">!</div><div class="box"><b>Values -- aa rahi hain</b><span class="mut">ESP8266 data keys app keys se match nahi kar rahe. Example: app <code>pvW</code> ya <code>solarPower</code> read karta hai.</span></div></div>
+    <div class="step"><div class="num">!</div><div class="box"><b>AppId error</b><span class="mut">Firebase Web app create karo. Android appId browser web app me kabhi kabhi issue karta hai.</span></div></div>
+  </section>
+</div>
+</body>
+</html>
